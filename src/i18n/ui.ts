@@ -4,6 +4,14 @@
  * UI/UX Tone: Calm editorial Scandinavian fintech aesthetic based on DESIGN.md
  */
 
+const ptBrConfig = {
+  label: 'Português (Brasil)',
+  flag: '🇧🇷',
+  dir: 'ltr',
+  subpath: 'pt-br',
+  hreflang: 'pt-BR',
+} as const;
+
 export const languages = {
   en: {
     label: 'English',
@@ -19,13 +27,8 @@ export const languages = {
     subpath: 'zh',
     hreflang: 'zh',
   },
-  'pt-br': {
-    label: 'Português (Brasil)',
-    flag: '🇧🇷',
-    dir: 'ltr',
-    subpath: 'pt-br',
-    hreflang: 'pt-BR',
-  },
+  'pt-br': ptBrConfig,
+  'pt-BR': ptBrConfig,
   ru: {
     label: 'Русский',
     flag: '🇷🇺',
@@ -56,7 +59,7 @@ export const languages = {
   },
 } as const;
 
-export type SupportedLanguage = keyof typeof languages | 'pt-BR';
+export type SupportedLanguage = keyof typeof languages;
 export const defaultLang: SupportedLanguage = 'en';
 
 export const defaultUI = {
