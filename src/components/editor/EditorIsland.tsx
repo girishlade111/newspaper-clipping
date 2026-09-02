@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PreviewPanel from './PreviewPanel';
+import RecentClippingsDrawer from './RecentClippingsDrawer';
+import {
+  saveToDrafts,
+  captureThumbnail,
+  downloadAsPNG,
+  downloadAsJPG,
+  downloadAsSVG,
+  downloadAsPDF,
+  getRecentClippings,
+  type ClippingRecord,
+} from '../../utils/exportAndStorage';
 
 export interface TemplateOption {
   id: string;
@@ -97,13 +108,28 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
   const [story, setStory] = useState<string>(TEMPLATES[0].story);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [photoCaption, setPhotoCaption] = useState<string>('Scene captured during extraordinary proceedings.');
-  
-  // Secondary Controls
+
+  // UI & Interaction States
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
+  const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [exportFormat, setExportFormat] = useState<string>('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [draftCount, setDraftCount] = useState<number>(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update draft count on load
+  const refreshDraftCount = async () => {
+    try {
+      const items = await getRecentClippings(50);
+      setDraftCount(items.length);
+    } catch {
+      // safe fallback
+    }
+  };
 
   // 3. URL State Management - Initial Mount: Populate from URLSearchParams
   useEffect(() => {
@@ -128,6 +154,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
           setHeadline(headlineParam ?? found.headline);
           setStory(storyParam ?? found.story);
           setIsInitialized(true);
+          refreshDraftCount();
           return;
         }
       }
@@ -142,6 +169,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
     }
 
     setIsInitialized(true);
+    refreshDraftCount();
   }, []);
 
   // 3. URL State Management - Synchronize state to URLSearchParams via replaceState
@@ -222,9 +250,82 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
     setTimeout(() => setCopiedUrl(false), 2500);
   };
 
-  const handlePrint = () => {
-    if (typeof window === 'undefined') return;
-    window.print();
+  // 3. Save to Drafts Function using Dexie.js
+  const handleSaveToDrafts = async () => {
+    try {
+      const targetEl = document.getElementById('previewPanelContainer');
+      let thumbnail: string | null = null;
+      if (targetEl) {
+        thumbnail = await captureThumbnail(targetEl);
+      }
+
+      await saveToDrafts({
+        template: selectedTemplate,
+        newspaperName,
+        tagline,
+        date,
+        headline,
+        story,
+        base64Image: imageUrl,
+        thumbnail,
+        photoCaption,
+      });
+
+      setSavedSuccess(true);
+      refreshDraftCount();
+      setTimeout(() => setSavedSuccess(false), 2500);
+    } catch (err) {
+      console.error('Failed to save to drafts:', err);
+    }
+  };
+
+  // Restore session from Dexie.js
+  const handleRestoreSession = (record: ClippingRecord) => {
+    setSelectedTemplate(record.template);
+    setNewspaperName(record.newspaperName);
+    setTagline(record.tagline || '');
+    setDate(record.date);
+    setHeadline(record.headline);
+    setStory(record.story);
+    if (record.base64Image) {
+      setImageUrl(record.base64Image);
+    }
+    if (record.photoCaption) {
+      setPhotoCaption(record.photoCaption);
+    }
+  };
+
+  // 1. Export Engine Handlers targeting PreviewPanel <div>
+  const handleExport = async (format: 'png' | 'jpg' | 'svg' | 'pdf') => {
+    const targetEl = document.getElementById('previewPanelContainer');
+    if (!targetEl) return;
+
+    setIsExporting(true);
+    setExportFormat(format.toUpperCase());
+
+    const filename = `${selectedTemplate}-clipping-${Date.now()}.${format}`;
+
+    try {
+      switch (format) {
+        case 'png':
+          await downloadAsPNG(targetEl, filename);
+          break;
+        case 'jpg':
+          await downloadAsJPG(targetEl, filename);
+          break;
+        case 'svg':
+          await downloadAsSVG(targetEl, filename);
+          break;
+        case 'pdf':
+          await downloadAsPDF(targetEl, filename);
+          break;
+      }
+    } catch (err) {
+      console.error(`Export failed for format ${format}:`, err);
+    } finally {
+      setIsExporting(false);
+      setExportFormat('');
+    }
   };
 
   return (
@@ -244,32 +345,55 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
         </div>
 
         {/* Action Pills */}
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* My Recent Clippings Drawer Button */}
+          <button
+            type="button"
+            onClick={() => setIsDrawerOpen(true)}
+            className="inline-flex items-center gap-2 h-10 px-3.5 rounded-xl bg-white hover:bg-canvas-soft text-ink font-semibold text-xs border border-black/15 shadow-sm transition-colors relative"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>My Recent Clippings</span>
+            {draftCount > 0 && (
+              <span className="px-1.5 py-0.5 rounded-full bg-primary text-ink text-[10px] font-black">
+                {draftCount}
+              </span>
+            )}
+          </button>
+
+          {/* Save to Drafts (Dexie.js) */}
+          <button
+            type="button"
+            onClick={handleSaveToDrafts}
+            className={`inline-flex items-center gap-1.5 h-10 px-4 rounded-xl font-bold text-xs shadow-sm transition-all ${
+              savedSuccess
+                ? 'bg-positive-deep text-white'
+                : 'bg-primary hover:bg-primary-active text-ink'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+            </svg>
+            <span>{savedSuccess ? 'Saved to Drafts!' : 'Save to Drafts'}</span>
+          </button>
+
+          {/* Share Parameters Link */}
           <button
             type="button"
             onClick={handleShareLink}
-            className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-white hover:bg-canvas-soft text-ink font-semibold text-xs border border-black/15 shadow-sm transition-colors"
+            className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl bg-white hover:bg-canvas-soft text-ink font-semibold text-xs border border-black/15 shadow-sm transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
             </svg>
-            <span>{copiedUrl ? 'Copied with URL State!' : 'Share Parameters'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-white hover:bg-canvas-soft text-ink font-semibold text-xs border border-black/15 shadow-sm transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-            </svg>
-            <span>Print Clipping</span>
+            <span>{copiedUrl ? 'Copied URL!' : 'Share'}</span>
           </button>
 
           <a
             href="#livePreviewArea"
-            className="lg:hidden inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-primary text-ink font-bold text-xs shadow-sm"
+            className="lg:hidden inline-flex items-center gap-2 h-10 px-3.5 rounded-xl bg-primary text-ink font-bold text-xs shadow-sm"
           >
             <span>Jump to Preview ↓</span>
           </a>
@@ -468,25 +592,70 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Sticky Live Preview adhering to 2-column split desktop */}
+        {/* RIGHT COLUMN: Sticky Live Preview + Export Bar */}
         <div
           id="livePreviewArea"
           className="w-full lg:w-[54%] xl:w-[58%] lg:sticky lg:top-20 self-start"
         >
           <div className="card-content bg-white rounded-xl p-4 sm:p-6 shadow-xl border border-black/10">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/10">
+            {/* Live Preview Header & Quick Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 mb-4 border-b border-black/10">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-positive animate-pulse"></span>
                 <span className="font-display font-black text-sm uppercase tracking-wider text-ink">
                   Sticky Live Preview
                 </span>
+                <span className="px-2 py-0.5 rounded-pill bg-canvas-soft text-[10px] font-bold text-ink uppercase">
+                  {selectedTemplate}
+                </span>
               </div>
-              <span className="text-[11px] font-bold text-mute uppercase tracking-wider">
-                {selectedTemplate.toUpperCase()}
-              </span>
+
+              {/* 1. Export Engine Toolbar: PNG, JPG, SVG, PDF */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  disabled={isExporting}
+                  onClick={() => handleExport('png')}
+                  className="px-3 py-1.5 rounded-lg bg-canvas-soft hover:bg-black/10 text-ink font-bold text-xs transition-colors disabled:opacity-50 flex items-center gap-1"
+                >
+                  <span>PNG</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={isExporting}
+                  onClick={() => handleExport('jpg')}
+                  className="px-3 py-1.5 rounded-lg bg-canvas-soft hover:bg-black/10 text-ink font-bold text-xs transition-colors disabled:opacity-50 flex items-center gap-1"
+                >
+                  <span>JPG</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={isExporting}
+                  onClick={() => handleExport('svg')}
+                  className="px-3 py-1.5 rounded-lg bg-canvas-soft hover:bg-black/10 text-ink font-bold text-xs transition-colors disabled:opacity-50 flex items-center gap-1"
+                >
+                  <span>SVG</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={isExporting}
+                  onClick={() => handleExport('pdf')}
+                  className="px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-active text-ink font-black text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-1"
+                >
+                  <span>PDF</span>
+                </button>
+              </div>
             </div>
 
-            {/* Render the Dedicated PreviewPanel Component */}
+            {/* Exporting Loading Overlay */}
+            {isExporting && (
+              <div className="mb-3 p-2.5 rounded-lg bg-primary-pale border border-primary/40 flex items-center justify-center gap-2 text-xs font-bold text-ink-deep animate-pulse">
+                <div className="w-3.5 h-3.5 border-2 border-ink border-t-transparent rounded-full animate-spin"></div>
+                <span>Rendering High-Resolution {exportFormat} Export...</span>
+              </div>
+            )}
+
+            {/* The Actual Rendered Newspaper Clipping */}
             <PreviewPanel
               template={selectedTemplate}
               date={date}
@@ -499,12 +668,19 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
             />
 
             <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between text-xs text-mute">
-              <span>Auto-synchronizing with URLSearchParams</span>
-              <span className="font-bold text-ink">300 DPI Export Ready</span>
+              <span>All exports rendered 100% client-side via html2canvas & jsPDF</span>
+              <span className="font-bold text-ink">300 DPI Archival Output</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* 4. My Recent Clippings Drawer */}
+      <RecentClippingsDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onSelectClipping={handleRestoreSession}
+      />
     </div>
   );
 }
