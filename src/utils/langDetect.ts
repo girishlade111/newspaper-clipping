@@ -28,37 +28,37 @@ export function matchSupportedLocale(rawTag: string): SupportedLocale | null {
   if (!rawTag) return null;
   const tag = rawTag.toLowerCase().trim();
 
-  // Brazilian Portuguese match
+  // Brazilian Portuguese match (pt-BR, pt) -> pt-BR (subpath: /pt-br/)
   if (tag === 'pt-br' || tag.startsWith('pt')) {
     return 'pt-BR';
   }
 
-  // Chinese matches (zh, zh-CN, zh-TW, zh-HK)
+  // Chinese matches (zh, zh-CN, zh-TW, zh-HK) -> zh
   if (tag.startsWith('zh')) {
     return 'zh';
   }
 
-  // Japanese
+  // Japanese (ja, ja-JP) -> ja
   if (tag.startsWith('ja')) {
     return 'ja';
   }
 
-  // Russian
+  // Russian (ru, ru-RU) -> ru
   if (tag.startsWith('ru')) {
     return 'ru';
   }
 
-  // Turkish
+  // Turkish (tr, tr-TR) -> tr
   if (tag.startsWith('tr')) {
     return 'tr';
   }
 
-  // Korean
+  // Korean (ko, ko-KR) -> ko
   if (tag.startsWith('ko')) {
     return 'ko';
   }
 
-  // English
+  // English (en, en-US, en-GB) -> en
   if (tag.startsWith('en')) {
     return 'en';
   }
@@ -67,7 +67,7 @@ export function matchSupportedLocale(rawTag: string): SupportedLocale | null {
 }
 
 /**
- * Detects the user's preferred locale from localStorage or navigator.language.
+ * Detects the user's preferred locale from localStorage or navigator.languages / navigator.language.
  */
 export function detectUserLanguage(): SupportedLocale {
   if (typeof window === 'undefined') return DEFAULT_LOCALE;

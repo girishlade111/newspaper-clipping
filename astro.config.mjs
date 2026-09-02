@@ -20,10 +20,10 @@ export default defineConfig({
           ru: 'ru-RU',
           ja: 'ja-JP',
           tr: 'tr-TR',
-          ko: 'ko-KR'
-        }
-      }
-    })
+          ko: 'ko-KR',
+        },
+      },
+    }),
   ],
   i18n: {
     defaultLocale: 'en',
@@ -32,16 +32,16 @@ export default defineConfig({
       'zh',
       {
         path: 'pt-br',
-        codes: ['pt-BR', 'pt']
+        codes: ['pt-BR', 'pt'],
       },
       'ru',
       'ja',
       'tr',
-      'ko'
+      'ko',
     ],
     routing: {
       prefixDefaultLocale: false,
-      redirectToDefaultLocale: false
-    }
-  }
+      redirectToDefaultLocale: false,
+    },
+  },
 });

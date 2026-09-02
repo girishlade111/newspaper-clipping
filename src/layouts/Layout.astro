@@ -27,10 +27,10 @@ const currentPath = Astro.url.pathname;
 const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-br|ru|ja|tr|ko)(?:\/|$)/, '/');
 const cleanSubpath = pathWithoutLang === '/' ? '' : pathWithoutLang;
 
-// Construct dynamic alternate links for international SEO
+// Construct dynamic alternate links for international technical SEO
 const alternateLinks = Object.entries(languages).map(([key, config]) => {
   const localizedPath = config.subpath
-    ? `/${config.subpath}${cleanSubpath}`
+    ? `/${config.subpath}${cleanSubpath ? cleanSubpath : '/'}`
     : `${cleanSubpath || '/'}`;
   return {
     langKey: key,
@@ -54,10 +54,10 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Technical SEO: Canonical Link -->
+    <!-- Technical SEO: Canonical URL -->
     <link rel="canonical" href={canonicalUrl} />
 
-    <!-- Technical SEO: Dynamic Hreflang Tags for 7 Supported Locales -->
+    <!-- Technical SEO: Dynamic Hreflang Tags for all 7 Supported Locales -->
     {alternateLinks.map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />
     ))}
@@ -70,7 +70,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <meta name="description" content={description} />
     <meta name="theme-color" content="#9fe870" />
 
-    <!-- Open Graph / Social -->
+    <!-- Open Graph / Social Media -->
     <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={formattedTitle} />
@@ -85,7 +85,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, siteUrl).toString()} />
 
-    <!-- Typography: Inter for Sub-display & Body; Fallback for Wise Sans Display 900 -->
+    <!-- Typography: Inter for Sub-display & Body; Fallbacks for Wise Display 900 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -97,7 +97,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <script src="../utils/langDetect.ts"></script>
 
     <!-- Schema.org JSON-LD Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": article ? "Article" : "WebApplication",
       "name": formattedTitle,
@@ -195,11 +195,24 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     --colors-body: #454745;
     --colors-mute: #868685;
 
+    --colors-positive: #2ead4b;
+    --colors-positive-deep: #054d28;
+    --colors-warning: #ffd11a;
+    --colors-warning-deep: #b86700;
+    --colors-warning-content: #4a3b1c;
+    --colors-negative: #d03238;
+    --colors-negative-deep: #a72027;
+    --colors-negative-darkest: #a7000d;
+    --colors-negative-bg: #320707;
+
+    --colors-accent-orange: #ffc091;
+    --colors-accent-cyan: #38c8ff;
+
     --rounded-xl: 24px;
     --rounded-pill: 9999px;
   }
 
-  /* Canonical Primary CTA Pill */
+  /* Canonical Primary CTA Pill (DESIGN.md) */
   .btn-primary {
     background-color: var(--colors-primary);
     color: var(--colors-on-primary);
@@ -218,14 +231,14 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     transform: translateY(-1px);
   }
 
-  /* Sage Canvas Hero Band */
+  /* Sage Canvas Hero Band (DESIGN.md) */
   .hero-band {
     background-color: var(--colors-canvas-soft);
     color: var(--colors-ink);
     padding: 48px 24px;
   }
 
-  /* Canonical White Content Card */
+  /* Canonical White Content Card (DESIGN.md) */
   .card-content {
     background-color: var(--colors-canvas);
     color: var(--colors-ink);
