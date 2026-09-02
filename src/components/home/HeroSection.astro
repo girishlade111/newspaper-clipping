@@ -1,0 +1,307 @@
+---
+import { useTranslations, getRelativeLocaleUrl } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="band-sage hero-section">
+  <div class="container">
+    <div class="hero-split">
+      <!-- Left: Headline & Brand Conversion moment -->
+      <div class="hero-left">
+        <div class="hero-badge-wrap">
+          <span class="badge-pill badge-brand">
+            <span>✨</span>
+            <span>{t('hero.badge')}</span>
+          </span>
+        </div>
+
+        <h1 class="font-display-mega hero-headline">
+          {t('hero.title')}
+        </h1>
+
+        <p class="font-body-lg hero-subtext">
+          {t('hero.subtitle')}
+        </p>
+
+        <!-- CTA Action Row strictly following Wise 24px pill and primary green token -->
+        <div class="hero-cta-row">
+          <a href={getRelativeLocaleUrl(lang, 'generator')} class="btn btn-primary btn-lg hero-cta-btn">
+            <span>{t('hero.ctaPrimary')}</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+
+          <a href={getRelativeLocaleUrl(lang, 'templates')} class="btn btn-tertiary btn-lg">
+            <span>{t('hero.ctaSecondary')}</span>
+          </a>
+        </div>
+
+        <!-- Social Proof Stats -->
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <span class="stat-val font-display-xs">500k+</span>
+            <span class="stat-lbl font-caption">{t('hero.statsClippings')}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-val font-display-xs">4.9 ★</span>
+            <span class="stat-lbl font-caption">{t('hero.statsRating')}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-val font-display-xs">100%</span>
+            <span class="stat-lbl font-caption">Free & Client-Side</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Interactive Newspaper Card (Wise signature card on sage surface) -->
+      <div class="hero-right">
+        <div class="hero-preview-card card-content">
+          <div class="card-tag-row">
+            <span class="badge-pill badge-positive">Live Interactive Preview</span>
+            <span class="font-caption" style="font-weight: 600;">300 DPI High-Res</span>
+          </div>
+
+          <!-- Realistic Mini Newspaper Mockup inside Card -->
+          <div class="newspaper-mockup-frame">
+            <div class="mockup-masthead">
+              <div class="mockup-ears">
+                <span>WEATHER: MISTY & COLD</span>
+                <span>SPECIAL EDITION</span>
+              </div>
+              <div class="mockup-title">The Daily Chronicle</div>
+              <div class="mockup-bar">
+                <span>VOL. XLII NO. 14,892</span>
+                <span>OCTOBER 24, 1929</span>
+                <span>TWO CENTS</span>
+              </div>
+            </div>
+
+            <div class="mockup-content">
+              <h3 class="mockup-headline">
+                ANCIENT RELICS UNCOVERED IN FORBIDDEN VAULT
+              </h3>
+              <p class="mockup-deck">
+                Archaeologists stunned by subterranean chambers sealed for over three millennia.
+              </p>
+              <div class="mockup-grid">
+                <div class="mockup-col">
+                  <p><span class="mockup-dropcap">I</span>n what scholars describe as the discovery of the century, the expedition broke through the sealed stone doorway at dawn yesterday, illuminating untouched gilded caskets.</p>
+                </div>
+                <div class="mockup-col">
+                  <p>Eyewitnesses reported a breathless hush as ancient hieroglyphic celestial maps were revealed along the marble chamber walls.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coffee stain overlay effect -->
+            <div class="mockup-coffee-stain"></div>
+          </div>
+
+          <!-- Quick interactive action pill inside card -->
+          <div class="hero-card-footer">
+            <a href={getRelativeLocaleUrl(lang, 'generator')} class="btn btn-primary" style="width: 100%;">
+              <span>Customize This Clipping in Studio →</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    padding-top: var(--spacing-4xl);
+    padding-bottom: var(--spacing-4xl);
+  }
+
+  .hero-split {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: var(--spacing-3xl);
+    align-items: center;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-split {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-2xl);
+    }
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .hero-headline {
+    color: var(--color-ink);
+    margin-top: -4px;
+  }
+
+  .hero-subtext {
+    max-width: 580px;
+    color: var(--color-body);
+  }
+
+  .hero-cta-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xs);
+  }
+
+  .hero-stats-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(14, 15, 12, 0.1);
+    margin-top: var(--spacing-md);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-val {
+    font-weight: 900;
+    color: var(--color-ink);
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(14, 15, 12, 0.12);
+  }
+
+  /* Right Newspaper Mockup Card */
+  .hero-preview-card {
+    background: var(--color-canvas);
+    border-radius: var(--rounded-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+
+  .card-tag-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .newspaper-mockup-frame {
+    background: #eedfca;
+    border: 1px solid #c9b99f;
+    border-radius: var(--rounded-md);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
+    color: #1a1612;
+  }
+
+  .mockup-masthead {
+    border-bottom: 2px solid #1a1612;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .mockup-ears {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .mockup-title {
+    font-family: var(--font-newspaper-gothic);
+    font-size: 32px;
+    line-height: 1;
+    margin: 4px 0 6px;
+  }
+
+  .mockup-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    font-weight: 700;
+    border-top: 1px solid #1a1612;
+    padding-top: 4px;
+  }
+
+  .mockup-headline {
+    font-family: var(--font-newspaper-serif);
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-align: center;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .mockup-deck {
+    font-family: var(--font-newspaper-serif);
+    font-size: 11px;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 12px;
+    color: #3e362d;
+    border-bottom: 1px solid rgba(26, 22, 18, 0.2);
+    padding-bottom: 8px;
+  }
+
+  .mockup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    font-family: var(--font-newspaper-body);
+    font-size: 9.5px;
+    line-height: 1.4;
+    text-align: justify;
+  }
+
+  .mockup-dropcap {
+    font-family: var(--font-newspaper-serif);
+    font-size: 26px;
+    font-weight: 900;
+    float: left;
+    line-height: 0.85;
+    margin-right: 4px;
+  }
+
+  .mockup-coffee-stain {
+    position: absolute;
+    bottom: -15px;
+    right: -15px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 5px solid rgba(120, 75, 25, 0.25);
+    pointer-events: none;
+    box-shadow: inset 0 0 10px rgba(120, 75, 25, 0.15);
+  }
+
+  .hero-card-footer {
+    margin-top: var(--spacing-lg);
+  }
+</style>

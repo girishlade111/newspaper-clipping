@@ -1,0 +1,618 @@
+---
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+import { PRESETS } from '../../scripts/presets';
+import '../../styles/generator.css';
+
+interface Props {
+  lang: SupportedLanguage;
+  initialPresetId?: string;
+  isCompact?: boolean;
+}
+
+const { lang, initialPresetId = 'breaking-1920', isCompact = false } = Astro.props;
+const t = useTranslations(lang);
+const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
+---
+
+<div class={`generator-root ${isCompact ? 'compact-mode' : ''}`} id="generatorAppContainer">
+  <div class="generator-layout">
+    <!-- Left Column: Controls & Settings -->
+    <div class="studio-card">
+      <div class="studio-card-header">
+        <div>
+          <h2 class="font-display-xs" style="margin-bottom: 2px;">{t('nav.generator')}</h2>
+          <p class="font-caption">Customize text, aging, halftone photos & layout</p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" id="resetBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>{t('gen.reset')}</span>
+        </button>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-nav" role="tablist">
+        <button type="button" class="tab-btn active" data-tab="content">
+          📝 {t('gen.tabs.content')}
+        </button>
+        <button type="button" class="tab-btn" data-tab="style">
+          📜 {t('gen.tabs.style')}
+        </button>
+        <button type="button" class="tab-btn" data-tab="photo">
+          📷 {t('gen.tabs.photo')}
+        </button>
+        <button type="button" class="tab-btn" data-tab="presets">
+          ✨ {t('gen.tabs.presets')}
+        </button>
+      </div>
+
+      <!-- Tab 1: Content & Text -->
+      <div class="tab-pane active" id="tab-content">
+        <!-- Newspaper Title & Tagline -->
+        <div class="form-group">
+          <label class="label-text" for="inputNewspaperName">{t('gen.newspaperName')}</label>
+          <input 
+            type="text" 
+            id="inputNewspaperName" 
+            class="text-input" 
+            value={defaultPreset.newspaperName} 
+            placeholder={t('gen.newspaperNamePlaceholder')}
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="label-text" for="inputTagline">{t('gen.tagline')}</label>
+          <input 
+            type="text" 
+            id="inputTagline" 
+            class="text-input" 
+            value={defaultPreset.tagline} 
+            placeholder={t('gen.taglinePlaceholder')}
+          />
+        </div>
+
+        <!-- Date & Issue Details -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-text" for="inputDate">{t('gen.date')}</label>
+            <input 
+              type="text" 
+              id="inputDate" 
+              class="text-input" 
+              value={defaultPreset.date}
+            />
+          </div>
+          <div class="form-group">
+            <label class="label-text" for="inputIssue">{t('gen.issue')}</label>
+            <input 
+              type="text" 
+              id="inputIssue" 
+              class="text-input" 
+              value={defaultPreset.issue} 
+              placeholder={t('gen.issuePlaceholder')}
+            />
+          </div>
+        </div>
+
+        <!-- Price & Weather / Earpieces -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-text" for="inputPrice">{t('gen.price')}</label>
+            <input 
+              type="text" 
+              id="inputPrice" 
+              class="text-input" 
+              value={defaultPreset.price} 
+              placeholder={t('gen.pricePlaceholder')}
+            />
+          </div>
+          <div class="form-group">
+            <label class="label-text" for="inputWeatherRight">{t('gen.weatherRight')}</label>
+            <input 
+              type="text" 
+              id="inputWeatherRight" 
+              class="text-input" 
+              value={defaultPreset.weatherRight} 
+              placeholder={t('gen.weatherRightPlaceholder')}
+            />
+          </div>
+        </div>
+
+        <!-- Headline & Subheadline -->
+        <div class="form-group">
+          <label class="label-text" for="inputHeadline">{t('gen.headline')}</label>
+          <input 
+            type="text" 
+            id="inputHeadline" 
+            class="text-input font-body-md-strong" 
+            value={defaultPreset.headline} 
+            placeholder={t('gen.headlinePlaceholder')}
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="label-text" for="inputSubheadline">{t('gen.subheadline')}</label>
+          <input 
+            type="text" 
+            id="inputSubheadline" 
+            class="text-input" 
+            value={defaultPreset.subheadline} 
+            placeholder={t('gen.subheadlinePlaceholder')}
+          />
+        </div>
+
+        <!-- Byline & Columns -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-text" for="inputAuthor">{t('gen.author')}</label>
+            <input 
+              type="text" 
+              id="inputAuthor" 
+              class="text-input" 
+              value={defaultPreset.author} 
+              placeholder={t('gen.authorPlaceholder')}
+            />
+          </div>
+          <div class="form-group">
+            <label class="label-text" for="selectColumns">{t('gen.columns')}</label>
+            <select id="selectColumns" class="select-input">
+              <option value="1">{t('gen.columns.1')}</option>
+              <option value="2" selected>{t('gen.columns.2')}</option>
+              <option value="3">{t('gen.columns.3')}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Body Text -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="label-text" for="inputBody">{t('gen.body')}</label>
+            <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="checkDropCap" checked />
+              <span>{t('gen.dropCap')}</span>
+            </label>
+          </div>
+          <textarea 
+            id="inputBody" 
+            class="textarea-input" 
+            rows="6" 
+            style="resize: vertical;"
+          >{defaultPreset.body}</textarea>
+        </div>
+      </div>
+
+      <!-- Tab 2: Paper & Texture -->
+      <div class="tab-pane" id="tab-style">
+        <div class="form-group">
+          <label class="label-text">{t('gen.fontStyle')}</label>
+          <div class="pill-selector" id="fontPillSelector">
+            <button type="button" class="pill-option active" data-font="gothic">Gothic Blackletter</button>
+            <button type="button" class="pill-option" data-font="serif">Classic Serif</button>
+            <button type="button" class="pill-option" data-font="headline">Cinzel Broadsheet</button>
+            <button type="button" class="pill-option" data-font="tabloid">Tabloid Bold</button>
+            <button type="button" class="pill-option" data-font="typewriter">Typewriter</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label-text">{t('gen.paperStyle')}</label>
+          <div class="pill-selector" id="paperStyleSelector">
+            <button type="button" class="pill-option active" data-paper="1920">{t('gen.paper1920')}</button>
+            <button type="button" class="pill-option" data-paper="1950">{t('gen.paper1950')}</button>
+            <button type="button" class="pill-option" data-paper="burnt">{t('gen.paperBurnt')}</button>
+            <button type="button" class="pill-option" data-paper="clean">{t('gen.paperClean')}</button>
+          </div>
+        </div>
+
+        <!-- Aging Slider -->
+        <div class="range-group">
+          <div class="range-header">
+            <span>{t('gen.agingLevel')}</span>
+            <span id="agingValueLabel">70%</span>
+          </div>
+          <input type="range" id="inputAging" class="range-slider" min="0" max="100" value="70" />
+        </div>
+
+        <!-- Checkbox Options -->
+        <div class="form-group" style="gap: 12px; margin-top: 8px;">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="checkTornEdges" checked />
+            <span class="font-body-md-strong">{t('gen.tornEdges')}</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="checkCreaseLines" checked />
+            <span>{t('gen.creaseLines')}</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="checkCoffeeStain" checked />
+            <span>{t('gen.coffeeStain')}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tab 3: Photo & Filters -->
+      <div class="tab-pane" id="tab-photo">
+        <div class="form-group">
+          <label class="label-text">{t('gen.photoUpload')}</label>
+          <div class="upload-dropzone" id="photoDropzone">
+            <input type="file" id="photoFileInput" accept="image/*" style="display: none;" />
+            <div id="dropzoneContent">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 8px; color: var(--color-body);">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <p class="font-body-sm-strong">{t('gen.photoDrop')}</p>
+              <p class="font-caption">PNG, JPG, WEBP up to 10MB</p>
+            </div>
+            <div id="dropzonePreview" style="display: none; align-items: center; justify-content: space-between;">
+              <span id="uploadedFileName" class="font-body-sm-strong">photo.jpg</span>
+              <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label-text">{t('gen.photoFilter')}</label>
+          <div class="pill-selector" id="photoFilterSelector">
+            <button type="button" class="pill-option active" data-filter="halftone">{t('gen.filterHalftone')}</button>
+            <button type="button" class="pill-option" data-filter="sepia">{t('gen.filterSepia')}</button>
+            <button type="button" class="pill-option" data-filter="contrast">{t('gen.filterContrast')}</button>
+            <button type="button" class="pill-option" data-filter="grain">{t('gen.filterGrain')}</button>
+            <button type="button" class="pill-option" data-filter="none">{t('gen.filterNone')}</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label-text" for="inputPhotoCaption">{t('gen.photoCaption')}</label>
+          <input 
+            type="text" 
+            id="inputPhotoCaption" 
+            class="text-input" 
+            value={defaultPreset.photoCaption} 
+            placeholder={t('gen.photoCaptionPlaceholder')}
+          />
+        </div>
+      </div>
+
+      <!-- Tab 4: Presets -->
+      <div class="tab-pane" id="tab-presets">
+        <p class="font-body-sm" style="margin-bottom: 8px;">Select a preconfigured historic style:</p>
+        <div class="preset-grid">
+          {PRESETS.map((preset) => (
+            <div 
+              class={`preset-card-item ${preset.id === defaultPreset.id ? 'active' : ''}`}
+              data-preset-id={preset.id}
+            >
+              <div class="preset-thumbnail">
+                <span>{preset.newspaperName.split(' ')[0]}</span>
+              </div>
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 2px;">{preset.name}</h4>
+              <span style="font-size: 11px; color: var(--color-mute);">{preset.category}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Canvas Preview & Action Bar -->
+    <div class="canvas-viewport-card">
+      <div class="canvas-toolbar">
+        <div class="canvas-toolbar-group">
+          <span class="badge-pill badge-positive">Live 300 DPI Canvas</span>
+        </div>
+
+        <div class="canvas-toolbar-group">
+          <button type="button" class="btn btn-secondary btn-sm" id="copyClipboardBtn" title={t('gen.copyClipboard')}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>{t('gen.copyClipboard')}</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary btn-sm" id="printBtn" title={t('gen.print')}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span>{t('gen.print')}</span>
+          </button>
+
+          <!-- Primary CTA Button strictly following Wise Green #9fe870 pill guideline -->
+          <button type="button" class="btn btn-primary" id="downloadPngBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>{t('gen.downloadPng')}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Rendering Viewport -->
+      <div class="canvas-container-wrap">
+        <canvas id="newspaperCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { NewspaperEngine } from '../../scripts/generator-engine';
+  import { PRESETS, type NewspaperPreset } from '../../scripts/presets';
+  import confetti from 'canvas-confetti';
+
+  function initGenerator() {
+    const canvas = document.getElementById('newspaperCanvas') as HTMLCanvasElement;
+    if (!canvas) return;
+
+    const engine = new NewspaperEngine(canvas);
+    let userUploadedImage: HTMLImageElement | null = null;
+
+    // State
+    let currentOptions: NewspaperPreset & { userImage?: HTMLImageElement | null } = {
+      ...PRESETS[0],
+      userImage: null
+    };
+
+    // Render helper
+    async function triggerRender() {
+      await engine.render({
+        ...currentOptions,
+        userImage: userUploadedImage
+      });
+    }
+
+    // Connect Input Elements
+    const inputNewspaperName = document.getElementById('inputNewspaperName') as HTMLInputElement;
+    const inputTagline = document.getElementById('inputTagline') as HTMLInputElement;
+    const inputDate = document.getElementById('inputDate') as HTMLInputElement;
+    const inputIssue = document.getElementById('inputIssue') as HTMLInputElement;
+    const inputPrice = document.getElementById('inputPrice') as HTMLInputElement;
+    const inputWeatherRight = document.getElementById('inputWeatherRight') as HTMLInputElement;
+    const inputHeadline = document.getElementById('inputHeadline') as HTMLInputElement;
+    const inputSubheadline = document.getElementById('inputSubheadline') as HTMLInputElement;
+    const inputAuthor = document.getElementById('inputAuthor') as HTMLInputElement;
+    const selectColumns = document.getElementById('selectColumns') as HTMLSelectElement;
+    const inputBody = document.getElementById('inputBody') as HTMLTextAreaElement;
+    const checkDropCap = document.getElementById('checkDropCap') as HTMLInputElement;
+    const inputAging = document.getElementById('inputAging') as HTMLInputElement;
+    const agingValueLabel = document.getElementById('agingValueLabel');
+    const checkTornEdges = document.getElementById('checkTornEdges') as HTMLInputElement;
+    const checkCreaseLines = document.getElementById('checkCreaseLines') as HTMLInputElement;
+    const checkCoffeeStain = document.getElementById('checkCoffeeStain') as HTMLInputElement;
+    const inputPhotoCaption = document.getElementById('inputPhotoCaption') as HTMLInputElement;
+
+    // Live update handlers
+    const updateFromUI = () => {
+      if (inputNewspaperName) currentOptions.newspaperName = inputNewspaperName.value;
+      if (inputTagline) currentOptions.tagline = inputTagline.value;
+      if (inputDate) currentOptions.date = inputDate.value;
+      if (inputIssue) currentOptions.issue = inputIssue.value;
+      if (inputPrice) currentOptions.price = inputPrice.value;
+      if (inputWeatherRight) currentOptions.weatherRight = inputWeatherRight.value;
+      if (inputHeadline) currentOptions.headline = inputHeadline.value;
+      if (inputSubheadline) currentOptions.subheadline = inputSubheadline.value;
+      if (inputAuthor) currentOptions.author = inputAuthor.value;
+      if (selectColumns) currentOptions.columns = Number(selectColumns.value) as 1 | 2 | 3;
+      if (inputBody) currentOptions.body = inputBody.value;
+      if (checkDropCap) currentOptions.dropCap = checkDropCap.checked;
+      if (inputAging) {
+        currentOptions.agingLevel = Number(inputAging.value);
+        if (agingValueLabel) agingValueLabel.textContent = `${inputAging.value}%`;
+      }
+      if (checkTornEdges) currentOptions.tornEdges = checkTornEdges.checked;
+      if (checkCreaseLines) currentOptions.creaseLines = checkCreaseLines.checked;
+      if (checkCoffeeStain) currentOptions.coffeeStain = checkCoffeeStain.checked;
+      if (inputPhotoCaption) currentOptions.photoCaption = inputPhotoCaption.value;
+
+      triggerRender();
+    };
+
+    [
+      inputNewspaperName, inputTagline, inputDate, inputIssue, inputPrice,
+      inputWeatherRight, inputHeadline, inputSubheadline, inputAuthor,
+      selectColumns, inputBody, checkDropCap, inputAging, checkTornEdges,
+      checkCreaseLines, checkCoffeeStain, inputPhotoCaption
+    ].forEach(el => {
+      if (el) {
+        el.addEventListener('input', updateFromUI);
+        el.addEventListener('change', updateFromUI);
+      }
+    });
+
+    // Tab Navigation
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabKey = btn.getAttribute('data-tab');
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabPanes.forEach(p => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        const activePane = document.getElementById(`tab-${tabKey}`);
+        if (activePane) activePane.classList.add('active');
+      });
+    });
+
+    // Pill selectors (Font, Paper, Filter)
+    document.querySelectorAll('#fontPillSelector .pill-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#fontPillSelector .pill-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentOptions.fontStyle = (btn.getAttribute('data-font') as any) || 'gothic';
+        triggerRender();
+      });
+    });
+
+    document.querySelectorAll('#paperStyleSelector .pill-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#paperStyleSelector .pill-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentOptions.paperStyle = (btn.getAttribute('data-paper') as any) || '1920';
+        triggerRender();
+      });
+    });
+
+    document.querySelectorAll('#photoFilterSelector .pill-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#photoFilterSelector .pill-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentOptions.filter = (btn.getAttribute('data-filter') as any) || 'halftone';
+        triggerRender();
+      });
+    });
+
+    // Presets click handler
+    document.querySelectorAll('.preset-card-item').forEach(card => {
+      card.addEventListener('click', () => {
+        const presetId = card.getAttribute('data-preset-id');
+        const preset = PRESETS.find(p => p.id === presetId);
+        if (!preset) return;
+
+        document.querySelectorAll('.preset-card-item').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+
+        // Apply preset to state
+        currentOptions = { ...preset, userImage: userUploadedImage };
+
+        // Sync inputs
+        if (inputNewspaperName) inputNewspaperName.value = preset.newspaperName;
+        if (inputTagline) inputTagline.value = preset.tagline;
+        if (inputDate) inputDate.value = preset.date;
+        if (inputIssue) inputIssue.value = preset.issue;
+        if (inputPrice) inputPrice.value = preset.price;
+        if (inputWeatherRight) inputWeatherRight.value = preset.weatherRight;
+        if (inputHeadline) inputHeadline.value = preset.headline;
+        if (inputSubheadline) inputSubheadline.value = preset.subheadline;
+        if (inputAuthor) inputAuthor.value = preset.author;
+        if (selectColumns) selectColumns.value = String(preset.columns);
+        if (inputBody) inputBody.value = preset.body;
+        if (checkDropCap) checkDropCap.checked = preset.dropCap;
+        if (inputAging) {
+          inputAging.value = String(preset.agingLevel);
+          if (agingValueLabel) agingValueLabel.textContent = `${preset.agingLevel}%`;
+        }
+        if (checkTornEdges) checkTornEdges.checked = preset.tornEdges;
+        if (checkCreaseLines) checkCreaseLines.checked = preset.creaseLines;
+        if (checkCoffeeStain) checkCoffeeStain.checked = preset.coffeeStain;
+
+        // Switch to content tab
+        const firstTab = document.querySelector('.tab-btn[data-tab="content"]') as HTMLButtonElement;
+        if (firstTab) firstTab.click();
+
+        triggerRender();
+      });
+    });
+
+    // Photo Upload Handling
+    const photoDropzone = document.getElementById('photoDropzone');
+    const photoFileInput = document.getElementById('photoFileInput') as HTMLInputElement;
+    const dropzoneContent = document.getElementById('dropzoneContent');
+    const dropzonePreview = document.getElementById('dropzonePreview');
+    const uploadedFileName = document.getElementById('uploadedFileName');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+
+    if (photoDropzone && photoFileInput) {
+      photoDropzone.addEventListener('click', () => photoFileInput.click());
+
+      photoFileInput.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            userUploadedImage = img;
+            if (dropzoneContent) dropzoneContent.style.display = 'none';
+            if (dropzonePreview) dropzonePreview.style.display = 'flex';
+            if (uploadedFileName) uploadedFileName.textContent = file.name;
+            triggerRender();
+          };
+          img.src = event.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    if (removePhotoBtn) {
+      removePhotoBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userUploadedImage = null;
+        if (photoFileInput) photoFileInput.value = '';
+        if (dropzoneContent) dropzoneContent.style.display = 'block';
+        if (dropzonePreview) dropzonePreview.style.display = 'none';
+        triggerRender();
+      });
+    }
+
+    // Actions: Download, Copy, Print
+    const downloadPngBtn = document.getElementById('downloadPngBtn');
+    if (downloadPngBtn) {
+      downloadPngBtn.addEventListener('click', () => {
+        const cleanName = (currentOptions.headline.slice(0, 24) || 'newspaper-clipping')
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '-');
+        engine.download(`${cleanName}.png`, 'png');
+        
+        confetti({
+          particleCount: 60,
+          spread: 60,
+          origin: { y: 0.8 }
+        });
+
+        if ((window as any).showToast) {
+          (window as any).showToast('Clipping downloaded successfully!');
+        }
+      });
+    }
+
+    const copyClipboardBtn = document.getElementById('copyClipboardBtn');
+    if (copyClipboardBtn) {
+      copyClipboardBtn.addEventListener('click', async () => {
+        const success = await engine.copyToClipboard();
+        if (success && (window as any).showToast) {
+          (window as any).showToast('Copied high-res clipping to clipboard!');
+        }
+      });
+    }
+
+    const printBtn = document.getElementById('printBtn');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        const dataUrl = canvas.toDataURL('image/png');
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(`
+            <html>
+              <head><title>Print Newspaper Clipping</title></head>
+              <body style="margin:0; display:flex; justify-content:center; align-items:center; min-height:100vh; background:#fff;">
+                <img src="${dataUrl}" style="max-width:95vw; max-height:95vh; object-fit:contain;" onload="window.print();window.close();" />
+              </body>
+            </html>
+          `);
+          printWindow.document.close();
+        }
+      });
+    }
+
+    // Initial render
+    triggerRender();
+  }
+
+  // Load when DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGenerator);
+  } else {
+    initGenerator();
+  }
+  document.addEventListener('astro:page-load', initGenerator);
+</script>

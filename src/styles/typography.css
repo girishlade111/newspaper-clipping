@@ -1,0 +1,122 @@
+/* Google Fonts for Wise Display + Vintage Newspaper Types */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@800;900&family=Special+Elite&family=UnifrakturMaguntia&display=swap');
+
+/* Typography Tokens & Classes strictly conforming to DESIGN.md */
+
+.font-display-mega {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: clamp(48px, 8vw, 126px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--color-ink);
+}
+
+.font-display-xxl {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: clamp(40px, 6vw, 96px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+}
+
+.font-display-xl {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: clamp(32px, 4.5vw, 64px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+}
+
+.font-display-lg {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(28px, 3.5vw, 47px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.font-display-md {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.font-display-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.font-display-xs {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.font-body-lg {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-body);
+}
+
+.font-body-md {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-body);
+}
+
+.font-body-md-strong {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-ink);
+}
+
+.font-body-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--color-body);
+}
+
+.font-body-sm-strong {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+.font-caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-mute);
+}
+
+.font-button-md {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Front Page Not Found"
+  description="The newspaper page or archive record you are looking for has been misplaced."
+  lang="en"
+>
+  <section class="band-sage" style="padding-top: var(--spacing-4xl); padding-bottom: var(--spacing-4xl); min-height: 65vh; display: flex; align-items: center;">
+    <div class="container-narrow text-center">
+      <div class="card-content" style="max-width: 540px; margin: 0 auto; padding: var(--spacing-3xl);">
+        <div style="font-size: 54px; margin-bottom: 12px;">📰</div>
+        <span class="badge-pill badge-neutral" style="margin-bottom: 8px;">EXTRA EXTRA!</span>
+        <h1 class="font-display-md" style="margin-top: 8px; margin-bottom: 12px;">Page Misplaced in Archives</h1>
+        <p class="font-body-md" style="color: var(--color-body); margin-bottom: var(--spacing-xl);">
+          The headline or vintage article you requested has vanished from the linotype press.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+          <a href="/" class="btn btn-primary">Return to Front Page</a>
+          <a href="/generator" class="btn btn-secondary">Create a New Clipping</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+</style>

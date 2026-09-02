@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/home/HeroSection.astro';
+import FeatureGrid from '../components/home/FeatureGrid.astro';
+import TemplatesShowcase from '../components/home/TemplatesShowcase.astro';
+import HowItWorks from '../components/home/HowItWorks.astro';
+import Testimonials from '../components/home/Testimonials.astro';
+import FaqAccordion from '../components/home/FaqAccordion.astro';
+import GeneratorApp from '../components/generator/GeneratorApp.astro';
+import BlogCard from '../components/blog/BlogCard.astro';
+import { getCollection } from 'astro:content';
+import { getRelativeLocaleUrl } from '../i18n/utils';
+
+const lang = 'en';
+const allPosts = await getCollection('blog', ({ data }) => data.language === lang && !data.draft);
+const latestPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+---
+
+<BaseLayout 
+  title="The Vintage Press — Free Vintage Newspaper Clipping Generator"
+  description="Create authentic 1920s vintage newspaper clippings in seconds. High-res 4K export, halftone photo filters, torn paper edges, Gothic mastheads, and multi-column linotype layouts."
+  lang={lang}
+>
+  <!-- Hero Section with Wise Split Layout -->
+  <HeroSection lang={lang} />
+
+  <!-- Embedded Live Full Generator Studio on Canvas Soft Band -->
+  <section class="band-sage" id="studio" style="padding-top: 0;">
+    <div class="container">
+      <div class="studio-intro text-center" style="margin-bottom: var(--spacing-2xl);">
+        <span class="badge-pill badge-brand">Interactive Studio</span>
+        <h2 class="font-display-sm" style="margin-top: 8px;">Create & Customize Your Clipping</h2>
+        <p class="font-body-md" style="color: var(--color-body);">Edit text, tweak paper degradation, upload photos, and download in 300 DPI.</p>
+      </div>
+
+      <GeneratorApp lang={lang} />
+    </div>
+  </section>
+
+  <!-- Feature Grid -->
+  <FeatureGrid lang={lang} />
+
+  <!-- Templates Showcase -->
+  <TemplatesShowcase lang={lang} />
+
+  <!-- 3-Step Process -->
+  <HowItWorks lang={lang} />
+
+  <!-- Latest Blog Posts -->
+  <section class="band-white">
+    <div class="container">
+      <div class="blog-section-header">
+        <div>
+          <span class="badge-pill badge-neutral">Press Archive</span>
+          <h2 class="font-display-md" style="margin-top: 8px;">From The Printing Archives</h2>
+        </div>
+        <a href={getRelativeLocaleUrl(lang, 'blog')} class="btn btn-tertiary">
+          <span>View All Articles →</span>
+        </a>
+      </div>
+
+      <div class="grid-3" style="margin-top: var(--spacing-2xl);">
+        {latestPosts.map((post) => (
+          <BlogCard post={post} lang={lang} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials & Reviews -->
+  <Testimonials />
+
+  <!-- FAQ Accordion -->
+  <FaqAccordion />
+
+  <!-- Final CTA Band (Polarity-flipped dark hero band matching DESIGN.md) -->
+  <section class="band-dark" style="text-align: center; padding: var(--spacing-4xl) 0;">
+    <div class="container-narrow">
+      <span class="badge-pill badge-dark" style="margin-bottom: var(--spacing-md);">Start Creating Today</span>
+      <h2 class="font-display-xl" style="color: var(--color-primary); margin-bottom: var(--spacing-md);">
+        Ready to Print Your Vintage Scoop?
+      </h2>
+      <p class="font-body-lg" style="color: rgba(232, 235, 230, 0.8); margin-bottom: var(--spacing-2xl);">
+        Join over 500,000 creators, teachers, and storytellers crafting authentic historical newsprint.
+      </p>
+      <a href="#studio" class="btn btn-primary btn-lg">
+        <span>Launch Studio Now</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+
+  .blog-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+</style>

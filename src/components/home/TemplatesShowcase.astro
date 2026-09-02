@@ -1,0 +1,102 @@
+---
+import { PRESETS } from '../../scripts/presets';
+import { getRelativeLocaleUrl } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+---
+
+<section class="band-sage templates-showcase">
+  <div class="container">
+    <div class="templates-header">
+      <div>
+        <span class="badge-pill badge-neutral">Ready-to-Use Themes</span>
+        <h2 class="font-display-md" style="margin-top: 8px;">Explore Historic Broadsheet Presets</h2>
+      </div>
+      <a href={getRelativeLocaleUrl(lang, 'templates')} class="btn btn-tertiary">
+        <span>View All Presets →</span>
+      </a>
+    </div>
+
+    <div class="grid-3" style="margin-top: var(--spacing-2xl);">
+      {PRESETS.slice(0, 3).map((preset) => (
+        <div class="card-content card-hover template-card">
+          <div class="template-paper-preview">
+            <div class="template-mini-masthead">{preset.newspaperName}</div>
+            <div class="template-mini-date">{preset.date}</div>
+            <div class="template-mini-headline">{preset.headline.slice(0, 48)}...</div>
+          </div>
+
+          <div class="template-info">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <h3 class="font-body-md-strong">{preset.name}</h3>
+              <span class="badge-pill badge-neutral">{preset.category}</span>
+            </div>
+            <p class="font-body-sm" style="margin-bottom: var(--spacing-md); line-height: 1.4;">
+              {preset.subheadline.slice(0, 80)}...
+            </p>
+            <a 
+              href={getRelativeLocaleUrl(lang, `generator?preset=${preset.id}`)} 
+              class="btn btn-secondary" 
+              style="width: 100%;"
+            >
+              <span>Load This Preset</span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .templates-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+
+  .template-paper-preview {
+    background: #eddcc4;
+    border: 1px solid #cbb89e;
+    border-radius: var(--rounded-md);
+    padding: 18px;
+    margin-bottom: var(--spacing-md);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.04);
+  }
+
+  .template-mini-masthead {
+    font-family: var(--font-newspaper-gothic);
+    font-size: 20px;
+    text-align: center;
+    color: #1a1612;
+    margin-bottom: 4px;
+  }
+
+  .template-mini-date {
+    font-size: 8px;
+    font-weight: 700;
+    text-align: center;
+    color: #4a3e30;
+    border-top: 1px solid #1a1612;
+    border-bottom: 1px solid #1a1612;
+    padding: 2px 0;
+    margin-bottom: 8px;
+  }
+
+  .template-mini-headline {
+    font-family: var(--font-newspaper-serif);
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    color: #1a1612;
+    line-height: 1.2;
+  }
+</style>

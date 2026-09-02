@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/blog/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const lang = 'en';
+const allPosts = await getCollection('blog', ({ data }) => data.language === lang && !data.draft);
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const allCategories = ['All', ...new Set(allPosts.map(p => p.data.category))];
+---
+
+<BaseLayout
+  title="The Press Archive — Guides, History & Design Insights"
+  description="Explore articles on vintage newspaper design, historical printing techniques, creative gifts, escape room props, and typography guides."
+  lang={lang}
+>
+  <section class="band-sage" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-3xl);">
+    <div class="container">
+      <div class="text-center" style="max-width: 680px; margin: 0 auto var(--spacing-2xl);">
+        <span class="badge-pill badge-brand">The Press Archive</span>
+        <h1 class="font-display-lg" style="margin-top: 8px;">Articles, Tutorials & Inspiration</h1>
+        <p class="font-body-lg" style="margin-top: 8px;">
+          Learn about historical print mechanics, creative clipping uses, and design secrets.
+        </p>
+      </div>
+
+      <!-- Categories Filter Pills -->
+      <div class="category-pills-bar">
+        {allCategories.map((cat, idx) => (
+          <button class={`pill-option ${idx === 0 ? 'active' : ''}`} data-category={cat}>
+            {cat}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band-white" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-4xl);">
+    <div class="container">
+      <div class="grid-3" id="blogCardsGrid">
+        {sortedPosts.map((post) => (
+          <div class="blog-card-item" data-cat={post.data.category}>
+            <BlogCard post={post} lang={lang} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+
+  .category-pills-bar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--spacing-lg);
+  }
+</style>
+
+<script>
+  function setupCategoryFilters() {
+    const filterBtns = document.querySelectorAll('.category-pills-bar .pill-option');
+    const cards = document.querySelectorAll('.blog-card-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const selectedCat = btn.getAttribute('data-category');
+        cards.forEach((card: any) => {
+          if (selectedCat === 'All' || card.getAttribute('data-cat') === selectedCat) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+
+  setupCategoryFilters();
+  document.addEventListener('astro:page-load', setupCategoryFilters);
+</script>

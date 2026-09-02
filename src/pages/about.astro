@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getRelativeLocaleUrl } from '../i18n/utils';
+
+const lang = 'en';
+---
+
+<BaseLayout
+  title="About The Vintage Press — Free Vintage Newspaper Clipping Studio"
+  description="Learn about the origins of The Vintage Press project, mechanical print history, and our mission to keep typography heritage accessible."
+  lang={lang}
+>
+  <section class="band-sage" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-3xl);">
+    <div class="container-narrow">
+      <span class="badge-pill badge-brand">Our Mission</span>
+      <h1 class="font-display-lg" style="margin-top: 8px; margin-bottom: 16px;">Reviving the Tactile Romance of Vintage Print</h1>
+      <p class="font-body-lg">
+        The Vintage Press is a modern, open-source digital typesetting engine built to recreate the mechanical beauty of 19th and 20th-century broadsheets.
+      </p>
+    </div>
+  </section>
+
+  <section class="band-white" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-4xl);">
+    <div class="container-narrow">
+      <div class="card-content" style="margin-bottom: var(--spacing-2xl);">
+        <h2 class="font-display-xs" style="margin-bottom: 12px;">Why We Built This</h2>
+        <p class="font-body-md" style="margin-bottom: 16px;">
+          Traditional print journalism from 1880 through 1970 was an intricate physical craft. Metal type was hand-composed, linotype machines cast slugs of lead, and photographs were mechanically transformed into halftone dot matrices on zinc plates.
+        </p>
+        <p class="font-body-md">
+          Most online "newspaper generators" either charge expensive subscriptions or generate low-resolution images with unrealistic modern fonts. We created <strong>The Vintage Press</strong> to provide an authentic, 100% free, client-side tool with real historical typographic sensitivity and 4K print-quality output.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card-feature-sage">
+          <h3 class="font-body-md-strong" style="margin-bottom: 8px;">100% Privacy Focused</h3>
+          <p class="font-body-sm">
+            Everything runs in your browser via HTML5 Canvas. Your text, uploaded photos, and creations are never uploaded to any remote server.
+          </p>
+        </div>
+
+        <div class="card-feature-green">
+          <h3 class="font-body-md-strong" style="margin-bottom: 8px;">Free for Commercial Use</h3>
+          <p class="font-body-sm">
+            Use generated clippings freely for escape rooms, theatrical props, book illustrations, indie games, and merchandise.
+          </p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--spacing-3xl);">
+        <a href={getRelativeLocaleUrl(lang, 'generator')} class="btn btn-primary btn-lg">
+          <span>Start Creating in the Studio →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

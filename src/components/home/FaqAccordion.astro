@@ -1,0 +1,88 @@
+---
+const faqs = [
+  {
+    q: 'Is The Vintage Press clipping generator completely free to use?',
+    a: 'Yes! The generator is 100% free with no watermarks, no account registration required, and unlimited downloads for personal and commercial projects.'
+  },
+  {
+    q: 'Are my uploaded photos sent to an external server?',
+    a: 'No. All image processing (halftone dithering, sepia toning, contrast curves) happens entirely within your web browser using client-side HTML5 Canvas. Your photos never leave your device.'
+  },
+  {
+    q: 'Can I print my vintage clipping on physical paper or cardstock?',
+    a: 'Absolutely. The generator renders at a high-density 300 DPI canvas scale. Download as PNG and print on heavy parchment paper, kraft paper, or aged cardstock for stunning tactile results.'
+  },
+  {
+    q: 'Can I use the clippings for commercial games, books, or merchandise?',
+    a: 'Yes. All text and visuals generated through the studio are free for commercial use in escape rooms, book illustrations, video games, stage props, and creative merchandise.'
+  }
+];
+---
+
+<section class="band-white faq-section">
+  <div class="container-narrow">
+    <div class="text-center" style="margin-bottom: var(--spacing-3xl);">
+      <span class="badge-pill badge-neutral">Got Questions?</span>
+      <h2 class="font-display-md" style="margin-top: 12px;">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-list">
+      {faqs.map((faq, idx) => (
+        <details class="faq-item card-content" open={idx === 0}>
+          <summary class="faq-question font-body-md-strong">
+            <span>{faq.q}</span>
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <p class="faq-answer font-body-md">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .faq-item {
+    cursor: pointer;
+    border-radius: var(--rounded-lg);
+  }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    transition: transform var(--transition-fast);
+  }
+
+  details[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    margin-top: var(--spacing-md);
+    color: var(--color-body);
+    line-height: 1.6;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid rgba(14, 15, 12, 0.08);
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/home/HeroSection.astro';
+import FeatureGrid from '../../components/home/FeatureGrid.astro';
+import TemplatesShowcase from '../../components/home/TemplatesShowcase.astro';
+import HowItWorks from '../../components/home/HowItWorks.astro';
+import Testimonials from '../../components/home/Testimonials.astro';
+import FaqAccordion from '../../components/home/FaqAccordion.astro';
+import GeneratorApp from '../../components/generator/GeneratorApp.astro';
+import BlogCard from '../../components/blog/BlogCard.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations, getRelativeLocaleUrl } from '../../i18n/utils';
+import { languages, type SupportedLanguage } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return Object.keys(languages)
+    .filter(lang => lang !== 'en')
+    .map(lang => ({
+      params: { lang }
+    }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+
+const allPosts = await getCollection('blog', ({ data }) => data.language === lang && !data.draft);
+// Fallback to English if none in current language yet
+const fallbackPosts = allPosts.length > 0 
+  ? allPosts 
+  : await getCollection('blog', ({ data }) => data.language === 'en' && !data.draft);
+
+const latestPosts = fallbackPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+---
+
+<BaseLayout 
+  title={`${t('hero.badge')} — The Vintage Press`}
+  description={t('hero.subtitle')}
+  lang={lang}
+>
+  <HeroSection lang={lang} />
+
+  <section class="band-sage" id="studio" style="padding-top: 0;">
+    <div class="container">
+      <div class="studio-intro text-center" style="margin-bottom: var(--spacing-2xl);">
+        <span class="badge-pill badge-brand">Interactive Studio</span>
+        <h2 class="font-display-sm" style="margin-top: 8px;">{t('nav.createNow')}</h2>
+        <p class="font-body-md" style="color: var(--color-body);">{t('hero.subtitle')}</p>
+      </div>
+
+      <GeneratorApp lang={lang} />
+    </div>
+  </section>
+
+  <FeatureGrid lang={lang} />
+  <TemplatesShowcase lang={lang} />
+  <HowItWorks lang={lang} />
+
+  <section class="band-white">
+    <div class="container">
+      <div class="blog-section-header">
+        <div>
+          <span class="badge-pill badge-neutral">Press Archive</span>
+          <h2 class="font-display-md" style="margin-top: 8px;">{t('blog.title')}</h2>
+        </div>
+        <a href={getRelativeLocaleUrl(lang, 'blog')} class="btn btn-tertiary">
+          <span>{t('blog.allPosts')} →</span>
+        </a>
+      </div>
+
+      <div class="grid-3" style="margin-top: var(--spacing-2xl);">
+        {latestPosts.map((post) => (
+          <BlogCard post={post} lang={lang} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Testimonials />
+  <FaqAccordion />
+</BaseLayout>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+
+  .blog-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+</style>

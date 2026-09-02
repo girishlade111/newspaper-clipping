@@ -1,0 +1,69 @@
+---
+import { getRelativeLocaleUrl } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+---
+
+<section class="band-white how-it-works-section">
+  <div class="container">
+    <div class="text-center" style="margin-bottom: var(--spacing-3xl);">
+      <span class="badge-pill badge-neutral">Simple 3-Step Process</span>
+      <h2 class="font-display-md" style="margin-top: 12px;">How to Create Your Vintage Clipping</h2>
+      <p class="font-body-lg" style="max-width: 600px; margin: 8px auto 0;">
+        From idea to print-ready 4K broadsheet in under 60 seconds.
+      </p>
+    </div>
+
+    <div class="grid-3">
+      <div class="step-card card-content">
+        <div class="step-num font-display-xs">01</div>
+        <h3 class="font-body-md-strong" style="margin-bottom: 8px;">Draft Your Headline & Story</h3>
+        <p class="font-body-sm">Type your newspaper masthead, issue date, breaking headline, reporter byline, and multi-column body text.</p>
+      </div>
+
+      <div class="step-card card-content">
+        <div class="step-num font-display-xs">02</div>
+        <h3 class="font-body-md-strong" style="margin-bottom: 8px;">Apply Vintage Paper & Filters</h3>
+        <p class="font-body-sm">Upload a photo to convert into halftone dots, adjust paper weathering patina, enable coffee stains and torn paper edges.</p>
+      </div>
+
+      <div class="step-card card-content">
+        <div class="step-num font-display-xs">03</div>
+        <h3 class="font-body-md-strong" style="margin-bottom: 8px;">Download or Print in 4K</h3>
+        <p class="font-body-sm">Export high-resolution PNG or JPG graphics ready for framing, social sharing, wedding invitations, or escape room props.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+
+  .step-card {
+    position: relative;
+    padding-top: var(--spacing-2xl);
+  }
+
+  .step-num {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary-pale);
+    color: var(--color-positive-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+  }
+</style>

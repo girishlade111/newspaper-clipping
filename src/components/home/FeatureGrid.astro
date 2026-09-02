@@ -1,0 +1,107 @@
+---
+import { useTranslations, getRelativeLocaleUrl } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="band-white features-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge-pill badge-neutral">Authentic Studio Features</span>
+      <h2 class="font-display-md" style="margin-top: 12px; margin-bottom: 12px;">
+        {t('features.title')}
+      </h2>
+      <p class="font-body-lg" style="max-width: 680px; margin: 0 auto;">
+        {t('features.subtitle')}
+      </p>
+    </div>
+
+    <!-- Feature Cards matching DESIGN.md (sage, green, dark, white) -->
+    <div class="grid-2" style="margin-top: var(--spacing-3xl);">
+      <!-- Feature 1: Sage Card -->
+      <div class="card-feature-sage card-hover">
+        <div class="feat-icon-badge">🔤</div>
+        <h3 class="font-display-xs" style="margin-bottom: 8px;">{t('feat.1.title')}</h3>
+        <p class="font-body-md">{t('feat.1.desc')}</p>
+        <div class="feat-tags">
+          <span class="badge-pill badge-neutral">Gothic Blackletter</span>
+          <span class="badge-pill badge-neutral">Broadsheet Serifs</span>
+          <span class="badge-pill badge-neutral">Drop Caps</span>
+        </div>
+      </div>
+
+      <!-- Feature 2: Pale Green Card -->
+      <div class="card-feature-green card-hover">
+        <div class="feat-icon-badge" style="background: var(--color-primary);">📷</div>
+        <h3 class="font-display-xs" style="margin-bottom: 8px;">{t('feat.2.title')}</h3>
+        <p class="font-body-md">{t('feat.2.desc')}</p>
+        <div class="feat-tags">
+          <span class="badge-pill badge-brand">Halftone Dots</span>
+          <span class="badge-pill badge-brand">1920s Sepia</span>
+          <span class="badge-pill badge-brand">Woodblock</span>
+        </div>
+      </div>
+
+      <!-- Feature 3: Polarity-flipped Dark Card with Wise Green Highlights -->
+      <div class="card-feature-dark card-hover">
+        <div class="feat-icon-badge" style="background: rgba(255,255,255,0.15); color: var(--color-primary);">📜</div>
+        <h3 class="font-display-xs highlight" style="margin-bottom: 8px;">{t('feat.3.title')}</h3>
+        <p class="font-body-md" style="color: rgba(232, 235, 230, 0.85);">{t('feat.3.desc')}</p>
+        <div class="feat-tags">
+          <span class="badge-pill badge-dark">Yellowing Patina</span>
+          <span class="badge-pill badge-dark">Coffee Rings</span>
+          <span class="badge-pill badge-dark">Torn Borders</span>
+        </div>
+      </div>
+
+      <!-- Feature 4: Default Content Card -->
+      <div class="card-content card-hover">
+        <div class="feat-icon-badge" style="background: var(--color-canvas-soft);">⚡</div>
+        <h3 class="font-display-xs" style="margin-bottom: 8px;">{t('feat.4.title')}</h3>
+        <p class="font-body-md">{t('feat.4.desc')}</p>
+        <div class="feat-tags">
+          <span class="badge-pill badge-positive">PNG / JPEG</span>
+          <span class="badge-pill badge-positive">1-Click Clipboard</span>
+          <span class="badge-pill badge-positive">Print Layout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features-section {
+    padding-top: var(--spacing-4xl);
+    padding-bottom: var(--spacing-4xl);
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .feat-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--rounded-md);
+    background: var(--color-canvas);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .feat-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--spacing-lg);
+  }
+</style>

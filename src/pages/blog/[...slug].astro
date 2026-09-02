@@ -1,0 +1,200 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRelativeLocaleUrl } from '../../i18n/utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => data.language === 'en' && !data.draft);
+  return posts.map(post => {
+    const slug = post.slug.replace(/^en\//, '');
+    return {
+      params: { slug },
+      props: { post }
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+const lang = 'en';
+
+const formattedDate = new Date(post.data.pubDate).toLocaleDateString(lang, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<BaseLayout
+  title={`${post.data.title} — The Vintage Press`}
+  description={post.data.description}
+  article={true}
+  lang={lang}
+>
+  <article class="band-sage article-hero-band">
+    <div class="container-narrow">
+      <div class="article-meta-top">
+        <a href={getRelativeLocaleUrl(lang, 'blog')} class="back-link font-body-sm-strong">
+          ← Back to All Articles
+        </a>
+        <span class="badge-pill badge-neutral">{post.data.category}</span>
+      </div>
+
+      <h1 class="font-display-lg article-main-title">{post.data.title}</h1>
+
+      <p class="font-body-lg article-lead-description">{post.data.description}</p>
+
+      <div class="article-author-row">
+        <div class="author-avatar-badge">✍️</div>
+        <div>
+          <strong class="font-body-md-strong" style="display: block;">{post.data.author}</strong>
+          <time class="font-caption" datetime={post.data.pubDate.toISOString()}>
+            Published on {formattedDate}
+          </time>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="band-white article-content-band">
+    <div class="container-narrow">
+      <div class="prose-content">
+        <Content />
+      </div>
+
+      <div class="article-cta-box card-feature-sage" style="margin-top: var(--spacing-3xl);">
+        <div>
+          <h3 class="font-display-xs" style="margin-bottom: 4px;">Ready to create your own clipping?</h3>
+          <p class="font-body-md">Use our free client-side studio with authentic halftone filters and torn edges.</p>
+        </div>
+        <a href={getRelativeLocaleUrl(lang, 'generator')} class="btn btn-primary">
+          <span>Launch Generator Studio →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .article-hero-band {
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
+    border-bottom: 1px solid rgba(14, 15, 12, 0.08);
+  }
+
+  .article-meta-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .back-link {
+    color: var(--color-ink);
+    transition: transform var(--transition-fast);
+  }
+
+  .back-link:hover {
+    transform: translateX(-3px);
+  }
+
+  .article-main-title {
+    margin-bottom: var(--spacing-md);
+    line-height: 1.15;
+  }
+
+  .article-lead-description {
+    color: var(--color-body);
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.5;
+  }
+
+  .article-author-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(14, 15, 12, 0.1);
+  }
+
+  .author-avatar-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-canvas);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .article-content-band {
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-4xl);
+  }
+
+  /* Prose Typography Styling */
+  .prose-content {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--color-ink);
+  }
+
+  .prose-content :global(h2) {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    letter-spacing: -0.02em;
+  }
+
+  .prose-content :global(h3) {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 1.6em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose-content :global(p) {
+    margin-bottom: 1.4em;
+  }
+
+  .prose-content :global(ul), .prose-content :global(ol) {
+    margin-bottom: 1.4em;
+    padding-left: 1.5em;
+  }
+
+  .prose-content :global(li) {
+    margin-bottom: 0.5em;
+  }
+
+  .prose-content :global(blockquote) {
+    border-left: 4px solid var(--color-primary);
+    padding-left: var(--spacing-lg);
+    margin: 1.6em 0;
+    font-style: italic;
+    color: var(--color-body);
+    background: var(--color-canvas-soft);
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-radius: 0 var(--rounded-md) var(--rounded-md) 0;
+  }
+
+  .prose-content :global(a) {
+    color: var(--color-ink-deep);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .article-cta-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+</style>

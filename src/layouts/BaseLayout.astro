@@ -1,0 +1,42 @@
+---
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import Seo from '../components/common/Seo.astro';
+import Toast from '../components/common/Toast.astro';
+import type { SupportedLanguage } from '../i18n/ui';
+import { languages } from '../i18n/ui';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: SupportedLanguage;
+  image?: string;
+  article?: boolean;
+}
+
+const {
+  title,
+  description,
+  lang = 'en',
+  image = '/og-image.png',
+  article = false,
+} = Astro.props;
+
+const langInfo = languages[lang] || languages['en'];
+---
+
+<!doctype html>
+<html lang={lang} dir={langInfo.dir || 'ltr'}>
+  <head>
+    <Seo title={title} description={description} image={image} article={article} lang={lang} />
+  </head>
+  <body>
+    <Header lang={lang} />
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <Toast />
+  </body>
+</html>

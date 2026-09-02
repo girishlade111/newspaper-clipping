@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, getRelativeLocaleUrl } from '../../i18n/utils';
+import { languages, type SupportedLanguage } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return Object.keys(languages)
+    .filter(lang => lang !== 'en')
+    .map(lang => ({
+      params: { lang }
+    }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t('nav.about')} — The Vintage Press`}
+  description={t('hero.subtitle')}
+  lang={lang}
+>
+  <section class="band-sage" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-3xl);">
+    <div class="container-narrow">
+      <span class="badge-pill badge-brand">{t('nav.about')}</span>
+      <h1 class="font-display-lg" style="margin-top: 8px; margin-bottom: 16px;">The Vintage Press</h1>
+      <p class="font-body-lg">
+        {t('hero.subtitle')}
+      </p>
+    </div>
+  </section>
+
+  <section class="band-white" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-4xl);">
+    <div class="container-narrow">
+      <div class="card-content" style="margin-bottom: var(--spacing-2xl);">
+        <h2 class="font-display-xs" style="margin-bottom: 12px;">{t('features.title')}</h2>
+        <p class="font-body-md" style="margin-bottom: 16px;">
+          {t('features.subtitle')}
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card-feature-sage">
+          <h3 class="font-body-md-strong" style="margin-bottom: 8px;">{t('feat.1.title')}</h3>
+          <p class="font-body-sm">{t('feat.1.desc')}</p>
+        </div>
+
+        <div class="card-feature-green">
+          <h3 class="font-body-md-strong" style="margin-bottom: 8px;">{t('feat.4.title')}</h3>
+          <p class="font-body-sm">{t('feat.4.desc')}</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--spacing-3xl);">
+        <a href={getRelativeLocaleUrl(lang, 'generator')} class="btn btn-primary btn-lg">
+          <span>{t('hero.ctaPrimary')} →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
