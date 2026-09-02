@@ -1,0 +1,25 @@
+{
+  "name": "newspaper-clipping-generator",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A high-performance multi-lingual Vintage Newspaper Clipping Generator and Blog powered by Astro.",
+  "scripts": {
+    "dev": "astro dev --host",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^4.0.8",
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.3.0",
+    "canvas-confetti": "^1.9.4",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0"
+  }
+}
