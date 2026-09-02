@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EditorIsland from '../../components/editor/EditorIsland';
+import { useTranslations } from '../../i18n/utils';
+import { languages, defaultLang, type SupportedLanguage } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return Object.keys(languages)
+    .filter(lang => lang !== 'en')
+    .map(lang => ({
+      params: { lang }
+    }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const activeLang = (lang in languages ? lang : defaultLang) as SupportedLanguage;
+const t = useTranslations(activeLang);
+---
+
+<Layout
+  title={`${t('nav.generator')} — The Vintage Press`}
+  description={t('hero.subtitle')}
+  lang={activeLang}
+>
+  <main class="min-h-screen bg-canvas-soft">
+    <EditorIsland client:load lang={activeLang} />
+  </main>
+</Layout>
