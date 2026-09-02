@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PreviewPanel from './PreviewPanel';
 
 export interface TemplateOption {
   id: string;
@@ -29,8 +30,8 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   {
     id: 'times-of-india',
     name: 'The Times of India',
-    newspaperName: 'The Times of India',
-    tagline: 'Let Truth Prevail • Established 1838',
+    newspaperName: 'THE TIMES OF INDIA',
+    tagline: 'LET TRUTH PREVAIL • ESTABLISHED 1838 • NEW DELHI EDITION',
     date: 'Friday, August 15, 1947',
     headline: 'NATION AWAKES TO FREEDOM AS HISTORIC BELLS TOLL AT MIDNIGHT',
     story: `Amidst tumultuous scenes of rejoicing and jubilation that surpassed anything witnessed in modern history, millions of citizens poured into illuminated public squares last night to welcome the dawn of independence.
@@ -41,18 +42,18 @@ Conch shells echoed across every district and national flags fluttered proudly a
     fontStyle: 'serif',
   },
   {
-    id: 'new-york-times',
-    name: 'The New York Times',
-    newspaperName: 'The New York Times',
-    tagline: "All The News That's Fit To Print",
-    date: 'Monday, July 21, 1969',
-    headline: 'MEN WALK ON MOON: ASTRONAUTS LAND IN SEA OF TRANQUILITY',
-    story: `American astronauts took man's first tentative steps upon the surface of the moon tonight, planting the nation's flag in the powdery lunar soil before a global television audience estimated in the hundreds of millions.
+    id: 'global-times',
+    name: 'Global Times',
+    newspaperName: 'GLOBAL TIMES',
+    tagline: 'DISCOVERING DIVERSE PERSPECTIVES • BEIJING DISPATCH',
+    date: 'Wednesday, September 2, 2026',
+    headline: 'GROUNDBREAKING MULTILATERAL ACCORD RATIFIED IN SUMMIT BREAKTHROUGH',
+    story: `Delegates concluded an exhaustive seventy-two-hour high-level summit in Beijing yesterday, formally ratifying a comprehensive economic and industrial cooperation framework.
 
-"That's one small step for man, one giant leap for mankind," radioed commander Neil Armstrong as his boot touched the lunar regolith. The lunar module Eagle rested securely on an ancient volcanic plain after a perilous final descent piloted manually.
+The consensus blueprint outlines substantial mutual investments in renewable green infrastructure, digital trade arteries, and streamlined cross-border transit logistics. International analysts characterized the outcome as a pivotal stabilizer for global supply resilience.
 
-Messages of congratulation poured into mission control from heads of state across every continent, celebrating the triumphant fulfillment of an eight-year national undertaking.`,
-    fontStyle: 'gothic',
+"Constructive engagement and reciprocal pragmatism laid the bedrock for today's breakthrough," noted the chief coordinator during the closing plenary. Working groups will convene quarterly to monitor milestone benchmarks.`,
+    fontStyle: 'modern',
   },
   {
     id: 'daily-chronicle',
@@ -97,17 +98,12 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [photoCaption, setPhotoCaption] = useState<string>('Scene captured during extraordinary proceedings.');
   
-  // Secondary Design Controls (Adhering to DESIGN.md)
-  const [columns, setColumns] = useState<1 | 2 | 3>(2);
-  const [paperStyle, setPaperStyle] = useState<'1920' | '1950' | 'burnt' | 'clean'>('1920');
-  const [tornEdges, setTornEdges] = useState<boolean>(true);
-  const [halftoneFilter, setHalftoneFilter] = useState<boolean>(true);
+  // Secondary Controls
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
 
   // 3. URL State Management - Initial Mount: Populate from URLSearchParams
   useEffect(() => {
@@ -121,8 +117,6 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
       const headlineParam = params.get('headline');
       const storyParam = params.get('story') || params.get('body');
       const taglineParam = params.get('tagline');
-      const columnsParam = params.get('columns');
-      const paperParam = params.get('paper') as '1920' | '1950' | 'burnt' | 'clean';
 
       if (templateParam) {
         const found = TEMPLATES.find((t) => t.id === templateParam);
@@ -133,8 +127,6 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
           setDate(dateParam ?? found.date);
           setHeadline(headlineParam ?? found.headline);
           setStory(storyParam ?? found.story);
-          if (columnsParam) setColumns(Number(columnsParam) as 1 | 2 | 3);
-          if (paperParam) setPaperStyle(paperParam);
           setIsInitialized(true);
           return;
         }
@@ -145,8 +137,6 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
       if (headlineParam) setHeadline(headlineParam);
       if (storyParam) setStory(storyParam);
       if (taglineParam) setTagline(taglineParam);
-      if (columnsParam) setColumns(Number(columnsParam) as 1 | 2 | 3);
-      if (paperParam) setPaperStyle(paperParam);
     } catch {
       // safe fallback
     }
@@ -166,8 +156,6 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
       if (headline) params.set('headline', headline);
       if (story) params.set('story', story);
       if (tagline) params.set('tagline', tagline);
-      if (columns !== 2) params.set('columns', columns.toString());
-      if (paperStyle !== '1920') params.set('paper', paperStyle);
 
       const queryString = params.toString();
       const targetUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
@@ -175,7 +163,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
     } catch {
       // safe fallback
     }
-  }, [isInitialized, selectedTemplate, newspaperName, date, headline, story, tagline, columns, paperStyle]);
+  }, [isInitialized, selectedTemplate, newspaperName, date, headline, story, tagline]);
 
   // Handle Template Switching
   const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -239,21 +227,6 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
     window.print();
   };
 
-  // Paper styling class
-  const getPaperBgClass = () => {
-    switch (paperStyle) {
-      case '1950':
-        return 'bg-[#eee8d5] text-[#2b2723]';
-      case 'burnt':
-        return 'bg-[#e2d5b8] text-[#1b1712] shadow-inner';
-      case 'clean':
-        return 'bg-[#fcfaf4] text-[#111111]';
-      case '1920':
-      default:
-        return 'bg-[#f5ebd7] text-[#1a1714]';
-    }
-  };
-
   return (
     <div className="w-full max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Top Header Bar strictly in DESIGN.md style */}
@@ -306,7 +279,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
       {/* 1. Layout: 2-Column Split Screen on Desktop / Stacked on Mobile */}
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* LEFT COLUMN: Scrollable Form Controls */}
-        <div className="w-full lg:w-[48%] xl:w-[45%] flex flex-col gap-6 lg:overflow-y-auto lg:max-h-[calc(100vh-130px)] lg:pr-2">
+        <div className="w-full lg:w-[46%] xl:w-[42%] flex flex-col gap-6 lg:overflow-y-auto lg:max-h-[calc(100vh-130px)] lg:pr-2">
           {/* Card 1: Newspaper Identity & Template Selector */}
           <div className="card-content bg-white rounded-xl p-6 shadow-sm border border-black/10">
             <h2 className="font-display font-black text-lg text-ink mb-4 flex items-center gap-2">
@@ -317,7 +290,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
             {/* Template Dropdown */}
             <div className="mb-4">
               <label className="block text-xs font-bold text-ink mb-1.5 uppercase tracking-wide">
-                Select Classic Newspaper Template
+                Select Global Newspaper Template
               </label>
               <select
                 value={selectedTemplate}
@@ -341,7 +314,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
                 type="text"
                 value={newspaperName}
                 onChange={(e) => setNewspaperName(e.target.value)}
-                placeholder="e.g. The Daily Bugle"
+                placeholder="e.g. The Washington Post"
                 className="w-full h-11 px-3.5 bg-canvas rounded-md border-[1.5px] border-black/20 text-ink text-sm font-semibold focus:border-ink focus:ring-4 focus:ring-primary/40 outline-none transition-all"
               />
             </div>
@@ -355,7 +328,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
                 type="text"
                 value={tagline}
                 onChange={(e) => setTagline(e.target.value)}
-                placeholder="e.g. The Voice of the Republic"
+                placeholder="e.g. Democracy Dies in Darkness"
                 className="w-full h-11 px-3.5 bg-canvas rounded-md border-[1.5px] border-black/20 text-ink text-sm focus:border-ink focus:ring-4 focus:ring-primary/40 outline-none transition-all"
               />
             </div>
@@ -369,7 +342,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
                 type="text"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                placeholder="e.g. Friday, October 24, 1929"
+                placeholder="e.g. Friday, August 15, 1947"
                 className="w-full h-11 px-3.5 bg-canvas rounded-md border-[1.5px] border-black/20 text-ink text-sm focus:border-ink focus:ring-4 focus:ring-primary/40 outline-none transition-all"
               />
             </div>
@@ -379,7 +352,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
           <div className="card-content bg-white rounded-xl p-6 shadow-sm border border-black/10">
             <h2 className="font-display font-black text-lg text-ink mb-4 flex items-center gap-2">
               <span className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-ink text-xs font-bold">2</span>
-              <span>Headlines & Linotype Story</span>
+              <span>Headline & Article Story</span>
             </h2>
 
             {/* Headline */}
@@ -391,49 +364,23 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
                 type="text"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
-                placeholder="e.g. ALIENS SIGHTED OVER EMPIRE STATE"
+                placeholder="e.g. ALIENS SIGHTED OVER CAPITAL"
                 className="w-full h-11 px-3.5 bg-canvas rounded-md border-[1.5px] border-black/20 text-ink text-sm font-bold tracking-tight focus:border-ink focus:ring-4 focus:ring-primary/40 outline-none transition-all"
               />
             </div>
 
             {/* Story Textarea */}
-            <div className="mb-4">
-              <label className="block text-xs font-bold text-ink mb-1.5 uppercase tracking-wide">
-                Article Body Text (Markdown or Multi-paragraph)
-              </label>
-              <textarea
-                rows={6}
-                value={story}
-                onChange={(e) => setStory(e.target.value)}
-                placeholder="Type or paste your vintage newspaper article text here..."
-                className="w-full p-3.5 bg-canvas rounded-md border-[1.5px] border-black/20 text-ink text-sm leading-relaxed focus:border-ink focus:ring-4 focus:ring-primary/40 outline-none transition-all font-serif"
-              />
-              <p className="text-[11px] text-mute mt-1">
-                Paragraphs separated by line breaks will format with classic Linotype indentation.
-              </p>
-            </div>
-
-            {/* Column Selector */}
             <div>
               <label className="block text-xs font-bold text-ink mb-1.5 uppercase tracking-wide">
-                Column Division
+                Article Body Text (Paragraphs separated by line breaks)
               </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[1, 2, 3].map((col) => (
-                  <button
-                    key={col}
-                    type="button"
-                    onClick={() => setColumns(col as 1 | 2 | 3)}
-                    className={`h-10 rounded-md font-semibold text-xs border transition-colors ${
-                      columns === col
-                        ? 'bg-primary border-ink text-ink shadow-sm'
-                        : 'bg-canvas-soft border-black/10 text-ink hover:bg-[#dbe0d8]'
-                    }`}
-                  >
-                    {col} {col === 1 ? 'Column' : 'Columns'}
-                  </button>
-                ))}
-              </div>
+              <textarea
+                rows={7}
+                value={story}
+                onChange={(e) => setStory(e.target.value)}
+                placeholder="Type or paste your newspaper article text here..."
+                className="w-full p-3.5 bg-canvas rounded-md border-[1.5px] border-black/20 text-ink text-sm leading-relaxed focus:border-ink focus:ring-4 focus:ring-primary/40 outline-none transition-all font-serif"
+              />
             </div>
           </div>
 
@@ -441,7 +388,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
           <div className="card-content bg-white rounded-xl p-6 shadow-sm border border-black/10">
             <h2 className="font-display font-black text-lg text-ink mb-4 flex items-center gap-2">
               <span className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-ink text-xs font-bold">3</span>
-              <span>Halftone Photo & Photo Caption</span>
+              <span>Photo Upload (Drag & Drop)</span>
             </h2>
 
             {/* Drag and Drop Zone */}
@@ -468,29 +415,26 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
 
               {imageUrl ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="relative max-w-[200px] max-h-[140px] rounded-lg overflow-hidden shadow-md border border-black/20">
+                  <div className="relative max-w-[220px] max-h-[140px] rounded-lg overflow-hidden shadow-md border border-black/20">
                     <img
                       src={imageUrl}
                       alt="Uploaded preview"
-                      className={`w-full h-full object-cover ${halftoneFilter ? 'filter grayscale contrast-150' : ''}`}
+                      className="w-full h-full object-cover filter grayscale contrast-125"
                     />
                   </div>
                   <p className="text-xs font-bold text-positive-deep flex items-center gap-1">
-                    <span>✓ Image Loaded Locally</span>
+                    <span>✓ Image Loaded via FileReader</span>
                   </p>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImageUrl(null);
-                      }}
-                      className="px-3 py-1 rounded-pill bg-negative-deep text-white text-xs font-bold hover:bg-negative-darkest"
-                    >
-                      Remove Photo
-                    </button>
-                    <span className="text-xs text-mute">or click to change</span>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setImageUrl(null);
+                    }}
+                    className="px-3 py-1 rounded-pill bg-negative-deep text-white text-xs font-bold hover:bg-negative-darkest transition-colors"
+                  >
+                    Remove Photo
+                  </button>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2">
@@ -498,260 +442,65 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
                     📷
                   </div>
                   <p className="font-semibold text-sm text-ink">
-                    Drag & Drop any photo here, or <span className="text-positive-deep underline">Browse</span>
+                    Drag & Drop image here, or <span className="text-positive-deep underline">Browse</span>
                   </p>
                   <p className="text-xs text-mute">
-                    Processed 100% in browser via FileReader. No server upload.
+                    Local FileReader processing. Image adapts across newspaper columns.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Photo Caption & Filter Controls */}
             {imageUrl && (
-              <div className="mt-4 flex flex-col gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-ink mb-1 uppercase tracking-wide">
-                    Photo Caption Text
-                  </label>
-                  <input
-                    type="text"
-                    value={photoCaption}
-                    onChange={(e) => setPhotoCaption(e.target.value)}
-                    placeholder="e.g. Eyewitness photograph taken yesterday afternoon."
-                    className="w-full h-10 px-3 bg-canvas rounded-md border border-black/20 text-xs focus:border-ink outline-none"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-black/10">
-                  <label className="text-xs font-bold text-ink cursor-pointer flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={halftoneFilter}
-                      onChange={(e) => setHalftoneFilter(e.target.checked)}
-                      className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer"
-                    />
-                    <span>Simulate 1920s Halftone Screen Dots & Grain</span>
-                  </label>
-                  <span className="text-[11px] font-bold text-mute uppercase tracking-wider">
-                    {halftoneFilter ? 'Halftone: ON' : 'Color: ON'}
-                  </span>
-                </div>
+              <div className="mt-4">
+                <label className="block text-xs font-bold text-ink mb-1 uppercase tracking-wide">
+                  Photo Caption Text
+                </label>
+                <input
+                  type="text"
+                  value={photoCaption}
+                  onChange={(e) => setPhotoCaption(e.target.value)}
+                  placeholder="e.g. Eyewitness photograph taken yesterday afternoon."
+                  className="w-full h-10 px-3 bg-canvas rounded-md border border-black/20 text-xs focus:border-ink outline-none"
+                />
               </div>
             )}
-          </div>
-
-          {/* Card 4: Paper Aging & Finishing */}
-          <div className="card-content bg-white rounded-xl p-6 shadow-sm border border-black/10">
-            <h2 className="font-display font-black text-lg text-ink mb-4 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-ink text-xs font-bold">4</span>
-              <span>Vintage Paper Texture & Effects</span>
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-              {[
-                { id: '1920', label: '1920s Yellow' },
-                { id: '1950', label: '1950s Newsprint' },
-                { id: 'burnt', label: 'Burnt Edges' },
-                { id: 'clean', label: 'Parchment Clean' },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setPaperStyle(item.id as '1920' | '1950' | 'burnt' | 'clean')}
-                  className={`h-10 rounded-md text-xs font-bold border transition-colors ${
-                    paperStyle === item.id
-                      ? 'bg-primary border-ink text-ink shadow-sm'
-                      : 'bg-canvas-soft border-black/10 text-ink hover:bg-[#dbe0d8]'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2 pt-2 border-t border-black/10">
-              <label className="text-xs font-bold text-ink cursor-pointer flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={tornEdges}
-                  onChange={(e) => setTornEdges(e.target.checked)}
-                  className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer"
-                />
-                <span>Simulate Rough Ragged Torn Paper Edges</span>
-              </label>
-            </div>
           </div>
         </div>
 
         {/* RIGHT COLUMN: Sticky Live Preview adhering to 2-column split desktop */}
         <div
           id="livePreviewArea"
-          className="w-full lg:w-[52%] xl:w-[55%] lg:sticky lg:top-20 self-start"
+          className="w-full lg:w-[54%] xl:w-[58%] lg:sticky lg:top-20 self-start"
         >
           <div className="card-content bg-white rounded-xl p-4 sm:p-6 shadow-xl border border-black/10">
             <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/10">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-positive animate-pulse"></span>
                 <span className="font-display font-black text-sm uppercase tracking-wider text-ink">
-                  Live Newsprint Preview
+                  Sticky Live Preview
                 </span>
               </div>
               <span className="text-[11px] font-bold text-mute uppercase tracking-wider">
-                Syncs with URL params
+                {selectedTemplate.toUpperCase()}
               </span>
             </div>
 
-            {/* The Authentic Newspaper Sheet */}
-            <div
-              ref={previewRef}
-              className={`relative overflow-hidden transition-all duration-300 p-6 sm:p-8 font-serif shadow-md ${getPaperBgClass()} ${
-                tornEdges ? 'rounded-lg border-[3px] border-dashed border-black/25' : 'rounded-none border border-black/30'
-              }`}
-              style={{
-                backgroundImage:
-                  paperStyle === 'burnt'
-                    ? 'radial-gradient(circle, rgba(245,235,215,1) 60%, rgba(185,150,110,0.85) 100%)'
-                    : 'none',
-              }}
-            >
-              {/* Earpieces / Header Top Rule */}
-              <div className="border-t-[1.5px] border-b-[1.5px] border-black/80 py-1 mb-2 flex items-center justify-between text-[10px] sm:text-[11px] font-sans font-bold tracking-wider uppercase">
-                <span>Weather: Fair & Warm</span>
-                <span className="hidden sm:inline font-black tracking-widest">• SPECIAL LATE DISPATCH •</span>
-                <span>Price: Two Cents</span>
-              </div>
+            {/* Render the Dedicated PreviewPanel Component */}
+            <PreviewPanel
+              template={selectedTemplate}
+              date={date}
+              headline={headline}
+              story={story}
+              imageUrl={imageUrl}
+              newspaperName={newspaperName}
+              tagline={tagline}
+              photoCaption={photoCaption}
+            />
 
-              {/* Masthead Banner */}
-              <div className="text-center py-2 sm:py-3">
-                <h2
-                  className="font-black tracking-tight text-3xl sm:text-5xl lg:text-6xl uppercase leading-none font-serif select-none"
-                  style={{ letterSpacing: '-0.02em', textShadow: '0.5px 0.5px 0px rgba(0,0,0,0.2)' }}
-                >
-                  {newspaperName || 'THE DAILY CHRONICLE'}
-                </h2>
-                {tagline && (
-                  <p className="text-[11px] sm:text-xs italic tracking-wide mt-1.5 opacity-85 font-sans font-medium">
-                    {tagline}
-                  </p>
-                )}
-              </div>
-
-              {/* Date & Volume Bar Enclosed in Double Thick Lines */}
-              <div className="border-t-[3px] border-b-[1.5px] border-black my-2 py-1 flex items-center justify-between text-[10px] sm:text-xs font-sans font-bold uppercase tracking-wider">
-                <span>Vol. XLVIII No. 12,840</span>
-                <span className="font-extrabold">{date || 'Tuesday, October 24, 1929'}</span>
-                <span>Final City Edition</span>
-              </div>
-
-              {/* Main Headline */}
-              <div className="text-center my-3 sm:my-4 border-b-[2px] border-black pb-3">
-                <h3
-                  className="font-serif font-black text-2xl sm:text-3xl lg:text-4xl leading-[1.1] uppercase tracking-tight"
-                  style={{ textShadow: '0.5px 0.5px 0px rgba(0,0,0,0.15)' }}
-                >
-                  {headline || 'YOUR VINTAGE HEADLINE APPEARS HERE'}
-                </h3>
-              </div>
-
-              {/* Article Content Area */}
-              <div
-                className={`grid gap-5 text-xs sm:text-sm leading-relaxed text-justify`}
-                style={{
-                  gridTemplateColumns:
-                    columns === 1 ? '1fr' : columns === 2 ? '1fr 1fr' : '1fr 1fr 1fr',
-                }}
-              >
-                {/* Column 1 with Optional Halftone Photo */}
-                <div className="flex flex-col gap-2.5">
-                  {imageUrl && (
-                    <div className="border border-black p-1.5 bg-black/5 mb-2 shadow-inner">
-                      <div className="overflow-hidden bg-black/10">
-                        <img
-                          src={imageUrl}
-                          alt="Clipping illustration"
-                          className={`w-full h-auto object-cover ${
-                            halftoneFilter ? 'filter grayscale contrast-200 brightness-95' : ''
-                          }`}
-                        />
-                      </div>
-                      {photoCaption && (
-                        <p className="text-[9px] sm:text-[10px] italic font-sans mt-1.5 text-center leading-tight opacity-90">
-                          {photoCaption}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {story ? (
-                    story.split('\n\n').slice(0, Math.ceil(story.split('\n\n').length / columns)).map((para, i) => (
-                      <p key={i} className="mb-2">
-                        {i === 0 ? (
-                          <>
-                            <span className="float-left text-3xl sm:text-4xl font-black font-serif mr-2 leading-none">
-                              {para.charAt(0)}
-                            </span>
-                            {para.slice(1)}
-                          </>
-                        ) : (
-                          para
-                        )}
-                      </p>
-                    ))
-                  ) : (
-                    <p className="italic opacity-60">Article copy will stream directly here...</p>
-                  )}
-                </div>
-
-                {/* Column 2 (if columns >= 2) */}
-                {columns >= 2 && (
-                  <div className="border-l border-black/25 pl-4 flex flex-col gap-2.5">
-                    {story ? (
-                      story
-                        .split('\n\n')
-                        .slice(
-                          Math.ceil(story.split('\n\n').length / columns),
-                          columns === 2
-                            ? undefined
-                            : Math.ceil((story.split('\n\n').length / columns) * 2)
-                        )
-                        .map((para, i) => (
-                          <p key={i} className="mb-2">
-                            {para}
-                          </p>
-                        ))
-                    ) : null}
-                  </div>
-                )}
-
-                {/* Column 3 (if columns === 3) */}
-                {columns === 3 && (
-                  <div className="border-l border-black/25 pl-4 flex flex-col gap-2.5">
-                    {story ? (
-                      story
-                        .split('\n\n')
-                        .slice(Math.ceil((story.split('\n\n').length / 3) * 2))
-                        .map((para, i) => (
-                          <p key={i} className="mb-2">
-                            {para}
-                          </p>
-                        ))
-                    ) : null}
-                  </div>
-                )}
-              </div>
-
-              {/* Bottom Authentic Newspaper Footer Rule */}
-              <div className="mt-6 pt-2 border-t border-black/40 flex items-center justify-between text-[9px] font-sans text-black/60 uppercase">
-                <span>The Vintage Press • Client-Side Archival Export</span>
-                <span>Page One • Continued on Page Four</span>
-              </div>
-            </div>
-
-            {/* Quick Helper Note */}
             <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between text-xs text-mute">
-              <span>Changes reflect in URL parameters in real time.</span>
-              <span className="font-semibold text-positive-deep">300 DPI Ready</span>
+              <span>Auto-synchronizing with URLSearchParams</span>
+              <span className="font-bold text-ink">300 DPI Export Ready</span>
             </div>
           </div>
         </div>
