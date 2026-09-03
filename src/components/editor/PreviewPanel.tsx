@@ -1,8 +1,10 @@
 import React from 'react';
+import NewYorkTimesTemplate from '../templates/NewYorkTimesTemplate';
+import WashingtonPostTemplate from '../templates/WashingtonPostTemplate';
 
 export interface PreviewPanelProps {
-  /** Template identifier: 'The Times of India', 'The Washington Post', 'Global Times' (or lowercase slug) */
-  template?: 'times-of-india' | 'The Times of India' | 'washington-post' | 'The Washington Post' | 'global-times' | 'Global Times' | string;
+  /** Template identifier: 'new-york-times', 'washington-post', 'times-of-india', 'global-times', etc. */
+  template?: 'new-york-times' | 'The New York Times' | 'times-of-india' | 'The Times of India' | 'washington-post' | 'The Washington Post' | 'global-times' | 'Global Times' | string;
   date?: string;
   headline?: string;
   story?: string;
@@ -10,6 +12,8 @@ export interface PreviewPanelProps {
   newspaperName?: string;
   tagline?: string;
   photoCaption?: string;
+  author?: string;
+  subheadline?: string;
   className?: string;
 }
 
@@ -26,13 +30,49 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   newspaperName,
   tagline,
   photoCaption = 'Eyewitness illustration captured during historic proceedings yesterday afternoon.',
+  author,
+  subheadline,
   className = '',
 }: PreviewPanelProps) {
   // Normalize template name
   const raw = (template || '').toLowerCase().trim();
+  const isNYT = raw.includes('new york times') || raw.includes('new-york-times') || raw.includes('nyt');
+  const isWaPo = raw.includes('washington post') || raw.includes('washington-post') || raw.includes('wapo');
   const isTOI = raw.includes('times of india') || raw.includes('times-of-india');
-  const isWaPo = raw.includes('washington post') || raw.includes('washington-post');
   const isGlobalTimes = raw.includes('global times') || raw.includes('global-times');
+
+  if (isNYT) {
+    return (
+      <NewYorkTimesTemplate
+        headline={headline}
+        story={story}
+        date={date}
+        image={imageUrl}
+        author={author}
+        subheadline={subheadline}
+        newspaperName={newspaperName}
+        photoCaption={photoCaption}
+        className={className}
+      />
+    );
+  }
+
+  if (isWaPo) {
+    return (
+      <WashingtonPostTemplate
+        headline={headline}
+        story={story}
+        date={date}
+        image={imageUrl}
+        author={author}
+        subheadline={subheadline}
+        newspaperName={newspaperName}
+        tagline={tagline}
+        photoCaption={photoCaption}
+        className={className}
+      />
+    );
+  }
 
   // Derive default newspaper masthead name if not customized
   const resolvedMasthead =
