@@ -1,7 +1,7 @@
 import React from 'react';
 import NewYorkTimesTemplate from '../templates/NewYorkTimesTemplate.tsx';
 import WashingtonPostTemplate from '../templates/WashingtonPostTemplate.tsx';
-import TimesOfIndiaTemplate from '../templates/TimesOfIndiaTemplate.tsx';
+import TOITemplate from '../templates/TOITemplate.tsx';
 import GulfNewsTemplate from '../templates/GulfNewsTemplate.tsx';
 import JapanTimesTemplate from '../templates/JapanTimesTemplate.tsx';
 import KoreaHeraldTemplate from '../templates/KoreaHeraldTemplate.tsx';
@@ -111,7 +111,7 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
     );
   } else if (isTOI) {
     templateContent = (
-      <TimesOfIndiaTemplate
+      <TOITemplate
         headline={headline}
         story={story}
         date={date}

@@ -7,6 +7,9 @@ export type { WashingtonPostProps } from './WashingtonPostTemplate.tsx';
 export { default as TimesOfIndiaTemplate } from './TimesOfIndiaTemplate.tsx';
 export type { TimesOfIndiaProps } from './TimesOfIndiaTemplate.tsx';
 
+export { default as TOITemplate } from './TOITemplate.tsx';
+export type { TOITemplateProps } from './TOITemplate.tsx';
+
 export { default as GulfNewsTemplate } from './GulfNewsTemplate.tsx';
 export type { GulfNewsProps } from './GulfNewsTemplate.tsx';
 
