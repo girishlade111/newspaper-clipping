@@ -9,3 +9,9 @@ export type { TimesOfIndiaProps } from './TimesOfIndiaTemplate';
 
 export { default as GulfNewsTemplate } from './GulfNewsTemplate';
 export type { GulfNewsProps } from './GulfNewsTemplate';
+
+export { default as JapanTimesTemplate } from './JapanTimesTemplate';
+export type { JapanTimesProps } from './JapanTimesTemplate';
+
+export { default as KoreaHeraldTemplate } from './KoreaHeraldTemplate';
+export type { KoreaHeraldProps } from './KoreaHeraldTemplate';
