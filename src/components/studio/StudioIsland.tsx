@@ -196,40 +196,59 @@ interface StudioIslandProps {
   initialTemplate?: string;
 }
 
-export default function StudioIsland({
+// Error Boundary to catch and DISPLAY the actual crash error
+class StudioErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('[StudioIsland Error Boundary]', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 40, fontFamily: 'monospace', background: '#fee', border: '3px solid red', margin: 20, borderRadius: 8 }}>
+          <h2 style={{ color: 'red', marginBottom: 16 }}>⚠️ Studio Crashed During Hydration</h2>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: 14, color: '#333' }}>
+            {this.state.error?.message}
+          </pre>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: 11, color: '#888', marginTop: 12 }}>
+            {this.state.error?.stack}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function StudioIslandInner({
   lang = 'en',
   initialTemplate = 'times-of-india',
 }: StudioIslandProps) {
-  // Normalize initial template ID from props or URL
-  const getInitialTemplateId = (): string => {
-    if (typeof window !== 'undefined') {
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const queryTmpl = params.get('template') || params.get('preset');
-        if (queryTmpl) {
-          const match = TEMPLATES.find(
-            (t) =>
-              t.id === queryTmpl ||
-              t.name.toLowerCase() === queryTmpl.toLowerCase() ||
-              t.id.replace(/-/g, '') === queryTmpl.toLowerCase().replace(/-/g, '')
-          );
-          if (match) return match.id;
-        }
-      } catch {
-        // Fallback
-      }
-    }
-    const matchedProp = TEMPLATES.find(
+  // Resolve initial preset purely from props (NO window access during render)
+  // This prevents React hydration mismatches between SSR and client.
+  const resolvePresetFromProp = (propId: string): TemplatePreset => {
+    const matched = TEMPLATES.find(
       (t) =>
-        t.id === initialTemplate ||
-        t.name.toLowerCase() === initialTemplate.toLowerCase() ||
-        t.id.replace(/-/g, '') === initialTemplate.toLowerCase().replace(/-/g, '')
+        t.id === propId ||
+        t.name.toLowerCase() === propId.toLowerCase() ||
+        t.id.replace(/-/g, '') === propId.toLowerCase().replace(/-/g, '')
     );
-    return matchedProp ? matchedProp.id : 'times-of-india';
+    return matched || TEMPLATES[0];
   };
 
-  const initialPreset =
-    TEMPLATES.find((t) => t.id === getInitialTemplateId()) || TEMPLATES[0];
+  const initialPreset = resolvePresetFromProp(initialTemplate);
 
   // 1. Core State Management (100% Client-Side)
   const [selectedTemplate, setSelectedTemplate] = useState<string>(initialPreset.id);
@@ -926,5 +945,14 @@ export default function StudioIsland({
 
       </div>
     </div>
+  );
+}
+
+// Wrap in Error Boundary so crashes show the error message instead of white screen
+export default function StudioIsland(props: StudioIslandProps) {
+  return (
+    <StudioErrorBoundary>
+      <StudioIslandInner {...props} />
+    </StudioErrorBoundary>
   );
 }
