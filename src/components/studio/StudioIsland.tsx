@@ -866,7 +866,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => { console.log("Button clicked!"); exportAsPNG(false); }}
+                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('PNG'); try { await exportAsPNG(false); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download high-resolution PNG"
                 >
@@ -875,7 +875,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => { console.log("Button clicked!"); exportAsJPG(); }}
+                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('JPG'); try { await exportAsJPG(); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download JPEG format"
                 >
@@ -884,7 +884,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => { console.log("Button clicked!"); exportAsPDF(); }}
+                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('PDF'); try { await exportAsPDF(); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Export Archival PDF"
                 >
