@@ -49,6 +49,12 @@ export default {
       fontFamily: {
         display: ['Wise Sans', 'Inter', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
+        nytTitle: ['"UnifrakturMaguntia"', 'Chomsky', '"Old English Text MT"', 'serif'],
+        nytHeadline: ['"Libre Baskerville"', '"Playfair Display"', 'Georgia', 'serif'],
+        nytBody: ['"PT Serif"', 'Georgia', 'serif'],
+        wapoTitle: ['"UnifrakturMaguntia"', 'Chomsky', '"Old English Text MT"', 'serif'],
+        wapoHeadline: ['"Bodoni Moda"', '"Bodoni MT"', 'Didot', 'serif'],
+        wapoBody: ['Georgia', '"PT Serif"', 'serif'],
       },
     },
   },
