@@ -8,12 +8,63 @@ export type ImageFormat = 'png' | 'jpeg';
 
 const BASE_FILENAME = 'vintage-newspaper-clipping';
 
+// Shared onclone handler to fix html2canvas rendering bugs:
+// - Removes transform scaling that breaks line-height calculations
+// - Forces text-wrap: balance/pretty -> initial (html2canvas does not support it)
+function getOnClone() {
+  return (clonedDoc: Document) => {
+    const el = clonedDoc.getElementById('newspaper-export-target');
+    if (el) {
+      // Remove transform scaling if any exists, as it breaks line-height calculations
+      el.style.transform = 'none';
+
+      // html2canvas DOES NOT support text-wrap: balance/pretty. Force it to initial.
+      const allElements = el.querySelectorAll('*');
+      allElements.forEach((node) => {
+        const target = node as HTMLElement;
+        // Use clonedDoc.defaultView if available, fallback to window
+        const view = clonedDoc.defaultView || window;
+        try {
+          const computed = view.getComputedStyle(target);
+          const tw: string = (computed as any).textWrap || computed.getPropertyValue('text-wrap') || '';
+          if (tw === 'balance' || tw === 'pretty' || tw.includes('balance') || tw.includes('pretty')) {
+            target.style.textWrap = 'initial';
+            // also ensure via setProperty for broader support
+            target.style.setProperty('text-wrap', 'initial');
+          } else if (window.getComputedStyle(target).textWrap === 'balance') {
+            // Exact check from spec for test compatibility
+            target.style.textWrap = 'initial';
+          }
+          // Direct inline style check (class text-balance / text-pretty)
+          const inlineWrap = target.style.textWrap;
+          if (inlineWrap === 'balance' || inlineWrap === 'pretty') {
+            target.style.textWrap = 'initial';
+          }
+          // Remove Tailwind text-balance / text-pretty classes if present
+          if (target.classList.contains('text-balance') || target.classList.contains('text-pretty')) {
+            target.style.textWrap = 'initial';
+          }
+        } catch {
+          // Fallback to spec example: window.getComputedStyle
+          if (window.getComputedStyle(target).textWrap === 'balance') {
+            (target as HTMLElement).style.textWrap = 'initial';
+          }
+          if ((target as HTMLElement).style.textWrap === 'balance' || (target as HTMLElement).style.textWrap === 'pretty') {
+            (target as HTMLElement).style.textWrap = 'initial';
+          }
+        }
+      });
+    }
+  };
+}
+
 // =========================================================================
 // Public API: PNG Export (supports 4K via is4K flag)
 // =========================================================================
 
 export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean = false): Promise<void> {
   if (typeof window === 'undefined') return;
+  await document.fonts.ready;
   if (typeof element === 'boolean') {
     is4K = element as unknown as boolean;
     element = undefined;
@@ -22,9 +73,10 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = (await import('html2canvas')).default;
+    const onclone = getOnClone();
     const canvas = is4K
-      ? await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff' })
-      : await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
+      ? await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff', onclone })
+      : await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff', onclone });
     const dataUrl = canvas.toDataURL('image/png');
     const suffix = is4K ? '-4k' : '';
     const link = document.createElement('a');
@@ -45,11 +97,12 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
 
 export async function exportAsJPG(element?: HTMLElement): Promise<void> {
   if (typeof window === 'undefined') return;
+  await document.fonts.ready;
   try {
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = (await import('html2canvas')).default;
-    const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
+    const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff', onclone: getOnClone() });
     const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
     const link = document.createElement('a');
     link.href = dataUrl;
@@ -73,6 +126,7 @@ export async function exportAsImage(
   is4K: boolean = false
 ): Promise<void> {
   if (typeof window === 'undefined') return;
+  await document.fonts.ready;
   if (typeof element === 'string') {
     is4K = format as unknown as boolean;
     format = element as ImageFormat;
@@ -82,9 +136,10 @@ export async function exportAsImage(
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = (await import('html2canvas')).default;
+    const onclone = getOnClone();
     if (format === 'jpeg') {
       if (is4K) {
-        const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff' });
+        const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff', onclone });
         const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
         const link = document.createElement('a');
         link.href = dataUrl;
@@ -98,8 +153,8 @@ export async function exportAsImage(
       return;
     }
     const canvas = is4K
-      ? await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff' })
-      : await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
+      ? await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff', onclone })
+      : await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff', onclone });
     const dataUrl = canvas.toDataURL('image/png');
     const suffix = is4K ? '-4k' : '';
     const link = document.createElement('a');
@@ -120,11 +175,35 @@ export async function exportAsImage(
 
 export async function exportAsPDF(element?: HTMLElement): Promise<void> {
   if (typeof window === 'undefined') return;
+  await document.fonts.ready;
   try {
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = (await import('html2canvas')).default;
-    const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
+    const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff', onclone: (clonedDoc) => {
+      const el = clonedDoc.getElementById('newspaper-export-target');
+      if (el) {
+        // Remove transform scaling if any exists, as it breaks line-height calculations
+        el.style.transform = 'none';
+        
+        // html2canvas DOES NOT support text-wrap: balance/pretty. Force it to initial.
+        const allElements = el.querySelectorAll('*');
+        allElements.forEach(node => {
+          if (window.getComputedStyle(node as Element).textWrap === 'balance') {
+            (node as HTMLElement).style.textWrap = 'initial';
+          }
+          // Also handle pretty and inline styles for robustness
+          const target = node as HTMLElement;
+          const computedWrap = (window.getComputedStyle(target as Element) as any).textWrap;
+          if (computedWrap === 'pretty' || target.style.textWrap === 'pretty' || target.style.textWrap === 'balance') {
+            target.style.textWrap = 'initial';
+          }
+          if (target.classList.contains('text-balance') || target.classList.contains('text-pretty')) {
+            target.style.textWrap = 'initial';
+          }
+        });
+      }
+    } });
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
     const { jsPDF } = await import('jspdf');
