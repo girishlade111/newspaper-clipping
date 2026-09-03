@@ -6,6 +6,8 @@ import {
   captureThumbnail,
 } from '../../utils/exportAndStorage';
 import {
+  exportAsPNG,
+  exportAsJPG,
   exportAsImage,
   exportAsPDF,
   printClipping,
@@ -266,12 +268,14 @@ function StudioIslandInner({
 
   // UI States
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [exportFormat, setExportFormat] = useState<string>('');
 
-  // Ref attached to the outermost wrapper of the rendered Newspaper Template.
+  // Ref attached directly to the outermost wrapper <div> of the newspaper template.
   // This is the exact node captured by the export engine (PNG/JPG/4K/PDF/Print).
-  const clippingRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  // Keep clippingRef as alias for backward-compat (same node)
+  const clippingRef = previewRef;
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
