@@ -420,25 +420,23 @@ function StudioIslandInner({
     }
   };
 
-  // Export Handlers — capture the live preview node via clippingRef
+  // Export Handlers — robust, uses previewRef and prevents spam-click freezing
   const handleExport = async (kind: 'png' | 'jpg' | 'svg' | 'pdf' | '4k') => {
-    const targetEl = clippingRef.current;
-    if (!targetEl) return;
-
+    if (!previewRef.current) return;
+    const targetEl = previewRef.current;
     setIsExporting(true);
     setExportFormat(kind.toUpperCase());
-
     try {
       switch (kind) {
         case 'png':
-          await exportAsImage(targetEl, 'png', false);
+          await exportAsPNG(targetEl, false);
           break;
         case 'jpg':
-          await exportAsImage(targetEl, 'jpeg', false);
+          await exportAsJPG(targetEl);
           break;
         case '4k':
           // 4K export renders at 4x scale — may take a moment on large clippings
-          await exportAsImage(targetEl, 'png', true);
+          await exportAsPNG(targetEl, true);
           break;
         case 'pdf':
           await exportAsPDF(targetEl);
@@ -457,8 +455,8 @@ function StudioIslandInner({
 
   // Print Handler — opens a print window containing only the clipping
   const handlePrint = () => {
-    const targetEl = clippingRef.current;
-    if (!targetEl) return;
+    if (!previewRef.current) return;
+    const targetEl = previewRef.current;
     printClipping(targetEl);
   };
 
