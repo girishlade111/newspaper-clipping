@@ -3,10 +3,12 @@ import NewYorkTimesTemplate from '../templates/NewYorkTimesTemplate';
 import WashingtonPostTemplate from '../templates/WashingtonPostTemplate';
 import TimesOfIndiaTemplate from '../templates/TimesOfIndiaTemplate';
 import GulfNewsTemplate from '../templates/GulfNewsTemplate';
+import JapanTimesTemplate from '../templates/JapanTimesTemplate';
+import KoreaHeraldTemplate from '../templates/KoreaHeraldTemplate';
 
 export interface PreviewPanelProps {
-  /** Template identifier: 'new-york-times', 'washington-post', 'times-of-india', 'gulf-news', 'global-times', etc. */
-  template?: 'new-york-times' | 'The New York Times' | 'times-of-india' | 'The Times of India' | 'gulf-news' | 'Gulf News' | 'washington-post' | 'The Washington Post' | 'global-times' | 'Global Times' | string;
+  /** Template identifier: 'new-york-times', 'washington-post', 'times-of-india', 'gulf-news', 'japan-times', 'korea-herald', 'global-times', etc. */
+  template?: 'new-york-times' | 'The New York Times' | 'times-of-india' | 'The Times of India' | 'gulf-news' | 'Gulf News' | 'japan-times' | 'The Japan Times' | 'korea-herald' | 'The Korea Herald' | 'washington-post' | 'The Washington Post' | 'global-times' | 'Global Times' | string;
   date?: string;
   headline?: string;
   story?: string;
@@ -42,6 +44,8 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   const isWaPo = raw.includes('washington post') || raw.includes('washington-post') || raw.includes('wapo');
   const isTOI = raw.includes('times of india') || raw.includes('times-of-india') || raw.includes('toi');
   const isGulfNews = raw.includes('gulf news') || raw.includes('gulf-news') || raw.includes('gn');
+  const isJapanTimes = raw.includes('japan times') || raw.includes('japan-times') || raw.includes('jt');
+  const isKoreaHerald = raw.includes('korea herald') || raw.includes('korea-herald') || raw.includes('kh');
   const isGlobalTimes = raw.includes('global times') || raw.includes('global-times');
 
   if (isNYT) {
@@ -97,6 +101,40 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   if (isGulfNews) {
     return (
       <GulfNewsTemplate
+        headline={headline}
+        story={story}
+        date={date}
+        image={imageUrl}
+        author={author}
+        subheadline={subheadline}
+        newspaperName={newspaperName}
+        tagline={tagline}
+        photoCaption={photoCaption}
+        className={className}
+      />
+    );
+  }
+
+  if (isJapanTimes) {
+    return (
+      <JapanTimesTemplate
+        headline={headline}
+        story={story}
+        date={date}
+        image={imageUrl}
+        author={author}
+        subheadline={subheadline}
+        newspaperName={newspaperName}
+        tagline={tagline}
+        photoCaption={photoCaption}
+        className={className}
+      />
+    );
+  }
+
+  if (isKoreaHerald) {
+    return (
+      <KoreaHeraldTemplate
         headline={headline}
         story={story}
         date={date}
