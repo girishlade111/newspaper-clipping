@@ -135,9 +135,9 @@ export async function exportAsPDF(element: HTMLElement): Promise<void> {
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
     const jspdfModule = await import('jspdf');
-    const jsPDF = (jspdfModule as unknown as Record<string, unknown>).jsPDF ?? (jspdfModule as unknown as Record<string, unknown>).default ?? jspdfModule;
+    const jsPDF: any = (jspdfModule as unknown as Record<string, unknown>).jsPDF ?? (jspdfModule as unknown as Record<string, unknown>).default ?? jspdfModule;
 
-    const pdf = new (jsPDF as any)('p', 'mm', 'a4');
+    const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
