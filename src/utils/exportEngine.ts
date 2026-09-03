@@ -11,6 +11,8 @@ const BASE_FILENAME = 'vintage-newspaper-clipping';
 // Shared onclone handler to fix html2canvas rendering bugs:
 // - Removes transform scaling that breaks line-height calculations
 // - Forces text-wrap: balance/pretty -> initial (html2canvas does not support it)
+// - Forces text-justify -> left (html2canvas calculates justified text incorrectly)
+// - Normalizes letter-spacing that causes word overlap
 function getOnClone() {
   return (clonedDoc: Document) => {
     const el = clonedDoc.getElementById('newspaper-export-target');
@@ -52,6 +54,17 @@ function getOnClone() {
           if ((target as HTMLElement).style.textWrap === 'balance' || (target as HTMLElement).style.textWrap === 'pretty') {
             (target as HTMLElement).style.textWrap = 'initial';
           }
+        }
+
+        // html2canvas calculates justified text incorrectly, causing severe word overlap.
+        // Force justified text to left-aligned ONLY for exported canvas (live preview stays justified).
+        const style = window.getComputedStyle(node as Element);
+        if (style.textAlign === 'justify') {
+          (node as HTMLElement).style.textAlign = 'left';
+        }
+        // Safety check for tracking/letter-spacing causing issues
+        if (style.letterSpacing !== 'normal' && style.letterSpacing !== '0px') {
+          (node as HTMLElement).style.letterSpacing = 'normal';
         }
       });
     }
