@@ -117,7 +117,7 @@ Commercial chambers across the Middle East welcomed the announcement, projecting
 
         {/* Crisp High-Contrast Editorial Serif Headline */}
         <h2
-          className="font-gulfHeadline text-2xl sm:text-4xl md:text-5xl font-black text-neutral-950 tracking-tight leading-[1.08] mb-3"
+          className="font-gulfHeadline text-2xl sm:text-4xl md:text-5xl font-black text-neutral-950 tracking-tight leading-tight mb-3"
           style={{ fontFamily: '"Playfair Display", "Libre Baskerville", Georgia, serif' }}
         >
           {headline}

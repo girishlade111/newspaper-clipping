@@ -114,7 +114,7 @@ Financial markets responded promptly to the policy declaration, with bellwether 
 
         {/* Crisp Corporate Serif Headline */}
         <h2
-          className="font-khHeadline text-2xl sm:text-4xl md:text-5xl font-black text-neutral-950 tracking-tight leading-[1.1] mb-3"
+          className="font-khHeadline text-2xl sm:text-4xl md:text-5xl font-black text-neutral-950 tracking-tight leading-tight mb-3"
           style={{ fontFamily: '"Playfair Display", "Merriweather", Georgia, serif' }}
         >
           {headline}

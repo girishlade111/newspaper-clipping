@@ -120,7 +120,7 @@ Environmental groups and trade unions offered cautious support for the initiativ
 
         {/* Guardian Egyptian Style Headline (Lora slab serif styling) */}
         <h2
-          className="font-guardianHeadline font-bold text-3xl sm:text-5xl md:text-6xl text-[#121212] tracking-tight leading-[1.06] mb-3 max-w-5xl"
+          className="font-guardianHeadline font-bold text-3xl sm:text-5xl md:text-6xl text-[#121212] tracking-tight leading-tight mb-3 max-w-5xl"
           style={{ fontFamily: '"Lora", Georgia, serif' }}
         >
           {headline}

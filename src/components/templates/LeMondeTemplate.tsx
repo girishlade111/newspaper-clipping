@@ -114,7 +114,7 @@ Les milieux économiques et syndicaux ont salué avec retenue une avancée quali
 
         {/* Dignified Garamond Headline */}
         <h2
-          className="font-leMondeHeadline font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-black leading-[1.08] max-w-4xl mx-auto"
+          className="font-leMondeHeadline font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-black leading-tight max-w-4xl mx-auto"
           style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif' }}
         >
           {headline}

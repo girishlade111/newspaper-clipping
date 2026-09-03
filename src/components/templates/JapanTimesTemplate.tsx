@@ -119,7 +119,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
 
         {/* Compact, Highly Readable Serif Headline */}
         <h2
-          className="font-jtHeadline font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-neutral-950 leading-[1.12]"
+          className="font-jtHeadline font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-neutral-950 leading-tight"
           style={{ fontFamily: '"Noto Serif", "Libre Baskerville", Georgia, serif' }}
         >
           {headline}

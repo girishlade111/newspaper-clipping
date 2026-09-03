@@ -115,7 +115,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
       <div className="relative z-10 pt-2 pb-3 mb-3 border-b-2 border-black/85 text-center">
         {/* Bold, Legible Serif Headline */}
         <h2
-          className="font-toiHeadline font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-black leading-[1.08] max-w-4xl mx-auto"
+          className="font-toiHeadline font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-black leading-tight max-w-4xl mx-auto"
           style={{ fontFamily: '"Playfair Display", Merriweather, Georgia, serif' }}
         >
           {headline}

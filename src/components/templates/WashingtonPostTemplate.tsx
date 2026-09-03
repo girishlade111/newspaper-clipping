@@ -113,7 +113,7 @@ Legal scholars and constitutional historians gathered on television panels throu
       {/* 4. COMMANDING BODONI HEADLINE, DECK & DISTINCT BYLINE */}
       <div className="relative z-10 pt-2 pb-3 mb-4 border-b-2 border-black/85">
         <h2
-          className="font-wapoHeadline font-black text-3xl sm:text-5xl md:text-6xl uppercase tracking-tight text-black leading-[1.04] text-center"
+          className="font-wapoHeadline font-black text-3xl sm:text-5xl md:text-6xl uppercase tracking-tight text-black leading-tight text-center"
           style={{ fontFamily: WAPO_HEADLINE_FONT }}
         >
           {headline}

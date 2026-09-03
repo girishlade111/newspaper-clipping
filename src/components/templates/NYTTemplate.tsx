@@ -124,7 +124,7 @@ Telegrams received from overseas universities confirm that duplicate experiments
       {/* ==================================================================== */}
       <div className="text-center py-3 border-b border-gray-300">
         <h2
-          className="font-bold text-3xl sm:text-4xl md:text-[2.75rem] leading-[1.08] tracking-tight text-black"
+          className="font-bold text-3xl sm:text-4xl md:text-[2.75rem] leading-tight tracking-tight text-black"
           style={{ fontFamily: headlineFont }}
         >
           {headline}

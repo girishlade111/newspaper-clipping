@@ -128,7 +128,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
       {/* ================================================================ */}
       <div className="relative z-10 pt-3 pb-3 border-b-2 border-black/85 text-center">
         <h2
-          className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-[1.08] text-black max-w-4xl mx-auto"
+          className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-tight text-black max-w-4xl mx-auto"
           style={{ fontFamily: 'Merriweather, Georgia, serif' }}
         >
           {headline}

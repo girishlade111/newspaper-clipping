@@ -116,7 +116,7 @@ Telegrams received from overseas universities confirm that duplicate experiments
 
         {/* Master Cheltenham / Chomsky Headline */}
         <h2
-          className="font-nytHeadline font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-black leading-[1.06] max-w-4xl mx-auto px-2"
+          className="font-nytHeadline font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-black leading-tight max-w-4xl mx-auto px-2"
           style={{ fontFamily: '"Libre Baskerville", "Playfair Display", Georgia, serif' }}
         >
           {headline}
