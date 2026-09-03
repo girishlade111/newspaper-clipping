@@ -75,7 +75,7 @@ Commercial chambers across the Middle East welcomed the announcement, projecting
       <div className="w-full py-2 sm:py-3 flex flex-col items-center justify-center text-center">
         <div className="flex flex-nowrap items-center justify-center">
           {/* Trademark Accent Symbol */}
-          <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#e52e2e] rounded-xs inline-block"></span>
+          <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#e52e2e] rounded-xs inline-block mr-2"></span>
           <h1
             className="font-gulfTitle whitespace-nowrap text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-neutral-950 leading-none"
             style={{ fontFamily: '"Plus Jakarta Sans", Inter, sans-serif' }}
