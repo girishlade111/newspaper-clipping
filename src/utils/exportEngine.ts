@@ -1,7 +1,7 @@
 /**
- * Bulletproof Browser-only Export Engine
- * Handles PNG / JPG / 4K (html2canvas) and PDF (jsPDF) exports.
- * All functions are browser-only and guarded against SSR.
+ * Foolproof Browser-only Export Engine
+ * Uses document.getElementById('newspaper-export-target') instead of React refs
+ * to survive Astro hydration / nested component edge-cases.
  */
 
 export type ImageFormat = 'png' | 'jpeg';
@@ -12,7 +12,6 @@ const BASE_FILENAME = 'vintage-newspaper-clipping';
 // Internal helpers
 // =========================================================================
 
-/** Dynamically import html2canvas (handles default/interop differences). */
 async function getHtml2canvas(): Promise<typeof import('html2canvas')['default']> {
   if (typeof window === 'undefined') return undefined as unknown as typeof import('html2canvas')['default'];
   const cached = (window as unknown as Record<string, unknown>).html2canvas as typeof import('html2canvas')['default'] | undefined;
@@ -23,30 +22,25 @@ async function getHtml2canvas(): Promise<typeof import('html2canvas')['default']
   return fn as typeof import('html2canvas')['default'];
 }
 
-/** Trigger a programmatic download via a temporary <a download> element. */
-function triggerDownload(url: string, filename: string): void {
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
 // =========================================================================
-// Public API: PNG Export
+// Public API: PNG Export (supports 4K via is4K flag)
 // =========================================================================
 
-/**
- * Export an element as PNG.
- * @param element - The DOM node to capture.
- * @param is4K - When true renders at 4x scale for 4K output, otherwise 2x.
- */
-export async function exportAsPNG(element: HTMLElement, is4K: boolean = false): Promise<void> {
+export async function exportAsPNG(element?: HTMLElement, is4K: boolean = false): Promise<void> {
   if (typeof window === 'undefined') return;
+  // Handle overloaded call where first arg is boolean (is4K without element)
+  if (typeof element === 'boolean') {
+    is4K = element as unknown as boolean;
+    element = undefined;
+  }
   try {
+    const element = document.getElementById('newspaper-export-target');
+    if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = await getHtml2canvas();
-    const canvas = await html2canvas(element, { useCORS: true, allowTaint: true, scale: is4K ? 4 : 2, backgroundColor: '#ffffff' });
+    // Use exact safe options; scale 4 for 4K download, otherwise 2
+    const canvas = is4K
+      ? await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff' })
+      : await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
     const dataUrl = canvas.toDataURL('image/png');
     const suffix = is4K ? '-4k' : '';
     const link = document.createElement('a');
@@ -55,8 +49,9 @@ export async function exportAsPNG(element: HTMLElement, is4K: boolean = false): 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to export PNG:', error);
+    alert('Error generating image: ' + error.message);
   }
 }
 
@@ -64,15 +59,13 @@ export async function exportAsPNG(element: HTMLElement, is4K: boolean = false): 
 // Public API: JPG Export
 // =========================================================================
 
-/**
- * Export an element as JPG/JPEG.
- * @param element - The DOM node to capture.
- */
-export async function exportAsJPG(element: HTMLElement): Promise<void> {
+export async function exportAsJPG(element?: HTMLElement): Promise<void> {
   if (typeof window === 'undefined') return;
   try {
+    const element = document.getElementById('newspaper-export-target');
+    if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = await getHtml2canvas();
-    const canvas = await html2canvas(element, { useCORS: true, allowTaint: true, scale: 2, backgroundColor: '#ffffff' });
+    const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
     const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
     const link = document.createElement('a');
     link.href = dataUrl;
@@ -80,27 +73,35 @@ export async function exportAsJPG(element: HTMLElement): Promise<void> {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to export JPG:', error);
+    alert('Error generating image: ' + error.message);
   }
 }
 
 // =========================================================================
-// Public API: Generic Image Export (PNG / JPG with 4K support) - kept for backward compat
+// Public API: Generic Image Export (kept for backward compat)
 // =========================================================================
 
 export async function exportAsImage(
-  element: HTMLElement,
+  element?: HTMLElement | ImageFormat,
   format: ImageFormat = 'png',
   is4K: boolean = false
 ): Promise<void> {
   if (typeof window === 'undefined') return;
+  // Normalize overloaded signatures: exportAsImage('png'), exportAsImage(el,'png',true)
+  if (typeof element === 'string') {
+    is4K = format as unknown as boolean;
+    format = element as ImageFormat;
+    element = undefined;
+  }
   try {
+    const target = document.getElementById('newspaper-export-target');
+    if (!target) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     if (format === 'jpeg') {
       if (is4K) {
-        // 4K JPEG: render at 4x scale
         const html2canvas = await getHtml2canvas();
-        const canvas = await html2canvas(element, { useCORS: true, allowTaint: true, scale: is4K ? 4 : 2, backgroundColor: '#ffffff' });
+        const canvas = await html2canvas(target as HTMLElement, { useCORS: true, allowTaint: true, scale: 4, logging: true, backgroundColor: '#ffffff' });
         const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
         const link = document.createElement('a');
         link.href = dataUrl;
@@ -109,13 +110,14 @@ export async function exportAsImage(
         link.click();
         document.body.removeChild(link);
       } else {
-        await exportAsJPG(element);
+        await exportAsJPG();
       }
       return;
     }
-    await exportAsPNG(element, is4K);
-  } catch (error) {
+    await exportAsPNG(undefined, is4K);
+  } catch (error: any) {
     console.error(`Failed to export image as ${format}:`, error);
+    alert('Error generating image: ' + error.message);
   }
 }
 
@@ -123,15 +125,13 @@ export async function exportAsImage(
 // Public API: PDF Export
 // =========================================================================
 
-/**
- * Export an element as A4 PDF using jsPDF.
- * Captures the element via html2canvas then scales to fit A4 while preserving aspect ratio.
- */
-export async function exportAsPDF(element: HTMLElement): Promise<void> {
+export async function exportAsPDF(element?: HTMLElement): Promise<void> {
   if (typeof window === 'undefined') return;
   try {
+    const element = document.getElementById('newspaper-export-target');
+    if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const html2canvas = await getHtml2canvas();
-    const canvas = await html2canvas(element, { useCORS: true, allowTaint: true, scale: 2, backgroundColor: '#ffffff' });
+    const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff' });
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
     const jspdfModule = await import('jspdf');
@@ -141,8 +141,6 @@ export async function exportAsPDF(element: HTMLElement): Promise<void> {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    // If content is taller than one A4 page, pdfHeight will overflow - for single-page clipping we scale to fit
-    // Calculate correct width/height ratio to fit inside A4
     const pageHeight = pdf.internal.pageSize.getHeight();
     let finalWidth = pdfWidth;
     let finalHeight = pdfHeight;
@@ -151,12 +149,11 @@ export async function exportAsPDF(element: HTMLElement): Promise<void> {
       finalWidth = (canvas.width * finalHeight) / canvas.height;
     }
 
-    // Center if needed, but task requires 0,0 origin variant - use 0,0 for primary addImage
-    // We add at 0,0 with calculated dimensions to satisfy bulletproof spec
     pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`${BASE_FILENAME}.pdf`);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to export PDF:', error);
+    alert('Error generating image: ' + error.message);
   }
 }
 
@@ -164,9 +161,11 @@ export async function exportAsPDF(element: HTMLElement): Promise<void> {
 // Public API: Print
 // =========================================================================
 
-export function printClipping(element: HTMLElement): void {
+export function printClipping(element?: HTMLElement): void {
   if (typeof window === 'undefined') return;
   try {
+    const target = (element as HTMLElement) ?? document.getElementById('newspaper-export-target') as HTMLElement | null;
+    if (!target) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const printWindow = window.open('', '_blank', 'width=900,height=1000');
     if (!printWindow) {
       alert('Popup blocked! Please allow popups for this site to print your clipping.');
@@ -193,7 +192,7 @@ export function printClipping(element: HTMLElement): void {
       }
     </style>
   </head>
-  <body>${element.innerHTML}</body>
+  <body>${target.innerHTML}</body>
 </html>`);
     printWindow.document.close();
     printWindow.onload = () => {
@@ -212,7 +211,8 @@ export function printClipping(element: HTMLElement): void {
         }
       }
     }, 1000);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to print clipping:', error);
+    alert('Error generating image: ' + error.message);
   }
 }
