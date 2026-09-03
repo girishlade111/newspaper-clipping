@@ -96,3 +96,56 @@ export async function exportAsImage(
     );
   }
 }
+
+// =========================================================================
+// Public API: PDF Export
+// =========================================================================
+
+/**
+ * Export an element as a single-page A4 PDF using jsPDF.
+ * The element is captured as an image first, then scaled to fit an A4 page
+ * while preserving its aspect ratio and centered on the page.
+ */
+export async function exportAsPDF(element: HTMLElement): Promise<void> {
+  assertBrowser();
+
+  try {
+    // Capture element as a high-resolution JPEG (scale 3 = good PDF quality)
+    const canvas = await renderToCanvas(element, 3);
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+    // Dynamically import jsPDF (v2+/v3+ exposes a named `jsPDF` export)
+    const jspdfModule = await import('jspdf');
+    const JsPDF = (jspdfModule as any).jsPDF ?? (jspdfModule as any).default ?? jspdfModule;
+
+    // Pick orientation based on the element's aspect ratio
+    const orientation = canvas.width > canvas.height ? 'landscape' : 'portrait';
+
+    const pdf = new JsPDF({ orientation, unit: 'mm', format: 'a4' });
+
+    // Page dimensions honour orientation (portrait: 210x297, landscape: 297x210)
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    // Fit image inside the page while preserving aspect ratio
+    const aspectRatio = canvas.width / canvas.height;
+    let renderWidth = pageWidth;
+    let renderHeight = renderWidth / aspectRatio;
+
+    if (renderHeight > pageHeight) {
+      renderHeight = pageHeight;
+      renderWidth = renderHeight * aspectRatio;
+    }
+
+    // Center the image on the page
+    const offsetX = (pageWidth - renderWidth) / 2;
+    const offsetY = (pageHeight - renderHeight) / 2;
+
+    pdf.addImage(imgData, 'JPEG', offsetX, offsetY, renderWidth, renderHeight);
+    pdf.save(`${BASE_FILENAME}.pdf`);
+  } catch (err) {
+    console.error('Failed to export PDF:', err);
+    throw new Error('PDF export failed. Please try again.');
+  }
+}
+
