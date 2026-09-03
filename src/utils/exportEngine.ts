@@ -195,6 +195,7 @@ export async function exportAsPDF(element?: HTMLElement): Promise<void> {
   try {
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    await new Promise(resolve => setTimeout(resolve, 500));
     const html2canvas = (await import('html2canvas')).default;
     const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff', onclone: (clonedDoc) => {
       const el = clonedDoc.getElementById('newspaper-export-target');
@@ -216,6 +217,14 @@ export async function exportAsPDF(element?: HTMLElement): Promise<void> {
           }
           if (target.classList.contains('text-balance') || target.classList.contains('text-pretty')) {
             target.style.textWrap = 'initial';
+          }
+          const style = window.getComputedStyle(node as Element);
+          if (style.textAlign === 'justify') {
+            (node as HTMLElement).style.textAlign = 'left';
+          }
+          // Safety check for tracking/letter-spacing causing issues
+          if (style.letterSpacing !== 'normal' && style.letterSpacing !== '0px') {
+            (node as HTMLElement).style.letterSpacing = 'normal';
           }
         });
       }
