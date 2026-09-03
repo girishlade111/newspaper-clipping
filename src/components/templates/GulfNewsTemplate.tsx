@@ -173,7 +173,7 @@ Commercial chambers across the Middle East welcomed the announcement, projecting
           {/* Lead Paragraph with Clean Modern Editorial Drop Cap */}
           {leadParagraph && (
             <p className="text-neutral-900 text-justify text-[14px] leading-relaxed">
-              <span className="float-left text-4xl font-gulfTitle whitespace-nowrap font-black mr-2.5 leading-none text-neutral-950 select-none">
+              <span className="float-left text-4xl font-gulfTitle font-black mr-2.5 leading-none text-neutral-950 select-none">
                 {leadParagraph.charAt(0)}
               </span>
               <strong className="font-gulfSans font-bold text-neutral-900 tracking-wide uppercase">

@@ -185,7 +185,7 @@ Financial markets responded promptly to the policy declaration, with bellwether 
           {/* Lead Paragraph with Dateline */}
           {leadParagraph && (
             <p className="text-neutral-900 text-justify text-[14.5px] leading-relaxed font-medium">
-              <span className="float-left text-4xl font-khTitle whitespace-nowrap font-black mr-2 leading-none text-neutral-950 select-none">
+              <span className="float-left text-4xl font-khTitle font-black mr-2 leading-none text-neutral-950 select-none">
                 {leadParagraph.charAt(0)}
               </span>
               <strong className="font-sans font-bold text-neutral-950 uppercase tracking-wide">
