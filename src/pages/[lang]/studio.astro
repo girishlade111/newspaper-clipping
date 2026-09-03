@@ -23,6 +23,6 @@ const presetParam = Astro.url.searchParams.get('preset') || Astro.url.searchPara
   lang={lang}
 >
   <main class="bg-canvas-soft min-h-[calc(100vh-80px)] py-4 sm:py-8">
-    <StudioIsland client:load lang={lang} initialTemplate={presetParam} />
+    <StudioIsland client:only="react" lang={lang} initialTemplate={presetParam} />
   </main>
 </Layout>
