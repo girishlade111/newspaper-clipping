@@ -287,6 +287,8 @@ export const defaultUI = {
   'studio.preset.breaking1920': '1920s Broadsheet Scoop',
   'studio.preset.wantedWildWest': 'Wild West Outlaw Bulletin',
   'studio.preset.moonLanding': '1969 Space Milestone',
+  'studio.preset.weddingExtra': '1930s High Society Wedding',
+  'studio.preset.tabloidUfo': '1950s Sci-Fi Tabloid',
   'studio.preset.ww2Dispatch': '1940s Wartime Gazette',
   'studio.preset.viralTabloid': 'Vintage Tabloid Scoop',
   'studio.preset.custom': 'Custom Newspaper Style',
