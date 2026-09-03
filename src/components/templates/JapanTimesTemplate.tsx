@@ -16,6 +16,19 @@ export interface JapanTimesProps {
   className?: string;
 }
 
+// Inject Google Fonts once (idempotent across hot reloads / multiple mounts).
+const FONT_LINK_ID = 'japan-times-template-google-fonts';
+function ensureFonts() {
+  if (typeof document !== 'undefined' && !document.getElementById(FONT_LINK_ID)) {
+    const link = document.createElement('link');
+    link.id = FONT_LINK_ID;
+    link.rel = 'stylesheet';
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap';
+    document.head.appendChild(link);
+  }
+}
+
 export default function JapanTimesTemplate({
   headline = 'GOVERNMENT UNVEILS COMPREHENSIVE GREEN TECH & DIGITAL ROADMAP',
   story = `In an extraordinary joint briefing held at the prime minister’s official residence late yesterday, Cabinet ministers unveiled an ambitious multi-trillion-yen industrial modernization blueprint.
@@ -37,6 +50,9 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
   weather = 'TOKYO: 19°C / 12°C • CLOUDY WITH SCATTERED SHOWERS',
   className = '',
 }: JapanTimesProps) {
+  // Ensure Noto Serif is loaded for the Live Preview canvas
+  ensureFonts();
+
   // Parse paragraphs
   const paragraphs = (story || '')
     .split(/\n\n+/)
@@ -56,7 +72,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
       {/* ========================================================================= */}
       {/* 1. MINIMALIST TOP UTILITY BAR (1px solid precision borders)               */}
       {/* ========================================================================= */}
-      <div className="border-b border-black/25 pb-1 mb-1.5 flex flex-wrap items-center justify-between text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-wider text-neutral-700">
+      <div className="border-b border-black/25 pb-1 mb-1.5 flex flex-wrap items-center justify-between text-[9px] sm:text-[10px] font-jtSans font-bold uppercase tracking-wider text-neutral-700">
         <span>{weather}</span>
         <span className="font-extrabold text-neutral-900">{edition}</span>
         <span>{price}</span>
@@ -68,13 +84,13 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
       <div className="text-center py-1 sm:py-2">
         <h1
           className="font-jtTitle text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-neutral-950 leading-none py-0.5"
-          style={{ fontFamily: '"Playfair Display", "Times New Roman", Merriweather, serif' }}
+          style={{ fontFamily: '"Noto Serif", "Playfair Display", "Times New Roman", serif' }}
         >
           {newspaperName}
         </h1>
 
         {/* Minimalist Subtitle Motto */}
-        <p className="font-sans text-[8.5px] sm:text-[9.5px] font-bold tracking-widest text-neutral-600 uppercase mt-1">
+        <p className="font-jtSans text-[8.5px] sm:text-[9.5px] font-bold tracking-widest text-neutral-600 uppercase mt-1">
           {tagline}
         </p>
       </div>
@@ -82,7 +98,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
       {/* ========================================================================= */}
       {/* 3. DATE & REGISTRATION BARS (Strict 1px Double Rules)                     */}
       {/* ========================================================================= */}
-      <div className="border-t border-b border-black/40 py-1 my-1.5 flex items-center justify-between text-[9px] sm:text-[10px] font-sans font-semibold uppercase tracking-wider text-neutral-800">
+      <div className="border-t border-b border-black/40 py-1 my-1.5 flex items-center justify-between text-[9px] sm:text-[10px] font-jtSans font-semibold uppercase tracking-wider text-neutral-800">
         <span>VOL. 127 NO. 45,210</span>
         <span className="font-serif font-bold text-center tracking-widest text-black">
           {date}
@@ -96,7 +112,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
       <div className="pt-2 pb-2.5 mb-3 border-b border-black/30">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-2 h-2 bg-neutral-900 inline-block"></span>
-          <span className="font-sans text-[9.5px] font-black uppercase tracking-widest text-neutral-900">
+          <span className="font-jtSans text-[9.5px] font-black uppercase tracking-widest text-neutral-900">
             NATIONAL / POLICY IN FOCUS
           </span>
         </div>
@@ -104,7 +120,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
         {/* Compact, Highly Readable Serif Headline */}
         <h2
           className="font-jtHeadline font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-neutral-950 leading-[1.12]"
-          style={{ fontFamily: '"Libre Baskerville", "Playfair Display", Georgia, serif' }}
+          style={{ fontFamily: '"Noto Serif", "Libre Baskerville", Georgia, serif' }}
         >
           {headline}
         </h2>
@@ -126,10 +142,10 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
         <div className="pr-0 md:pr-3 flex flex-col gap-2.5">
           {/* Japanese Newspaper Style Byline */}
           <div className="pb-1 border-b border-black/20">
-            <span className="font-sans font-black text-[10px] uppercase tracking-wider text-black block">
+            <span className="font-jtSans font-black text-[10px] uppercase tracking-wider text-black block">
               {author}
             </span>
-            <span className="font-sans text-[8.5px] text-neutral-500 uppercase">
+            <span className="font-jtSans text-[8.5px] text-neutral-500 uppercase">
               Staff Correspondent
             </span>
           </div>
@@ -140,7 +156,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
               <span className="float-left text-3xl sm:text-4xl font-black mr-1.5 leading-none font-serif text-black select-none">
                 {leadParagraph.charAt(0)}
               </span>
-              <strong className="font-sans font-bold tracking-wider text-black uppercase">
+              <strong className="font-jtSans font-bold tracking-wider text-black uppercase">
                 TOKYO —{' '}
               </strong>
               {leadParagraph.slice(1)}
@@ -167,7 +183,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
                 />
               </div>
               {photoCaption && (
-                <div className="p-1 border-t border-black/15 flex flex-col sm:flex-row sm:items-baseline justify-between text-[9.5px] text-neutral-600 font-sans">
+                <div className="p-1 border-t border-black/15 flex flex-col sm:flex-row sm:items-baseline justify-between text-[9.5px] text-neutral-600 font-jtSans">
                   <p className="italic leading-tight">
                     {photoCaption}
                   </p>
@@ -181,7 +197,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
 
           {/* Subheader */}
           <div className="border-t border-b border-black/20 py-0.5 text-center my-0.5">
-            <h3 className="font-sans font-black uppercase text-[9.5px] tracking-wider text-black">
+            <h3 className="font-jtSans font-black uppercase text-[9.5px] tracking-wider text-black">
               PARLIAMENTARY COMMITTEE SCRUTINY SCHEDULED
             </h3>
           </div>
@@ -199,13 +215,13 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
         {/* COLUMN 4: Sidebar "News in Brief" with Precision Square Bullets */}
         <div className="pl-0 md:pl-3 flex flex-col gap-2.5">
           <div className="border-b border-black/25 pb-1">
-            <h4 className="font-sans font-black uppercase text-[10px] tracking-wider text-neutral-950 flex items-center gap-1.5">
+            <h4 className="font-jtSans font-black uppercase text-[10px] tracking-wider text-neutral-950 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 bg-neutral-900 inline-block"></span>
               INSIDE TODAY
             </h4>
           </div>
 
-          <div className="p-2 border border-black/20 bg-black/[0.02] text-[10px] font-sans space-y-1.5">
+          <div className="p-2 border border-black/20 bg-black/[0.02] text-[10px] font-jtSans space-y-1.5">
             <div className="flex items-start gap-1.5">
               <span className="text-neutral-900 font-bold mt-0.5">■</span>
               <p className="leading-snug text-neutral-800">
@@ -232,7 +248,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
             </p>
           ))}
 
-          <div className="mt-auto pt-2 border-t border-black/20 text-center font-sans text-[8.5px] font-bold uppercase tracking-widest text-neutral-500">
+          <div className="mt-auto pt-2 border-t border-black/20 text-center font-jtSans text-[8.5px] font-bold uppercase tracking-widest text-neutral-500">
             CONTINUED ON PAGE 3
           </div>
         </div>
@@ -242,7 +258,7 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
       {/* ========================================================================= */}
       {/* 6. MINIMALIST BOTTOM REGISTER                                             */}
       {/* ========================================================================= */}
-      <div className="mt-5 pt-1.5 border-t border-black/30 flex flex-wrap items-center justify-between text-[8px] font-sans font-bold uppercase tracking-wider text-neutral-500">
+      <div className="mt-5 pt-1.5 border-t border-black/30 flex flex-wrap items-center justify-between text-[8px] font-jtSans font-bold uppercase tracking-wider text-neutral-500">
         <span>The Japan Times, Ltd. • 4-5-4 Shibaura, Minato-ku, Tokyo 108-0023</span>
         <span>Registered as a Third-Class Postal Matter</span>
         <span className="text-neutral-800 font-black">★ TOKYO EDITION ★</span>
