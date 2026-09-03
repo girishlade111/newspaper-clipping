@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import StudioApp from '../../components/studio/StudioApp.astro';
+import StudioIsland from '../../components/studio/StudioIsland';
 import { useTranslations } from '../../i18n/utils';
 import { languages, type SupportedLanguage } from '../../i18n/ui';
 
@@ -23,6 +23,6 @@ const presetParam = Astro.url.searchParams.get('preset') || Astro.url.searchPara
   lang={lang}
 >
   <main class="bg-canvas-soft min-h-[calc(100vh-80px)] py-4 sm:py-8">
-    <StudioApp lang={lang} initialPresetId={presetParam} />
+    <StudioIsland client:load lang={lang} initialTemplate={presetParam} />
   </main>
 </Layout>
