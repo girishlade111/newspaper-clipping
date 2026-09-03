@@ -72,12 +72,12 @@ Commercial chambers across the Middle East welcomed the announcement, projecting
       {/* ========================================================================= */}
       {/* 2. CONTEMPORARY MASTHEAD WITH ICONIC RED ACCENT SQUARE                   */}
       {/* ========================================================================= */}
-      <div className="py-2 sm:py-3 flex flex-col items-center justify-center text-center">
-        <div className="flex items-center justify-center gap-2">
+      <div className="w-full py-2 sm:py-3 flex flex-col items-center justify-center text-center">
+        <div className="flex flex-nowrap items-center justify-center">
           {/* Trademark Accent Symbol */}
           <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#e52e2e] rounded-xs inline-block"></span>
           <h1
-            className="font-gulfTitle text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-neutral-950 leading-none"
+            className="font-gulfTitle whitespace-nowrap text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-neutral-950 leading-none"
             style={{ fontFamily: '"Plus Jakarta Sans", Inter, sans-serif' }}
           >
             {newspaperName}
@@ -173,7 +173,7 @@ Commercial chambers across the Middle East welcomed the announcement, projecting
           {/* Lead Paragraph with Clean Modern Editorial Drop Cap */}
           {leadParagraph && (
             <p className="text-neutral-900 text-justify text-[14px] leading-relaxed">
-              <span className="float-left text-4xl font-gulfTitle font-black mr-2.5 leading-none text-neutral-950 select-none">
+              <span className="float-left text-4xl font-gulfTitle whitespace-nowrap font-black mr-2.5 leading-none text-neutral-950 select-none">
                 {leadParagraph.charAt(0)}
               </span>
               <strong className="font-gulfSans font-bold text-neutral-900 tracking-wide uppercase">

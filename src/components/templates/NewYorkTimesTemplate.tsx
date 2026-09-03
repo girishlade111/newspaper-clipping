@@ -79,7 +79,7 @@ Telegrams received from overseas universities confirm that duplicate experiments
         {/* Center Masthead Title */}
         <div className="col-span-12 sm:col-span-6 text-center">
           <h1
-            className="font-nytTitle text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none py-1 drop-shadow-xs"
+            className="font-nytTitle whitespace-nowrap text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none py-1 drop-shadow-xs"
             style={{ fontFamily: '"UnifrakturMaguntia", "Old English Text MT", serif' }}
           >
             {newspaperName}

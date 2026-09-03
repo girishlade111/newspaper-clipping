@@ -78,9 +78,9 @@ Les milieux économiques et syndicaux ont salué avec retenue une avancée quali
       {/* ========================================================================= */}
       {/* 2. LE MONDE ICONIC CALLIGRAPHIC MASTHEAD                                  */}
       {/* ========================================================================= */}
-      <div className="relative z-10 text-center py-2 sm:py-3">
+      <div className="relative z-10 w-full text-center py-2 sm:py-3">
         <h1
-          className="font-leMondeTitle text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none py-1 drop-shadow-xs"
+          className="font-leMondeTitle whitespace-nowrap text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none py-1 drop-shadow-xs"
           style={{ fontFamily: '"UnifrakturMaguntia", "Old English Text MT", serif' }}
         >
           {newspaperName}

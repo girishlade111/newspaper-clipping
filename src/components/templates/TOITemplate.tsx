@@ -85,7 +85,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
       {/* ================================================================ */}
       {/* 2. MASTHEAD — Merriweather Black                                 */}
       {/* ================================================================ */}
-      <div className="relative z-10 text-center py-2.5 sm:py-3.5">
+      <div className="relative z-10 w-full text-center py-2.5 sm:py-3.5">
         <div
           className="flex items-center justify-center gap-3 mb-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-neutral-700"
           style={{ fontFamily: 'Inter, Roboto, sans-serif' }}
@@ -96,7 +96,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
         </div>
 
         <h1
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight leading-none text-black py-1"
+          className="whitespace-nowrap text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight leading-none text-black py-1"
           style={{ fontFamily: 'Merriweather, Georgia, serif' }}
         >
           {newspaperName}

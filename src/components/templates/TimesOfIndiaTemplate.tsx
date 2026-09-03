@@ -76,7 +76,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
       {/* ========================================================================= */}
       {/* 2. THE TIMES OF INDIA ICONIC MASTHEAD & CREST                             */}
       {/* ========================================================================= */}
-      <div className="relative z-10 text-center py-2 sm:py-3">
+      <div className="relative z-10 w-full text-center py-2 sm:py-3">
         {/* Historic Motto Badge */}
         <div className="flex items-center justify-center gap-3 mb-1">
           <span className="h-px w-12 sm:w-20 bg-black/40"></span>
@@ -88,7 +88,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
 
         {/* Master Times of India Title */}
         <h1
-          className="font-toiTitle text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-black leading-none drop-shadow-xs py-1"
+          className="font-toiTitle whitespace-nowrap text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-black leading-none drop-shadow-xs py-1"
           style={{ fontFamily: '"Playfair Display", "Times New Roman", Merriweather, serif' }}
         >
           {newspaperName}
@@ -105,7 +105,7 @@ Spontaneous celebrations continued well into the morning hours, with confections
       {/* ========================================================================= */}
       <div className="relative z-10 border-t-2 border-b border-black py-1 my-2 flex flex-wrap items-center justify-between text-[10px] sm:text-xs font-sans font-bold uppercase text-black">
         <span>DELHI • BOMBAY • CALCUTTA • MADRAS</span>
-        <span className="font-toiTitle font-black tracking-widest text-center">{date}</span>
+        <span className="font-toiTitle whitespace-nowrap font-black tracking-widest text-center">{date}</span>
         <span>FINAL CITY EDITION</span>
       </div>
 

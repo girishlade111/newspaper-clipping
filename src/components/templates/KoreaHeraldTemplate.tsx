@@ -72,9 +72,9 @@ Financial markets responded promptly to the policy declaration, with bellwether 
       {/* ========================================================================= */}
       {/* 2. STATELY CORPORATE MASTHEAD                                             */}
       {/* ========================================================================= */}
-      <div className="text-center py-2 sm:py-3">
+      <div className="w-full text-center py-2 sm:py-3">
         <h1
-          className="font-khTitle text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-neutral-950 leading-none"
+          className="font-khTitle whitespace-nowrap text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-neutral-950 leading-none"
           style={{ fontFamily: '"Merriweather", "Playfair Display", Georgia, serif' }}
         >
           {newspaperName}
@@ -185,7 +185,7 @@ Financial markets responded promptly to the policy declaration, with bellwether 
           {/* Lead Paragraph with Dateline */}
           {leadParagraph && (
             <p className="text-neutral-900 text-justify text-[14.5px] leading-relaxed font-medium">
-              <span className="float-left text-4xl font-khTitle font-black mr-2 leading-none text-neutral-950 select-none">
+              <span className="float-left text-4xl font-khTitle whitespace-nowrap font-black mr-2 leading-none text-neutral-950 select-none">
                 {leadParagraph.charAt(0)}
               </span>
               <strong className="font-sans font-bold text-neutral-950 uppercase tracking-wide">

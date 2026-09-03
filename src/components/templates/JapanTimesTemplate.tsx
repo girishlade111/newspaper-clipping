@@ -81,9 +81,9 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
       {/* ========================================================================= */}
       {/* 2. THE JAPAN TIMES DIGNIFIED MASTHEAD                                     */}
       {/* ========================================================================= */}
-      <div className="text-center py-1 sm:py-2">
+      <div className="w-full text-center py-1 sm:py-2">
         <h1
-          className="font-jtTitle text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-neutral-950 leading-none py-0.5"
+          className="font-jtTitle whitespace-nowrap text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-neutral-950 leading-none py-0.5"
           style={{ fontFamily: '"Noto Serif", "Playfair Display", "Times New Roman", serif' }}
         >
           {newspaperName}

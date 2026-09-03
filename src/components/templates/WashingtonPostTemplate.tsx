@@ -83,9 +83,9 @@ Legal scholars and constitutional historians gathered on television panels throu
 
 
       {/* 2. ICONIC MASTHEAD & "DEMOCRACY DIES IN DARKNESS" TAGLINE */}
-      <div className="relative z-10 text-center py-2 sm:py-3">
+      <div className="relative z-10 w-full text-center py-2 sm:py-3">
         <h1
-          className="font-wapoTitle text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none drop-shadow-xs"
+          className="font-wapoTitle whitespace-nowrap text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none drop-shadow-xs"
           style={{ fontFamily: '"UnifrakturMaguntia", "Old English Text MT", serif' }}
         >
           {newspaperName}

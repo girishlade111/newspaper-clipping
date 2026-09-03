@@ -100,7 +100,7 @@ Telegrams received from overseas universities confirm that duplicate experiments
 
           {/* Center: blackletter masthead */}
           <h1
-            className="text-4xl sm:text-5xl md:text-6xl text-center leading-none text-black whitespace-nowrap"
+            className="whitespace-nowrap text-4xl sm:text-5xl md:text-6xl text-center leading-none text-black whitespace-nowrap"
             style={{ fontFamily: mastheadFont, fontWeight: 400 }}
           >
             {newspaperName}
@@ -122,7 +122,7 @@ Telegrams received from overseas universities confirm that duplicate experiments
       {/* ==================================================================== */}
       {/* 2. LEAD HEADLINE BLOCK (Cheltenham / PT Serif)                        */}
       {/* ==================================================================== */}
-      <div className="text-center py-3 border-b border-gray-300">
+      <div className="w-full text-center py-3 border-b border-gray-300">
         <h2
           className="font-bold text-3xl sm:text-4xl md:text-[2.75rem] leading-tight tracking-tight text-black"
           style={{ fontFamily: headlineFont }}

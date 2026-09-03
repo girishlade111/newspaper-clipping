@@ -74,10 +74,10 @@ Environmental groups and trade unions offered cautious support for the initiativ
       {/* ========================================================================= */}
       {/* 2. THE GUARDIAN DISTINCTIVE BRAND MASTHEAD                                */}
       {/* ========================================================================= */}
-      <div className="py-2 sm:py-3 border-b-2 border-[#052962] flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+      <div className="w-full py-2 sm:py-3 border-b-2 border-[#052962] flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
         <div>
           <h1
-            className="font-guardianTitle text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#052962] leading-none"
+            className="font-guardianTitle whitespace-nowrap text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#052962] leading-none"
             style={{ fontFamily: '"Lora", Georgia, serif' }}
           >
             {newspaperName}
