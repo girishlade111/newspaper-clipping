@@ -1,10 +1,9 @@
-import Dexie, { type Table } from 'dexie';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-
 /**
- * Interface representing a saved newspaper clipping in Dexie.js
+ * Client-side Export & IndexedDB Storage Engine
+ * Dynamically imports heavy libraries (html2canvas, jsPDF, dexie) on demand
+ * to ensure instant, error-free client-side module hydration.
  */
+
 export interface ClippingRecord {
   id?: number;
   template: string;
@@ -18,75 +17,104 @@ export interface ClippingRecord {
   timestamp: number;
 }
 
-/**
- * Dexie.js Database Class
- */
-export class NewspaperDatabase extends Dexie {
-  clippingHistory!: Table<ClippingRecord, number>;
+let dbInstance: any = null;
 
-  constructor() {
-    super('NewspaperAppDB');
-    this.version(1).stores({
+async function getDatabase(): Promise<any> {
+  if (typeof window === 'undefined') return null;
+  if (dbInstance) return dbInstance;
+
+  try {
+    const DexieModule = await import('dexie');
+    const Dexie = (DexieModule as any).default || DexieModule;
+    const db = new Dexie('NewspaperAppDB');
+    db.version(1).stores({
       clippingHistory: '++id, template, headline, timestamp',
     });
+    dbInstance = db;
+    return dbInstance;
+  } catch (err) {
+    console.warn('Dexie DB initialization failed:', err);
+    return null;
   }
 }
 
-// Export singleton database instance
-export const db = new NewspaperDatabase();
-
 /**
- * 3. Save current editor state to Dexie.js
+ * Save current editor state to Dexie.js
  */
 export async function saveToDrafts(
   data: Omit<ClippingRecord, 'id' | 'timestamp'> & { thumbnail?: string | null }
 ): Promise<number> {
-  const id = await db.clippingHistory.add({
-    template: data.template,
-    newspaperName: data.newspaperName,
-    tagline: data.tagline,
-    date: data.date,
-    headline: data.headline,
-    story: data.story,
-    base64Image: data.thumbnail || data.base64Image || null,
-    photoCaption: data.photoCaption,
-    timestamp: Date.now(),
-  });
-  return id;
+  const db = await getDatabase();
+  if (!db) return Date.now();
+
+  try {
+    const id = await db.clippingHistory.add({
+      template: data.template,
+      newspaperName: data.newspaperName,
+      tagline: data.tagline,
+      date: data.date,
+      headline: data.headline,
+      story: data.story,
+      base64Image: data.thumbnail || data.base64Image || null,
+      photoCaption: data.photoCaption,
+      timestamp: Date.now(),
+    });
+    return id;
+  } catch (err) {
+    console.error('Failed to save draft:', err);
+    return Date.now();
+  }
 }
 
 /**
  * Fetch all clippings ordered by most recent first
  */
-export async function getRecentClippings(limit = 50): Promise<ClippingRecord[]> {
-  return await db.clippingHistory.orderBy('timestamp').reverse().limit(limit).toArray();
+export async function getRecentClippings(limit = 20): Promise<ClippingRecord[]> {
+  const db = await getDatabase();
+  if (!db) return [];
+
+  try {
+    return await db.clippingHistory.orderBy('timestamp').reverse().limit(limit).toArray();
+  } catch (err) {
+    console.error('Failed to get clippings:', err);
+    return [];
+  }
 }
 
 /**
- * Delete a single clipping by ID
+ * Delete a clipping by ID
  */
 export async function deleteClipping(id: number): Promise<void> {
-  await db.clippingHistory.delete(id);
+  const db = await getDatabase();
+  if (!db) return;
+
+  try {
+    await db.clippingHistory.delete(id);
+  } catch (err) {
+    console.error('Failed to delete clipping:', err);
+  }
 }
 
 /**
- * Clear all clipping history
+ * Clear all clippings from database
  */
 export async function clearAllClippings(): Promise<void> {
-  await db.clippingHistory.clear();
+  const db = await getDatabase();
+  if (!db) return;
+
+  try {
+    await db.clippingHistory.clear();
+  } catch (err) {
+    console.error('Failed to clear clippings:', err);
+  }
 }
 
 /**
- * Capture element as lightweight thumbnail for storage
+ * Capture mini-thumbnail for Dexie.js
  */
 export async function captureThumbnail(element: HTMLElement): Promise<string> {
   try {
-    const canvas = await html2canvas(element, {
-      scale: 0.6,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-    });
+    const canvas = await renderElementCanvas(element, 0.4);
     return canvas.toDataURL('image/jpeg', 0.65);
   } catch {
     return '';
@@ -94,7 +122,7 @@ export async function captureThumbnail(element: HTMLElement): Promise<string> {
 }
 
 // =========================================================================
-// 1. EXPORT ENGINE: Functions targeting the PreviewPanel <div>
+// EXPORT ENGINE: Functions targeting the Live Preview container
 // =========================================================================
 
 function triggerDownload(url: string, filename: string) {
@@ -107,9 +135,21 @@ function triggerDownload(url: string, filename: string) {
 }
 
 /**
+ * Dynamically import html2canvas
+ */
+async function getHtml2canvas(): Promise<any> {
+  if (typeof window !== 'undefined' && (window as any).html2canvas) {
+    return (window as any).html2canvas;
+  }
+  const mod = await import('html2canvas');
+  return (mod as any).default || mod;
+}
+
+/**
  * Render HTMLElement to high-resolution canvas
  */
 async function renderElementCanvas(element: HTMLElement, scale = 2): Promise<HTMLCanvasElement> {
+  const html2canvas = await getHtml2canvas();
   return await html2canvas(element, {
     scale,
     useCORS: true,
@@ -183,11 +223,12 @@ export async function downloadAsPDF(
 
   const imgWidth = canvas.width;
   const imgHeight = canvas.height;
-
-  // Determine orientation based on aspect ratio
   const orientation = imgWidth > imgHeight ? 'landscape' : 'portrait';
 
-  const pdf = new jsPDF({
+  const jspdfModule = await import('jspdf');
+  const jsPDFClass = (jspdfModule as any).jsPDF || (jspdfModule as any).default || jspdfModule;
+
+  const pdf = new jsPDFClass({
     orientation,
     unit: 'px',
     format: [imgWidth, imgHeight],
