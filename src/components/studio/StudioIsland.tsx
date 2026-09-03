@@ -868,7 +868,7 @@ function StudioIslandInner({
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download high-resolution PNG"
                 >
-                  <span>PNG</span>
+                  <span>{isExporting && exportFormat === 'PNG' ? 'Exporting...' : 'PNG'}</span>
                 </button>
                 <button
                   type="button"
@@ -877,7 +877,7 @@ function StudioIslandInner({
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download JPEG format"
                 >
-                  <span>JPG</span>
+                  <span>{isExporting && exportFormat === 'JPG' ? 'Exporting...' : 'JPG'}</span>
                 </button>
                 <button
                   type="button"
@@ -886,7 +886,7 @@ function StudioIslandInner({
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Export Archival PDF"
                 >
-                  <span>PDF</span>
+                  <span>{isExporting && exportFormat === 'PDF' ? 'Exporting...' : 'PDF'}</span>
                 </button>
                 <button
                   type="button"
@@ -903,7 +903,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => handleExport('png')}
+                  onClick={() => handleExport('4k')}
                   className="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-active text-ink font-black text-xs transition-all shadow-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer ml-1"
                 >
                   <svg className="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -911,7 +911,7 @@ function StudioIslandInner({
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                  <span>Download 4K</span>
+                  <span>{isExporting && exportFormat === '4K' ? 'Exporting...' : 'Download 4K'}</span>
                 </button>
               </div>
             </div>
