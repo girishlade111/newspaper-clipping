@@ -223,7 +223,7 @@ const studioUrl = currentPath === '/' || currentPath === `/${languages[lang]?.su
       });
 
       // Close on outside click
-      document.addEventListener('click', (e) => {
+      document.addEventListener('click', () => {
         if (!langList.classList.contains('hidden')) {
           langList.classList.add('hidden');
           langBtn.setAttribute('aria-expanded', 'false');
