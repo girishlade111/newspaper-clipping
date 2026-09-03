@@ -144,6 +144,10 @@ export async function exportAsPDF(element: HTMLElement): Promise<void> {
     pdf.addImage(imgData, 'JPEG', offsetX, offsetY, renderWidth, renderHeight);
     pdf.save(`${BASE_FILENAME}.pdf`);
   } catch (err) {
+    console.error('Failed to export PDF:', err);
+    throw new Error('PDF export failed. Please try again.');
+  }
+}
 
 // =========================================================================
 // Public API: Print
@@ -211,10 +215,5 @@ export function printClipping(element: HTMLElement): void {
       }
     }
   }, 1000);
-}
-
-    console.error('Failed to export PDF:', err);
-    throw new Error('PDF export failed. Please try again.');
-  }
 }
 
