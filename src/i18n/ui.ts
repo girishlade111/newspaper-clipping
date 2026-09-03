@@ -82,11 +82,20 @@ export const defaultUI = {
   'hero.badge': '100% Free & Serverless Vintage Newspaper Studio',
   'hero.title': 'Create Authentic Vintage Newspaper Clippings in Seconds.',
   'hero.subtitle': 'Turn stories, announcements, and historical events into realistic aged newsprint. Customize Linotype headlines, vintage halftone photos, and realistic torn paper edges.',
-  'hero.ctaPrimary': 'Create Clipping',
+  'hero.ctaPrimary': 'Customize this clipping in Studio',
   'hero.ctaSecondary': 'Browse Templates',
   'hero.statsClippings': 'Clippings Generated',
   'hero.statsRating': 'Client Rating',
   'hero.imageAlt': 'Vintage Newspaper Clipping Studio Preview',
+
+  // Home Page Namespaced Keys (Required for landing page)
+  'home.hero.badge': '100% Free & Serverless Vintage Newspaper Studio',
+  'home.hero.title': 'Create Authentic Vintage Newspaper Clippings in Seconds.',
+  'home.hero.description': 'Turn stories, announcements, and historical events into realistic aged newsprint. Customize Linotype headlines, vintage halftone photos, and realistic torn paper edges.',
+  'home.hero.cta': 'Customize this clipping in Studio',
+  'home.hero.statsClippings': 'Clippings Generated',
+  'home.hero.statsRating': 'User Rating',
+  'home.hero.imageAlt': 'Vintage Newspaper Clipping Studio Preview',
 
   // How It Works (3-step process)
   'how.badge': 'Simple 3-Step Process',
@@ -102,6 +111,19 @@ export const defaultUI = {
   'how.step3.title': 'Export High-Resolution 4K PNG',
   'how.step3.desc': 'Instantly download a 300 DPI print-ready clipping or print directly. 100% private, zero server calls.',
 
+  'home.how.badge': 'Simple 3-Step Process',
+  'home.how.title': 'How It Works',
+  'home.how.subtitle': 'From idea to authentic aged Linotype newsprint in under 60 seconds.',
+  'home.how.step1.num': '01',
+  'home.how.step1.title': 'Write Your Headline & Story',
+  'home.how.step1.desc': 'Enter your newspaper title, front-page headline, date, volume number, and multi-column linotype body text.',
+  'home.how.step2.num': '02',
+  'home.how.step2.title': 'Choose Paper Aging & Filters',
+  'home.how.step2.desc': 'Select 1920s aged newsprint, rough torn edges, fold creases, coffee stains, and real halftone dot photo filters.',
+  'home.how.step3.num': '03',
+  'home.how.step3.title': 'Export High-Resolution 4K PNG',
+  'home.how.step3.desc': 'Instantly download a 300 DPI print-ready clipping or print directly. 100% private, zero server calls.',
+
   // Use Cases Section
   'usecases.badge': 'Versatile Applications',
   'usecases.title': 'Authentic Vintage Press for Every Occasion',
@@ -116,6 +138,21 @@ export const defaultUI = {
   'usecases.pranks.title': 'Novelty Gifts & Harmless Pranks',
   'usecases.pranks.desc': 'Surprise friends and family with custom milestone newspapers: 50th birthday exclusives, "Couple Married 40 Years", retirement accolades, or playful office headlines.',
   'usecases.imageAlt': 'Vintage Newspaper clipping use cases and examples',
+
+  'home.usecases.badge': 'Versatile Applications',
+  'home.usecases.title': 'Authentic Vintage Press for Every Occasion',
+  'home.usecases.subtitle': 'Whether for classroom history lessons, viral humor, or memorable milestone celebrations.',
+  'home.usecases.school.tag': 'Education & History',
+  'home.usecases.school.title': 'School & History Projects',
+  'home.usecases.school.desc': 'Bring history lessons to life! Students and educators create Depression-era front pages, WWII announcements, and historical timeline reports with era-accurate typography.',
+  'home.usecases.memes.tag': 'Pop Culture & Social',
+  'home.usecases.memes.title': 'Memes & Viral Parodies',
+  'home.usecases.memes.desc': 'Turn trending pop-culture drama, inside jokes, and gaming victories into hilarious front-page vintage tabloid sensations ready to share on Instagram, Reddit, and TikTok.',
+  'home.usecases.pranks.tag': 'Novelty & Celebration',
+  'home.usecases.pranks.title': 'Novelty Gifts & Harmless Celebrations',
+  'home.usecases.pranks.desc': 'Surprise friends and family with custom milestone newspapers: 50th birthday exclusives, "Couple Married 40 Years", retirement accolades, or playful office headlines.',
+  'home.usecases.imageAlt': 'Vintage Newspaper clipping use cases and examples',
+  'home.usecases.cta': 'Customize this clipping in Studio',
 
   // FAQ Section
   'faq.badge': 'Got Questions?',
@@ -133,6 +170,22 @@ export const defaultUI = {
   'faq.a5': 'Our engine uses custom mathematical convolution shaders to convert modern color photographs into vintage black-and-white Linotype halftone screen dots with authentic paper fiber bleed.',
   'faq.q6': 'Which languages are supported?',
   'faq.a6': 'We currently support 7 languages: English, Chinese (中文), Brazilian Portuguese (Português), Russian (Русский), Japanese (日本語), Turkish (Türkçe), and Korean (한국어).',
+
+  'home.faq.badge': 'Got Questions?',
+  'home.faq.title': 'Frequently Asked Questions',
+  'home.faq.subtitle': 'Everything you need to know about our free client-side clipping studio.',
+  'home.faq.q1': 'Is the Newspaper Clipping Generator truly 100% free?',
+  'home.faq.a1': 'Yes, completely and permanently free. There are no subscriptions, paywalls, watermarks, or usage limits. You can generate and download as many clippings as you want.',
+  'home.faq.q2': 'Do you store or upload my photos and stories?',
+  'home.faq.a2': 'No. All rendering, halftone processing, and text manipulation happen entirely in your browser using client-side HTML5 Canvas. No data ever leaves your device.',
+  'home.faq.q3': 'What quality and resolution is the exported clipping?',
+  'home.faq.a3': 'Clippings export in crystal-clear 4K resolution (300 DPI PNG), making them suitable for poster printing, classroom displays, digital presentations, and social media.',
+  'home.faq.q4': 'Can I use the clippings for commercial projects or publications?',
+  'home.faq.a4': 'Yes. Any text and images you create are yours to use without restriction for personal, educational, or commercial purposes.',
+  'home.faq.q5': 'How does the authentic vintage aging and halftone filter work?',
+  'home.faq.a5': 'Our engine uses custom mathematical convolution shaders to convert modern color photographs into vintage black-and-white Linotype halftone screen dots with authentic paper fiber bleed.',
+  'home.faq.q6': 'Which languages are supported?',
+  'home.faq.a6': 'We currently support 7 languages: English, Chinese (中文), Brazilian Portuguese (Português), Russian (Русский), Japanese (日本語), Turkish (Türkçe), and Korean (한국어).',
 
   // Feature Highlights (Sage & white contrast bands)
   'features.title': 'Fintech Precision Meets Vintage Linotype Typography',

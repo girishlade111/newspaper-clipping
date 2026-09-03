@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GeneratorApp from '../components/generator/GeneratorApp.astro';
+import { useTranslations } from '../i18n/utils';
+
+const lang = 'en';
+const t = useTranslations(lang);
+const presetParam = Astro.url.searchParams.get('preset') || 'breaking-1920';
+---
+
+<BaseLayout
+  title="Studio — Create Vintage Newspaper Clippings | The Vintage Press"
+  description="Full-screen creative studio for creating high-resolution vintage newspaper clippings. Customize gothic mastheads, halftone photos, and paper aging."
+  lang={lang}
+>
+  <section class="band-sage studio-page-band">
+    <div class="container">
+      <div class="studio-header">
+        <div>
+          <span class="badge-pill badge-brand">Full Creative Studio</span>
+          <h1 class="font-display-md" style="margin-top: 8px;">Vintage Newspaper Generator Studio</h1>
+          <p class="font-body-md" style="color: var(--color-body); margin-top: 4px;">
+            Customize your headline, article columns, photo filters, and paper weathering in real-time.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top: var(--spacing-xl);">
+        <GeneratorApp lang={lang} initialPresetId={presetParam} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .studio-page-band {
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-4xl);
+    min-height: calc(100vh - 120px);
+  }
+
+  .studio-header {
+    margin-bottom: var(--spacing-md);
+  }
+</style>
