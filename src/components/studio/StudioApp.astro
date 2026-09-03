@@ -1,0 +1,971 @@
+---
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+import { PRESETS } from '../../scripts/presets';
+
+interface Props {
+  lang: SupportedLanguage;
+  initialPresetId?: string;
+}
+
+const { lang, initialPresetId = 'breaking-1920' } = Astro.props;
+const t = useTranslations(lang);
+
+const defaultPreset = PRESETS.find((p) => p.id === initialPresetId) || PRESETS[0];
+
+// Preset name translation helper
+function getPresetName(id: string): string {
+  switch (id) {
+    case 'breaking-1920':
+      return t('studio.preset.breaking1920');
+    case 'wanted-wild-west':
+      return t('studio.preset.wantedWildWest');
+    case 'moon-landing-1969':
+      return t('studio.preset.moonLanding');
+    case 'wedding-extra':
+      return t('studio.preset.weddingExtra');
+    case 'tabloid-ufo':
+      return t('studio.preset.tabloidUfo');
+    default:
+      return t('studio.preset.custom');
+  }
+}
+---
+
+<div class="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-8" id="studioRootContainer">
+  
+  <!-- Studio Header Bar adhering strictly to DESIGN.md -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-5 border-b border-black/10">
+    <div>
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-primary-pale text-ink-deep border border-black/5">
+          {t('studio.badge')}
+        </span>
+      </div>
+      <h1 class="font-display font-black text-2xl sm:text-3xl text-ink tracking-tight">
+        {t('studio.title')}
+      </h1>
+      <p class="font-body text-body text-xs sm:text-sm mt-1 max-w-xl">
+        {t('studio.subtitle')}
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 shrink-0">
+      <button
+        type="button"
+        id="studioResetBtn"
+        class="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-semibold text-xs sm:text-sm border border-black/10 transition-colors shadow-2xs cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        <span>{t('studio.btn.reset')}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main 2-Column Split Layout on Desktop / Stacked on Mobile -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- LEFT COLUMN: Interactive Editor Form & Controls -->
+    <div class="lg:col-span-6 xl:col-span-5 flex flex-col space-y-6">
+      <div class="bg-white rounded-xl border border-black/10 shadow-xs p-5 sm:p-7">
+        
+        <!-- 1. TEMPLATE SELECTOR INSIDE THE EDITOR (At the very top, above tabs) -->
+        <div class="mb-6 pb-6 border-b border-black/10">
+          <div class="flex items-center justify-between mb-2.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-mute">
+              {t('studio.selectStyle')}
+            </label>
+            <span class="text-[11px] text-body font-medium hidden sm:inline">
+              {t('studio.selectStyleDesc')}
+            </span>
+          </div>
+
+          <!-- Visual Thumbnail Grid for Newspaper Styles -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="templateSelectorGrid">
+            {PRESETS.map((preset) => {
+              const isSelected = preset.id === defaultPreset.id;
+              const translatedName = getPresetName(preset.id);
+              return (
+                <button
+                  type="button"
+                  class={`preset-thumb-btn flex flex-col text-left p-2.5 rounded-xl border transition-all text-xs cursor-pointer ${
+                    isSelected
+                      ? 'border-ink bg-primary-pale/40 shadow-xs ring-2 ring-primary'
+                      : 'border-black/10 bg-canvas-soft/60 hover:bg-canvas-soft hover:border-black/25'
+                  }`}
+                  data-preset-id={preset.id}
+                  aria-pressed={isSelected ? 'true' : 'false'}
+                >
+                  <div class="w-full h-10 rounded-lg bg-white border border-black/10 flex items-center justify-center font-display font-black text-xs text-ink mb-1.5 shadow-2xs overflow-hidden px-1 text-center">
+                    <span class="truncate">{preset.newspaperName.split(' ')[0]}</span>
+                  </div>
+                  <span class="font-bold text-ink truncate block text-[11px] leading-tight">
+                    {translatedName}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- 2. EDITOR TABS ("Content", "Style & Paper", "Photo Filter") -->
+        <div class="flex items-center gap-1.5 p-1 bg-canvas-soft rounded-xl mb-6" role="tablist">
+          <button
+            type="button"
+            class="tab-nav-btn flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition-all text-center cursor-pointer bg-white text-ink shadow-xs"
+            data-target="tab-content"
+            role="tab"
+            aria-selected="true"
+          >
+            {t('studio.tabs.content')}
+          </button>
+          <button
+            type="button"
+            class="tab-nav-btn flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition-all text-center cursor-pointer text-body hover:text-ink"
+            data-target="tab-style"
+            role="tab"
+            aria-selected="false"
+          >
+            {t('studio.tabs.style')}
+          </button>
+          <button
+            type="button"
+            class="tab-nav-btn flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition-all text-center cursor-pointer text-body hover:text-ink"
+            data-target="tab-photo"
+            role="tab"
+            aria-selected="false"
+          >
+            {t('studio.tabs.photo')}
+          </button>
+        </div>
+
+        <!-- 3. TAB PANES -->
+
+        <!-- TAB 1: CONTENT (Headline, Story, Date, Title, etc.) -->
+        <div class="tab-content-pane space-y-4" id="tab-content">
+          
+          <!-- Newspaper Title -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputNewspaperTitle">
+              {t('studio.input.newspaperTitle')}
+            </label>
+            <input
+              type="text"
+              id="inputNewspaperTitle"
+              class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+              value={defaultPreset.newspaperName}
+              placeholder={t('studio.input.newspaperTitlePlaceholder')}
+            />
+          </div>
+
+          <!-- Tagline / Motto -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputTagline">
+              {t('studio.input.tagline')}
+            </label>
+            <input
+              type="text"
+              id="inputTagline"
+              class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+              value={defaultPreset.tagline}
+              placeholder={t('studio.input.taglinePlaceholder')}
+            />
+          </div>
+
+          <!-- Date & Issue in 2 columns -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-ink mb-1.5" for="inputDate">
+                {t('studio.input.date')}
+              </label>
+              <input
+                type="text"
+                id="inputDate"
+                class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+                value={defaultPreset.date}
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-ink mb-1.5" for="inputIssue">
+                {t('studio.input.issue')}
+              </label>
+              <input
+                type="text"
+                id="inputIssue"
+                class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+                value={defaultPreset.issue}
+                placeholder={t('studio.input.issuePlaceholder')}
+              />
+            </div>
+          </div>
+
+          <!-- Price & Header Edition -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-ink mb-1.5" for="inputPrice">
+                {t('studio.input.price')}
+              </label>
+              <input
+                type="text"
+                id="inputPrice"
+                class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+                value={defaultPreset.price}
+                placeholder={t('studio.input.pricePlaceholder')}
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-ink mb-1.5" for="inputWeatherRight">
+                {t('studio.input.weatherRight')}
+              </label>
+              <input
+                type="text"
+                id="inputWeatherRight"
+                class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+                value={defaultPreset.weatherRight}
+                placeholder={t('studio.input.weatherRightPlaceholder')}
+              />
+            </div>
+          </div>
+
+          <!-- Main Headline -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputHeadline">
+              {t('studio.input.headline')}
+            </label>
+            <input
+              type="text"
+              id="inputHeadline"
+              class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-bold transition-colors uppercase"
+              value={defaultPreset.headline}
+              placeholder={t('studio.input.headlinePlaceholder')}
+            />
+          </div>
+
+          <!-- Subheadline -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputSubheadline">
+              {t('studio.input.subheadline')}
+            </label>
+            <input
+              type="text"
+              id="inputSubheadline"
+              class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+              value={defaultPreset.subheadline}
+              placeholder={t('studio.input.subheadlinePlaceholder')}
+            />
+          </div>
+
+          <!-- Author Byline -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputAuthor">
+              {t('studio.input.author')}
+            </label>
+            <input
+              type="text"
+              id="inputAuthor"
+              class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+              value={defaultPreset.author}
+              placeholder={t('studio.input.authorPlaceholder')}
+            />
+          </div>
+
+          <!-- Columns & Drop Cap -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+            <div>
+              <label class="block text-xs font-semibold text-ink mb-1.5" for="selectColumns">
+                {t('studio.input.columns')}
+              </label>
+              <select
+                id="selectColumns"
+                class="w-full h-11 px-3 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors cursor-pointer"
+              >
+                <option value="1">{t('studio.input.columns1')}</option>
+                <option value="2" selected={defaultPreset.columns === 2}>
+                  {t('studio.input.columns2')}
+                </option>
+                <option value="3" selected={defaultPreset.columns === 3}>
+                  {t('studio.input.columns3')}
+                </option>
+              </select>
+            </div>
+            <div class="pt-5 flex items-center">
+              <label class="inline-flex items-center gap-2 text-xs font-semibold text-ink cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  id="checkDropCap"
+                  class="w-4 h-4 rounded border-black/20 text-ink focus:ring-ink"
+                  checked={defaultPreset.dropCap}
+                />
+                <span>{t('studio.input.dropCap')}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Article Story -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputStory">
+              {t('studio.input.story')}
+            </label>
+            <textarea
+              id="inputStory"
+              rows="6"
+              class="w-full p-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors leading-relaxed"
+            >{defaultPreset.body}</textarea>
+          </div>
+
+        </div>
+
+        <!-- TAB 2: STYLE & PAPER (Aging, Halftone, Fonts, Weathering) -->
+        <div class="tab-content-pane space-y-5 hidden" id="tab-style">
+          
+          <!-- Typography Style -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-2">
+              {t('studio.style.font')}
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="fontPillSelector">
+              <button type="button" class="font-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-primary-pale text-ink-deep border-ink" data-font="gothic">
+                {t('studio.style.fontGothic')}
+              </button>
+              <button type="button" class="font-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-font="serif">
+                {t('studio.style.fontSerif')}
+              </button>
+              <button type="button" class="font-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-font="headline">
+                {t('studio.style.fontHeadline')}
+              </button>
+              <button type="button" class="font-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-font="tabloid">
+                {t('studio.style.fontTabloid')}
+              </button>
+              <button type="button" class="font-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-font="typewriter">
+                {t('studio.style.fontTypewriter')}
+              </button>
+            </div>
+          </div>
+
+          <!-- Paper Age Style -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-2">
+              {t('studio.style.paper')}
+            </label>
+            <div class="grid grid-cols-2 gap-2" id="paperStyleSelector">
+              <button type="button" class="paper-pill-btn py-2 px-3 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-primary-pale text-ink-deep border-ink" data-paper="1920">
+                {t('studio.style.paper1920')}
+              </button>
+              <button type="button" class="paper-pill-btn py-2 px-3 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-paper="1950">
+                {t('studio.style.paper1950')}
+              </button>
+              <button type="button" class="paper-pill-btn py-2 px-3 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-paper="burnt">
+                {t('studio.style.paperBurnt')}
+              </button>
+              <button type="button" class="paper-pill-btn py-2 px-3 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-paper="clean">
+                {t('studio.style.paperClean')}
+              </button>
+            </div>
+          </div>
+
+          <!-- Aging Intensity Range Slider -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-semibold text-ink" for="inputAgingRange">
+                {t('studio.style.aging')}
+              </label>
+              <span class="text-xs font-bold text-ink" id="agingValueBadge">70%</span>
+            </div>
+            <input
+              type="range"
+              id="inputAgingRange"
+              min="0"
+              max="100"
+              value="70"
+              class="w-full accent-primary cursor-pointer"
+            />
+          </div>
+
+          <!-- Degradation Checkboxes -->
+          <div class="pt-2 border-t border-black/10 space-y-2.5">
+            <label class="flex items-center gap-2.5 text-xs font-semibold text-ink cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="checkTornEdges"
+                class="w-4 h-4 rounded border-black/20 text-ink focus:ring-ink"
+                checked
+              />
+              <span>{t('studio.style.tornEdges')}</span>
+            </label>
+
+            <label class="flex items-center gap-2.5 text-xs font-semibold text-ink cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="checkCreaseLines"
+                class="w-4 h-4 rounded border-black/20 text-ink focus:ring-ink"
+                checked
+              />
+              <span>{t('studio.style.creases')}</span>
+            </label>
+
+            <label class="flex items-center gap-2.5 text-xs font-semibold text-ink cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="checkCoffeeStain"
+                class="w-4 h-4 rounded border-black/20 text-ink focus:ring-ink"
+                checked
+              />
+              <span>{t('studio.style.coffeeStain')}</span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- TAB 3: PHOTO FILTER (Upload, Halftone, Sepia, Captions) -->
+        <div class="tab-content-pane space-y-5 hidden" id="tab-photo">
+          
+          <!-- Photo Upload Dropzone -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-2">
+              {t('studio.photo.upload')}
+            </label>
+            <div
+              id="photoDropzoneWrap"
+              class="border-2 border-dashed border-black/20 hover:border-black/40 rounded-xl p-6 text-center cursor-pointer transition-colors bg-canvas-soft/40"
+            >
+              <input type="file" id="studioPhotoInput" accept="image/*" class="hidden" />
+              
+              <div id="dropzoneEmptyView">
+                <svg class="w-8 h-8 mx-auto mb-2 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <p class="text-xs font-bold text-ink mb-1">
+                  {t('studio.photo.drop')}
+                </p>
+                <p class="text-[11px] text-mute">
+                  {t('studio.photo.hint')}
+                </p>
+              </div>
+
+              <div id="dropzoneFilledView" class="hidden items-center justify-between">
+                <span id="uploadedPhotoName" class="text-xs font-bold text-ink truncate max-w-[200px]">
+                  photo.jpg
+                </span>
+                <button
+                  type="button"
+                  id="removePhotoBtn"
+                  class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-canvas text-ink border border-black/20 hover:bg-canvas-soft cursor-pointer"
+                >
+                  {t('studio.photo.remove')}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Halftone Photo Filter Selection -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-2">
+              {t('studio.photo.filter')}
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="photoFilterSelector">
+              <button type="button" class="filter-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-primary-pale text-ink-deep border-ink" data-filter="halftone">
+                {t('studio.photo.filterHalftone')}
+              </button>
+              <button type="button" class="filter-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-filter="sepia">
+                {t('studio.photo.filterSepia')}
+              </button>
+              <button type="button" class="filter-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-filter="contrast">
+                {t('studio.photo.filterContrast')}
+              </button>
+              <button type="button" class="filter-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-filter="grain">
+                {t('studio.photo.filterGrain')}
+              </button>
+              <button type="button" class="filter-pill-btn py-2 px-2.5 rounded-lg border border-black/15 text-xs font-semibold transition-colors text-center cursor-pointer bg-canvas text-ink hover:bg-canvas-soft" data-filter="none">
+                {t('studio.photo.filterNone')}
+              </button>
+            </div>
+          </div>
+
+          <!-- Photo Caption -->
+          <div>
+            <label class="block text-xs font-semibold text-ink mb-1.5" for="inputPhotoCaption">
+              {t('studio.photo.caption')}
+            </label>
+            <input
+              type="text"
+              id="inputPhotoCaption"
+              class="w-full h-11 px-3.5 rounded-md bg-canvas text-ink border border-black/20 focus:border-ink focus:ring-1 focus:ring-ink outline-none text-sm font-medium transition-colors"
+              value={defaultPreset.photoCaption}
+              placeholder={t('studio.photo.captionPlaceholder')}
+            />
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Live Preview Section (Dynamic Newspaper Wrapper) -->
+    <div class="lg:col-span-6 xl:col-span-7 lg:sticky lg:top-24">
+      <div class="bg-white rounded-xl border border-black/10 shadow-sm p-4 sm:p-6 overflow-hidden flex flex-col">
+        
+        <!-- Toolbar Above Live Preview -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-black/10">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-primary-pale text-ink-deep border border-black/5">
+              {t('studio.preview.badge')}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <!-- Copy to Clipboard -->
+            <button
+              type="button"
+              id="studioCopyBtn"
+              class="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-semibold text-xs border border-black/10 transition-colors cursor-pointer"
+              title={t('studio.btn.copy')}
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="hidden sm:inline">{t('studio.btn.copy')}</span>
+            </button>
+
+            <!-- Print -->
+            <button
+              type="button"
+              id="studioPrintBtn"
+              class="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-semibold text-xs border border-black/10 transition-colors cursor-pointer"
+              title={t('studio.btn.print')}
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              <span class="hidden sm:inline">{t('studio.btn.print')}</span>
+            </button>
+
+            <!-- Download 4K PNG (Wise Lime-Green 24px Pill Button) -->
+            <button
+              type="button"
+              id="studioDownloadBtn"
+              class="inline-flex items-center gap-1.5 h-10 px-4 sm:px-5 rounded-xl bg-primary hover:bg-primary-active text-ink font-semibold text-xs sm:text-sm transition-all duration-150 transform hover:-translate-y-0.5 shadow-sm whitespace-nowrap cursor-pointer"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>{t('studio.btn.download')}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Canvas Container Wrapper -->
+        <div class="w-full bg-[#f4f4f2] rounded-xl p-2 sm:p-4 flex items-center justify-center min-h-[420px] overflow-hidden border border-black/5 shadow-inner">
+          <canvas
+            id="studioNewspaperCanvas"
+            class="max-w-full h-auto rounded-lg shadow-xl block"
+          ></canvas>
+        </div>
+
+        <!-- Preview Info Footer -->
+        <p class="text-xs text-mute text-center mt-3 font-medium">
+          {t('studio.preview.hint')}
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  import { NewspaperEngine } from '../../scripts/generator-engine';
+  import { PRESETS, type NewspaperPreset } from '../../scripts/presets';
+  import confetti from 'canvas-confetti';
+
+  function setupStudio() {
+    const canvas = document.getElementById('studioNewspaperCanvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    let engine: NewspaperEngine | null = null;
+    try {
+      engine = new NewspaperEngine(canvas);
+    } catch (err) {
+      console.error('Failed to initialize NewspaperEngine:', err);
+      return;
+    }
+
+    // State
+    let currentPresetId = 'breaking-1920';
+    let currentPreset = PRESETS.find(p => p.id === currentPresetId) || PRESETS[0];
+    let userUploadedImage: HTMLImageElement | null = null;
+
+    let currentFont = currentPreset.fontStyle;
+    let currentPaper = currentPreset.paperStyle;
+    let currentAging = currentPreset.agingLevel;
+    let currentFilter = currentPreset.filter;
+
+    // DOM Elements
+    const inputTitle = document.getElementById('inputNewspaperTitle') as HTMLInputElement | null;
+    const inputTagline = document.getElementById('inputTagline') as HTMLInputElement | null;
+    const inputDate = document.getElementById('inputDate') as HTMLInputElement | null;
+    const inputIssue = document.getElementById('inputIssue') as HTMLInputElement | null;
+    const inputPrice = document.getElementById('inputPrice') as HTMLInputElement | null;
+    const inputWeatherRight = document.getElementById('inputWeatherRight') as HTMLInputElement | null;
+    const inputHeadline = document.getElementById('inputHeadline') as HTMLInputElement | null;
+    const inputSubheadline = document.getElementById('inputSubheadline') as HTMLInputElement | null;
+    const inputAuthor = document.getElementById('inputAuthor') as HTMLInputElement | null;
+    const selectColumns = document.getElementById('selectColumns') as HTMLSelectElement | null;
+    const checkDropCap = document.getElementById('checkDropCap') as HTMLInputElement | null;
+    const inputStory = document.getElementById('inputStory') as HTMLTextAreaElement | null;
+
+    const agingSlider = document.getElementById('inputAgingRange') as HTMLInputElement | null;
+    const agingBadge = document.getElementById('agingValueBadge');
+    const checkTornEdges = document.getElementById('checkTornEdges') as HTMLInputElement | null;
+    const checkCreaseLines = document.getElementById('checkCreaseLines') as HTMLInputElement | null;
+    const checkCoffeeStain = document.getElementById('checkCoffeeStain') as HTMLInputElement | null;
+
+    const photoInput = document.getElementById('studioPhotoInput') as HTMLInputElement | null;
+    const photoDropzone = document.getElementById('photoDropzoneWrap');
+    const dropzoneEmpty = document.getElementById('dropzoneEmptyView');
+    const dropzoneFilled = document.getElementById('dropzoneFilledView');
+    const uploadedPhotoName = document.getElementById('uploadedPhotoName');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+    const inputPhotoCaption = document.getElementById('inputPhotoCaption') as HTMLInputElement | null;
+
+    const resetBtn = document.getElementById('studioResetBtn');
+    const copyBtn = document.getElementById('studioCopyBtn');
+    const printBtn = document.getElementById('studioPrintBtn');
+    const downloadBtn = document.getElementById('studioDownloadBtn');
+
+    // Render helper
+    function triggerRender() {
+      if (!engine) return;
+
+      const cols = parseInt(selectColumns?.value || '2', 10) as 1 | 2 | 3;
+
+      const renderConfig = {
+        id: currentPresetId,
+        name: currentPreset.name,
+        category: currentPreset.category,
+        newspaperName: inputTitle?.value || 'THE DAILY CHRONICLE',
+        tagline: inputTagline?.value || '',
+        date: inputDate?.value || '',
+        issue: inputIssue?.value || '',
+        price: inputPrice?.value || '',
+        weatherLeft: currentPreset.weatherLeft || '',
+        weatherRight: inputWeatherRight?.value || '',
+        headline: inputHeadline?.value || '',
+        subheadline: inputSubheadline?.value || '',
+        author: inputAuthor?.value || '',
+        columns: cols,
+        body: inputStory?.value || '',
+        dropCap: checkDropCap?.checked ?? true,
+        paperStyle: currentPaper as '1920' | '1950' | 'burnt' | 'clean',
+        agingLevel: currentAging,
+        tornEdges: checkTornEdges?.checked ?? true,
+        creaseLines: checkCreaseLines?.checked ?? true,
+        coffeeStain: checkCoffeeStain?.checked ?? true,
+        fontStyle: currentFont as 'gothic' | 'serif' | 'headline' | 'tabloid' | 'typewriter',
+        filter: currentFilter as 'halftone' | 'sepia' | 'contrast' | 'grain' | 'none',
+        photoCaption: inputPhotoCaption?.value || '',
+        userImage: userUploadedImage,
+        scale: 1.5,
+      };
+
+      engine.render(renderConfig);
+    }
+
+    // Apply Preset Function
+    function applyPreset(presetId: string) {
+      const p = PRESETS.find(item => item.id === presetId);
+      if (!p) return;
+
+      currentPresetId = p.id;
+      currentPreset = p;
+
+      if (inputTitle) inputTitle.value = p.newspaperName;
+      if (inputTagline) inputTagline.value = p.tagline;
+      if (inputDate) inputDate.value = p.date;
+      if (inputIssue) inputIssue.value = p.issue;
+      if (inputPrice) inputPrice.value = p.price;
+      if (inputWeatherRight) inputWeatherRight.value = p.weatherRight;
+      if (inputHeadline) inputHeadline.value = p.headline;
+      if (inputSubheadline) inputSubheadline.value = p.subheadline;
+      if (inputAuthor) inputAuthor.value = p.author;
+      if (selectColumns) selectColumns.value = p.columns.toString();
+      if (checkDropCap) checkDropCap.checked = p.dropCap;
+      if (inputStory) inputStory.value = p.body;
+      if (inputPhotoCaption) inputPhotoCaption.value = p.photoCaption;
+
+      currentFont = p.fontStyle;
+      currentPaper = p.paperStyle;
+      currentAging = p.agingLevel;
+      currentFilter = p.filter;
+
+      if (agingSlider) agingSlider.value = p.agingLevel.toString();
+      if (agingBadge) agingBadge.textContent = `${p.agingLevel}%`;
+      if (checkTornEdges) checkTornEdges.checked = p.tornEdges;
+      if (checkCreaseLines) checkCreaseLines.checked = p.creaseLines;
+      if (checkCoffeeStain) checkCoffeeStain.checked = p.coffeeStain;
+
+      // Update button highlights
+      document.querySelectorAll('#templateSelectorGrid .preset-thumb-btn').forEach(btn => {
+        const btnId = btn.getAttribute('data-preset-id');
+        const active = btnId === presetId;
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+        if (active) {
+          btn.classList.add('border-ink', 'bg-primary-pale/40', 'shadow-xs', 'ring-2', 'ring-primary');
+          btn.classList.remove('border-black/10', 'bg-canvas-soft/60');
+        } else {
+          btn.classList.remove('border-ink', 'bg-primary-pale/40', 'shadow-xs', 'ring-2', 'ring-primary');
+          btn.classList.add('border-black/10', 'bg-canvas-soft/60');
+        }
+      });
+
+      updatePillSelectors();
+      triggerRender();
+    }
+
+    function updatePillSelectors() {
+      document.querySelectorAll('#fontPillSelector .font-pill-btn').forEach(btn => {
+        const font = btn.getAttribute('data-font');
+        if (font === currentFont) {
+          btn.classList.add('bg-primary-pale', 'text-ink-deep', 'border-ink');
+          btn.classList.remove('bg-canvas', 'text-ink');
+        } else {
+          btn.classList.remove('bg-primary-pale', 'text-ink-deep', 'border-ink');
+          btn.classList.add('bg-canvas', 'text-ink');
+        }
+      });
+
+      document.querySelectorAll('#paperStyleSelector .paper-pill-btn').forEach(btn => {
+        const paper = btn.getAttribute('data-paper');
+        if (paper === currentPaper) {
+          btn.classList.add('bg-primary-pale', 'text-ink-deep', 'border-ink');
+          btn.classList.remove('bg-canvas', 'text-ink');
+        } else {
+          btn.classList.remove('bg-primary-pale', 'text-ink-deep', 'border-ink');
+          btn.classList.add('bg-canvas', 'text-ink');
+        }
+      });
+
+      document.querySelectorAll('#photoFilterSelector .filter-pill-btn').forEach(btn => {
+        const filter = btn.getAttribute('data-filter');
+        if (filter === currentFilter) {
+          btn.classList.add('bg-primary-pale', 'text-ink-deep', 'border-ink');
+          btn.classList.remove('bg-canvas', 'text-ink');
+        } else {
+          btn.classList.remove('bg-primary-pale', 'text-ink-deep', 'border-ink');
+          btn.classList.add('bg-canvas', 'text-ink');
+        }
+      });
+    }
+
+    // Template Selector clicks
+    document.querySelectorAll('#templateSelectorGrid .preset-thumb-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const presetId = btn.getAttribute('data-preset-id');
+        if (presetId) applyPreset(presetId);
+      });
+    });
+
+    // Tab switching
+    document.querySelectorAll('.tab-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-target');
+        if (!target) return;
+
+        document.querySelectorAll('.tab-nav-btn').forEach(b => {
+          b.setAttribute('aria-selected', 'false');
+          b.classList.remove('bg-white', 'text-ink', 'shadow-xs');
+          b.classList.add('text-body');
+        });
+        btn.setAttribute('aria-selected', 'true');
+        btn.classList.add('bg-white', 'text-ink', 'shadow-xs');
+        btn.classList.remove('text-body');
+
+        document.querySelectorAll('.tab-content-pane').forEach(pane => {
+          if (pane.id === target) {
+            pane.classList.remove('hidden');
+          } else {
+            pane.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Input change listeners
+    const inputsToListen = [
+      inputTitle, inputTagline, inputDate, inputIssue, inputPrice,
+      inputWeatherRight, inputHeadline, inputSubheadline, inputAuthor,
+      inputStory, inputPhotoCaption
+    ];
+    inputsToListen.forEach(input => {
+      input?.addEventListener('input', () => triggerRender());
+    });
+
+    selectColumns?.addEventListener('change', () => triggerRender());
+    checkDropCap?.addEventListener('change', () => triggerRender());
+    checkTornEdges?.addEventListener('change', () => triggerRender());
+    checkCreaseLines?.addEventListener('change', () => triggerRender());
+    checkCoffeeStain?.addEventListener('change', () => triggerRender());
+
+    // Aging Slider
+    agingSlider?.addEventListener('input', (e) => {
+      const val = parseInt((e.target as HTMLInputElement).value, 10);
+      currentAging = val;
+      if (agingBadge) agingBadge.textContent = `${val}%`;
+      triggerRender();
+    });
+
+    // Font selection
+    document.querySelectorAll('#fontPillSelector .font-pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const font = btn.getAttribute('data-font');
+        if (font) {
+          currentFont = font as any;
+          updatePillSelectors();
+          triggerRender();
+        }
+      });
+    });
+
+    // Paper selection
+    document.querySelectorAll('#paperStyleSelector .paper-pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const paper = btn.getAttribute('data-paper');
+        if (paper) {
+          currentPaper = paper as any;
+          updatePillSelectors();
+          triggerRender();
+        }
+      });
+    });
+
+    // Photo Filter selection
+    document.querySelectorAll('#photoFilterSelector .filter-pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        if (filter) {
+          currentFilter = filter as any;
+          updatePillSelectors();
+          triggerRender();
+        }
+      });
+    });
+
+    // Photo Upload Handler
+    photoDropzone?.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement)?.id !== 'removePhotoBtn') {
+        photoInput?.click();
+      }
+    });
+
+    photoInput?.addEventListener('change', (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          userUploadedImage = img;
+          if (uploadedPhotoName) uploadedPhotoName.textContent = file.name;
+          if (dropzoneEmpty) dropzoneEmpty.classList.add('hidden');
+          if (dropzoneFilled) {
+            dropzoneFilled.classList.remove('hidden');
+            dropzoneFilled.classList.add('flex');
+          }
+          triggerRender();
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    removePhotoBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userUploadedImage = null;
+      if (photoInput) photoInput.value = '';
+      if (dropzoneEmpty) dropzoneEmpty.classList.remove('hidden');
+      if (dropzoneFilled) {
+        dropzoneFilled.classList.add('hidden');
+        dropzoneFilled.classList.remove('flex');
+      }
+      triggerRender();
+    });
+
+    // Reset button
+    resetBtn?.addEventListener('click', () => {
+      applyPreset('breaking-1920');
+    });
+
+    // Download 4K PNG
+    downloadBtn?.addEventListener('click', () => {
+      if (!canvas) return;
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.8 },
+      });
+
+      const link = document.createElement('a');
+      const filename = (inputTitle?.value || 'newspaper-clipping').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      link.download = `${filename}-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // Copy to Clipboard
+    copyBtn?.addEventListener('click', async () => {
+      if (!canvas) return;
+      try {
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob }),
+          ]);
+          alert('Copied to clipboard!');
+        });
+      } catch (err) {
+        console.warn('Clipboard copy failed:', err);
+      }
+    });
+
+    // Print
+    printBtn?.addEventListener('click', () => {
+      if (!canvas) return;
+      const dataUrl = canvas.toDataURL('image/png');
+      const win = window.open('', '_blank');
+      if (win) {
+        win.document.write(`
+          <html>
+            <head>
+              <title>Print Newspaper Clipping</title>
+              <style>
+                body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #222; }
+                img { max-width: 95vw; max-height: 95vh; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+                @media print { body { background: none; } img { width: 100%; box-shadow: none; } }
+              </style>
+            </head>
+            <body>
+              <img src="${dataUrl}" onload="window.print(); window.close();" />
+            </body>
+          </html>
+        `);
+        win.document.close();
+      }
+    });
+
+    // Initial render
+    triggerRender();
+  }
+
+  setupStudio();
+  document.addEventListener('astro:page-load', setupStudio);
+</script>
