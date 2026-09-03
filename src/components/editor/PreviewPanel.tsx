@@ -5,10 +5,12 @@ import TimesOfIndiaTemplate from '../templates/TimesOfIndiaTemplate';
 import GulfNewsTemplate from '../templates/GulfNewsTemplate';
 import JapanTimesTemplate from '../templates/JapanTimesTemplate';
 import KoreaHeraldTemplate from '../templates/KoreaHeraldTemplate';
+import GuardianTemplate from '../templates/GuardianTemplate';
+import LeMondeTemplate from '../templates/LeMondeTemplate';
 
 export interface PreviewPanelProps {
-  /** Template identifier: 'new-york-times', 'washington-post', 'times-of-india', 'gulf-news', 'japan-times', 'korea-herald', 'global-times', etc. */
-  template?: 'new-york-times' | 'The New York Times' | 'times-of-india' | 'The Times of India' | 'gulf-news' | 'Gulf News' | 'japan-times' | 'The Japan Times' | 'korea-herald' | 'The Korea Herald' | 'washington-post' | 'The Washington Post' | 'global-times' | 'Global Times' | string;
+  /** Template identifier: 'new-york-times', 'washington-post', 'the-guardian', 'le-monde', 'times-of-india', 'gulf-news', 'japan-times', 'korea-herald', 'global-times', etc. */
+  template?: 'new-york-times' | 'The New York Times' | 'the-guardian' | 'The Guardian' | 'le-monde' | 'Le Monde' | 'times-of-india' | 'The Times of India' | 'gulf-news' | 'Gulf News' | 'japan-times' | 'The Japan Times' | 'korea-herald' | 'The Korea Herald' | 'washington-post' | 'The Washington Post' | 'global-times' | 'Global Times' | string;
   date?: string;
   headline?: string;
   story?: string;
@@ -42,11 +44,47 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   const raw = (template || '').toLowerCase().trim();
   const isNYT = raw.includes('new york times') || raw.includes('new-york-times') || raw.includes('nyt');
   const isWaPo = raw.includes('washington post') || raw.includes('washington-post') || raw.includes('wapo');
+  const isGuardian = raw.includes('guardian') || raw.includes('the-guardian');
+  const isLeMonde = raw.includes('le monde') || raw.includes('le-monde') || raw.includes('lemonde');
   const isTOI = raw.includes('times of india') || raw.includes('times-of-india') || raw.includes('toi');
   const isGulfNews = raw.includes('gulf news') || raw.includes('gulf-news') || raw.includes('gn');
   const isJapanTimes = raw.includes('japan times') || raw.includes('japan-times') || raw.includes('jt');
   const isKoreaHerald = raw.includes('korea herald') || raw.includes('korea-herald') || raw.includes('kh');
   const isGlobalTimes = raw.includes('global times') || raw.includes('global-times');
+
+  if (isGuardian) {
+    return (
+      <GuardianTemplate
+        headline={headline}
+        story={story}
+        date={date}
+        image={imageUrl}
+        author={author}
+        subheadline={subheadline}
+        newspaperName={newspaperName}
+        tagline={tagline}
+        photoCaption={photoCaption}
+        className={className}
+      />
+    );
+  }
+
+  if (isLeMonde) {
+    return (
+      <LeMondeTemplate
+        headline={headline}
+        story={story}
+        date={date}
+        image={imageUrl}
+        author={author}
+        subheadline={subheadline}
+        newspaperName={newspaperName}
+        tagline={tagline}
+        photoCaption={photoCaption}
+        className={className}
+      />
+    );
+  }
 
   if (isNYT) {
     return (

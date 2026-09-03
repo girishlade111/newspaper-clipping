@@ -15,3 +15,9 @@ export type { JapanTimesProps } from './JapanTimesTemplate';
 
 export { default as KoreaHeraldTemplate } from './KoreaHeraldTemplate';
 export type { KoreaHeraldProps } from './KoreaHeraldTemplate';
+
+export { default as GuardianTemplate } from './GuardianTemplate';
+export type { GuardianProps } from './GuardianTemplate';
+
+export { default as LeMondeTemplate } from './LeMondeTemplate';
+export type { LeMondeProps } from './LeMondeTemplate';
