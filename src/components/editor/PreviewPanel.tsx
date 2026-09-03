@@ -1,12 +1,12 @@
 import React from 'react';
-import NewYorkTimesTemplate from '../templates/NewYorkTimesTemplate';
-import WashingtonPostTemplate from '../templates/WashingtonPostTemplate';
-import TimesOfIndiaTemplate from '../templates/TimesOfIndiaTemplate';
-import GulfNewsTemplate from '../templates/GulfNewsTemplate';
-import JapanTimesTemplate from '../templates/JapanTimesTemplate';
-import KoreaHeraldTemplate from '../templates/KoreaHeraldTemplate';
-import GuardianTemplate from '../templates/GuardianTemplate';
-import LeMondeTemplate from '../templates/LeMondeTemplate';
+import NewYorkTimesTemplate from '../templates/NewYorkTimesTemplate.tsx';
+import WashingtonPostTemplate from '../templates/WashingtonPostTemplate.tsx';
+import TimesOfIndiaTemplate from '../templates/TimesOfIndiaTemplate.tsx';
+import GulfNewsTemplate from '../templates/GulfNewsTemplate.tsx';
+import JapanTimesTemplate from '../templates/JapanTimesTemplate.tsx';
+import KoreaHeraldTemplate from '../templates/KoreaHeraldTemplate.tsx';
+import GuardianTemplate from '../templates/GuardianTemplate.tsx';
+import LeMondeTemplate from '../templates/LeMondeTemplate.tsx';
 
 export interface PreviewPanelProps {
   /** Template identifier: 'new-york-times', 'washington-post', 'the-guardian', 'le-monde', 'times-of-india', 'gulf-news', 'japan-times', 'korea-herald', 'global-times', etc. */
