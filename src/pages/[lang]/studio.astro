@@ -14,7 +14,7 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params as { lang: SupportedLanguage };
 const t = useTranslations(lang);
-const presetParam = Astro.url.searchParams.get('preset') || 'breaking-1920';
+const presetParam = Astro.url.searchParams.get('preset') || Astro.url.searchParams.get('template') || 'times-of-india';
 ---
 
 <Layout
