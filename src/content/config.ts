@@ -12,7 +12,7 @@ const blogCollection = defineCollection({
     featuredImage: z.string().optional(),
     tags: z.array(z.string()).default(['vintage', 'design']),
     category: z.string().default('Design'),
-    language: z.enum(['en', 'es', 'fr', 'de', 'hi', 'ja']).default('en'),
+    language: z.enum(['en', 'zh', 'pt-BR', 'ru', 'ja', 'tr', 'ko', 'es', 'fr', 'de', 'hi']).default('en'),
     draft: z.boolean().default(false),
   }),
 });

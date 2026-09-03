@@ -1,6 +1,7 @@
 ---
 import type { SupportedLanguage } from '../i18n/ui';
 import { languages, defaultLang } from '../i18n/ui';
+import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -27,8 +28,8 @@ const siteUrl = (Astro.site ? Astro.site.toString() : 'https://newspaper-clippin
 const currentPath = Astro.url.pathname;
 
 // Strip any active language sub-path to obtain the canonical base path
-// Examples: '/pt-br/templates' -> '/templates', '/zh/' -> '/', '/' -> '/'
-const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-br|ru|ja|tr|ko)(?:\/|$)/, '/');
+// Examples: '/pt-BR/templates' -> '/templates', '/zh/' -> '/', '/' -> '/'
+const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-br|pt-BR|ru|ja|tr|ko)(?:\/|$)/i, '/');
 const cleanSubpath = pathWithoutLang === '/' ? '' : pathWithoutLang;
 
 // Construct dynamic alternate links for international technical SEO
@@ -124,49 +125,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
   </head>
 
   <body class="bg-canvas-soft text-ink font-body min-h-screen flex flex-col antialiased">
-    {!hideHeader && (
-      <header class="sticky top-0 z-40 bg-white border-b border-black/10 transition-colors">
-        <div class="max-w-[1240px] mx-auto px-6 h-16 flex items-center justify-between">
-          <a href={lang === defaultLang ? '/' : `/${languages[lang]?.subpath || lang}/`} class="flex items-center gap-3 group">
-            <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center font-black text-ink text-sm shadow-sm transition-transform group-hover:scale-105">
-              VP
-            </div>
-            <span class="font-extrabold text-lg tracking-tight text-ink font-display">
-              The Vintage Press
-            </span>
-          </a>
-
-          <!-- Desktop Navigation Items -->
-          <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-ink">
-            <a href={lang === defaultLang ? '/' : `/${languages[lang]?.subpath || lang}/`} class="hover:text-black/70 transition-colors">
-              Home
-            </a>
-            <a href="#studio" class="hover:text-black/70 transition-colors">
-              Generator Studio
-            </a>
-            <a href={lang === defaultLang ? '/templates' : `/${languages[lang]?.subpath || lang}/templates`} class="hover:text-black/70 transition-colors">
-              Templates
-            </a>
-            <a href={lang === defaultLang ? '/blog' : `/${languages[lang]?.subpath || lang}/blog`} class="hover:text-black/70 transition-colors">
-              Blog
-            </a>
-            <a href={lang === defaultLang ? '/about' : `/${languages[lang]?.subpath || lang}/about`} class="hover:text-black/70 transition-colors">
-              About
-            </a>
-          </nav>
-
-          <!-- Right Side CTA: Signature Wise Lime-Green 24px Pill Button -->
-          <div class="flex items-center gap-3">
-            <a
-              href="#studio"
-              class="hidden sm:inline-flex items-center justify-center h-12 px-6 rounded-xl bg-primary hover:bg-primary-active text-ink font-semibold text-base transition-all duration-150 transform hover:-translate-y-0.5"
-            >
-              Create Clipping
-            </a>
-          </div>
-        </div>
-      </header>
-    )}
+    {!hideHeader && <Navbar lang={lang} currentPath={currentPath} />}
 
     <!-- Main Content Area -->
     <main class="flex-1">

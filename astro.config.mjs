@@ -18,7 +18,7 @@ export default defineConfig({
         locales: {
           en: 'en-US',
           zh: 'zh-CN',
-          'pt-br': 'pt-BR',
+          'pt-BR': 'pt-BR',
           ru: 'ru-RU',
           ja: 'ja-JP',
           tr: 'tr-TR',
@@ -32,10 +32,7 @@ export default defineConfig({
     locales: [
       'en',
       'zh',
-      {
-        path: 'pt-br',
-        codes: ['pt-BR', 'pt'],
-      },
+      'pt-BR',
       'ru',
       'ja',
       'tr',

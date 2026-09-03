@@ -1,0 +1,281 @@
+---
+import { languages, type SupportedLanguage } from '../i18n/ui';
+import { useTranslations, getRelativeLocaleUrl } from '../i18n/utils';
+
+interface Props {
+  lang?: SupportedLanguage;
+  currentPath?: string;
+}
+
+const { lang = 'en', currentPath = Astro.url.pathname } = Astro.props;
+const t = useTranslations(lang);
+
+// Construct localized URLs for language switching
+function getSwitchLocaleUrl(targetLang: SupportedLanguage): string {
+  let path = currentPath;
+
+  // Strip leading locale prefix if present
+  const segments = path.split('/').filter(Boolean);
+  if (segments.length > 0) {
+    const firstSeg = segments[0];
+    const isLocale = Object.entries(languages).some(
+      ([code, cfg]) =>
+        code.toLowerCase() === firstSeg.toLowerCase() ||
+        cfg.subpath.toLowerCase() === firstSeg.toLowerCase()
+    );
+    if (isLocale) {
+      path = '/' + segments.slice(1).join('/');
+    }
+  }
+
+  if (!path.startsWith('/')) path = '/' + path;
+  if (path === '/') path = '';
+
+  return getRelativeLocaleUrl(targetLang, path);
+}
+
+const homeUrl = getRelativeLocaleUrl(lang, '');
+const blogUrl = getRelativeLocaleUrl(lang, 'blog');
+const faqUrl = currentPath === '/' || currentPath === `/${languages[lang]?.subpath}/` || currentPath === `/${languages[lang]?.subpath}`
+  ? '#faq'
+  : getRelativeLocaleUrl(lang, '#faq');
+const studioUrl = currentPath === '/' || currentPath === `/${languages[lang]?.subpath}/` || currentPath === `/${languages[lang]?.subpath}`
+  ? '#studio'
+  : getRelativeLocaleUrl(lang, '#studio');
+---
+
+<header class="navbar-root sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-black/10 transition-colors">
+  <div class="max-w-[1240px] mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-4">
+    
+    <!-- 1. Left: Brand Logo -->
+    <a href={homeUrl} class="flex items-center gap-2.5 sm:gap-3 shrink-0 group py-1" aria-label="The Vintage Press Home">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-primary flex items-center justify-center font-black text-ink text-sm shadow-sm transition-transform duration-200 group-hover:scale-105 shrink-0">
+        VP
+      </div>
+      <div class="flex flex-col whitespace-nowrap">
+        <span class="font-extrabold text-base sm:text-lg tracking-tight text-ink font-display leading-tight">
+          The Vintage Press
+        </span>
+        <span class="text-[10px] font-bold uppercase tracking-wider text-mute">
+          Clipping Studio
+        </span>
+      </div>
+    </a>
+
+    <!-- 2. Center: Professional Text Links (Strictly ONLY "Blog" and "FAQ") -->
+    <nav class="hidden md:flex items-center gap-4 lg:gap-6 shrink-0" aria-label="Main Navigation">
+      <a 
+        href={blogUrl} 
+        class="nav-link text-body hover:text-ink font-semibold text-sm whitespace-nowrap px-3 py-1.5 rounded-full transition-all duration-150 hover:bg-black/5"
+      >
+        {t('nav.blog')}
+      </a>
+      <a 
+        href={faqUrl} 
+        class="nav-link text-body hover:text-ink font-semibold text-sm whitespace-nowrap px-3 py-1.5 rounded-full transition-all duration-150 hover:bg-black/5"
+      >
+        {t('nav.faq')}
+      </a>
+    </nav>
+
+    <!-- 3. Right Action Group: Language Switcher + "Create Clipping" CTA Pill -->
+    <div class="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
+      
+      <!-- Language Switcher Dropdown (Strictly 7 unique languages, NO duplicates) -->
+      <div class="relative language-dropdown-wrapper" id="navbarLangDropdown">
+        <button
+          type="button"
+          class="inline-flex items-center gap-1.5 sm:gap-2 h-10 px-3 sm:px-3.5 rounded-pill bg-canvas-soft hover:bg-[#dce1da] text-ink font-semibold text-xs border border-black/10 transition-all duration-150 whitespace-nowrap shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
+          id="navbarLangBtn"
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-label={t('nav.language')}
+        >
+          <span class="text-sm leading-none shrink-0">{languages[lang]?.flag || '🌐'}</span>
+          <span class="hidden sm:inline font-bold leading-none">{languages[lang]?.label}</span>
+          <svg class="w-3.5 h-3.5 text-ink/70 transition-transform duration-200 shrink-0" id="navbarLangChevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Dropdown Menu items -->
+        <div
+          class="absolute right-0 mt-2 w-48 py-2 bg-white rounded-xl shadow-xl border border-black/10 hidden z-50 transition-all duration-150 overflow-hidden"
+          id="navbarLangList"
+          role="menu"
+          aria-orientation="vertical"
+        >
+          <div class="px-3.5 py-1 text-[10px] font-bold text-mute uppercase tracking-wider border-b border-black/5 mb-1 whitespace-nowrap">
+            {t('nav.language')}
+          </div>
+          {Object.entries(languages).map(([code, info]) => {
+            const isCurrent = code === lang;
+            const targetUrl = getSwitchLocaleUrl(code as SupportedLanguage);
+            return (
+              <a
+                href={targetUrl}
+                class={`flex items-center justify-between px-3.5 py-2 text-xs transition-colors whitespace-nowrap ${
+                  isCurrent 
+                    ? 'bg-primary-pale text-ink-deep font-bold' 
+                    : 'text-ink hover:bg-canvas-soft font-medium'
+                }`}
+                role="menuitem"
+                data-lang={code}
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="text-sm leading-none shrink-0">{info.flag}</span>
+                  <span class="truncate">{info.label}</span>
+                </div>
+                {isCurrent && (
+                  <svg class="w-3.5 h-3.5 text-positive-deep shrink-0 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Right CTA Button: Canonical Wise Lime-Green 24px Pill Button (DESIGN.md) -->
+      <a
+        href={studioUrl}
+        class="hidden sm:inline-flex items-center justify-center h-10 sm:h-11 px-4 sm:px-5 lg:px-6 rounded-xl bg-primary hover:bg-primary-active text-ink font-semibold text-xs sm:text-sm transition-all duration-150 transform hover:-translate-y-0.5 whitespace-nowrap shadow-xs"
+      >
+        <span>{t('nav.createClipping')}</span>
+        <svg class="w-3.5 h-3.5 ml-1.5 text-ink stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+
+      <!-- Mobile Hamburger Button -->
+      <button
+        type="button"
+        class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-canvas-soft text-ink border border-black/10 hover:bg-[#dce1da] transition-colors shrink-0"
+        id="navbarMobileToggle"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+      >
+        <svg class="w-5 h-5" id="navbarHamburgerIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg class="w-5 h-5 hidden" id="navbarCloseIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu (Collapsible for small screens) -->
+  <div class="md:hidden hidden border-t border-black/10 bg-white px-4 py-4 space-y-3 shadow-lg" id="navbarMobileMenu">
+    <nav class="flex flex-col space-y-2">
+      <a 
+        href={blogUrl} 
+        class="px-3 py-2 text-sm font-semibold text-ink hover:bg-canvas-soft rounded-lg transition-colors whitespace-nowrap"
+      >
+        {t('nav.blog')}
+      </a>
+      <a 
+        href={faqUrl} 
+        class="px-3 py-2 text-sm font-semibold text-ink hover:bg-canvas-soft rounded-lg transition-colors whitespace-nowrap"
+      >
+        {t('nav.faq')}
+      </a>
+    </nav>
+    <div class="pt-2 border-t border-black/5">
+      <a
+        href={studioUrl}
+        class="w-full inline-flex items-center justify-center h-11 px-5 rounded-xl bg-primary hover:bg-primary-active text-ink font-semibold text-sm transition-colors whitespace-nowrap text-center"
+      >
+        <span>{t('nav.createClipping')}</span>
+        <svg class="w-3.5 h-3.5 ml-1.5 text-ink stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  function setupNavbar() {
+    // Language Dropdown
+    const langBtn = document.getElementById('navbarLangBtn');
+    const langList = document.getElementById('navbarLangList');
+    const langChevron = document.getElementById('navbarLangChevron');
+
+    if (langBtn && langList) {
+      // Toggle dropdown
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = langList.classList.contains('hidden');
+        if (isHidden) {
+          langList.classList.remove('hidden');
+          langBtn.setAttribute('aria-expanded', 'true');
+          if (langChevron) langChevron.classList.add('rotate-180');
+        } else {
+          langList.classList.add('hidden');
+          langBtn.setAttribute('aria-expanded', 'false');
+          if (langChevron) langChevron.classList.remove('rotate-180');
+        }
+      });
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (!langList.classList.contains('hidden')) {
+          langList.classList.add('hidden');
+          langBtn.setAttribute('aria-expanded', 'false');
+          if (langChevron) langChevron.classList.remove('rotate-180');
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !langList.classList.contains('hidden')) {
+          langList.classList.add('hidden');
+          langBtn.setAttribute('aria-expanded', 'false');
+          if (langChevron) langChevron.classList.remove('rotate-180');
+          langBtn.focus();
+        }
+      });
+    }
+
+    // Mobile Hamburger Toggle
+    const mobileToggle = document.getElementById('navbarMobileToggle');
+    const mobileMenu = document.getElementById('navbarMobileMenu');
+    const hamburgerIcon = document.getElementById('navbarHamburgerIcon');
+    const closeIcon = document.getElementById('navbarCloseIcon');
+
+    if (mobileToggle && mobileMenu) {
+      mobileToggle.addEventListener('click', () => {
+        const isClosed = mobileMenu.classList.contains('hidden');
+        if (isClosed) {
+          mobileMenu.classList.remove('hidden');
+          mobileToggle.setAttribute('aria-expanded', 'true');
+          hamburgerIcon?.classList.add('hidden');
+          closeIcon?.classList.remove('hidden');
+        } else {
+          mobileMenu.classList.add('hidden');
+          mobileToggle.setAttribute('aria-expanded', 'false');
+          hamburgerIcon?.classList.remove('hidden');
+          closeIcon?.classList.add('hidden');
+        }
+      });
+
+      // Close mobile menu on link click
+      mobileMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          mobileToggle.setAttribute('aria-expanded', 'false');
+          hamburgerIcon?.classList.remove('hidden');
+          closeIcon?.classList.add('hidden');
+        });
+      });
+    }
+  }
+
+  setupNavbar();
+  document.addEventListener('astro:page-load', setupNavbar);
+</script>

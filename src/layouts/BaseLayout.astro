@@ -1,5 +1,5 @@
 ---
-import Header from '../components/common/Header.astro';
+import Navbar from '../components/Navbar.astro';
 import Footer from '../components/common/Footer.astro';
 import Seo from '../components/common/Seo.astro';
 import Toast from '../components/common/Toast.astro';
@@ -32,7 +32,7 @@ const langInfo = languages[lang] || languages['en'];
     <Seo title={title} description={description} image={image} article={article} lang={lang} />
   </head>
   <body>
-    <Header lang={lang} />
+    <Navbar lang={lang} />
     <main>
       <slot />
     </main>

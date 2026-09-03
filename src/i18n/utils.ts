@@ -5,8 +5,14 @@ export function getLangFromUrl(url: URL): SupportedLanguage {
   if (!rawSub) return defaultLang;
 
   // Find matching language by subpath or key
+  const normalizedSub = rawSub.toLowerCase();
   for (const [key, config] of Object.entries(languages)) {
-    if (config.subpath === rawSub || key === rawSub) {
+    if (
+      config.subpath === rawSub ||
+      key === rawSub ||
+      config.subpath.toLowerCase() === normalizedSub ||
+      key.toLowerCase() === normalizedSub
+    ) {
       return key as SupportedLanguage;
     }
   }

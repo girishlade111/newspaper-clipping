@@ -14,7 +14,7 @@ export const DEFAULT_LOCALE: SupportedLocale = 'en';
 export const LOCALE_SUBPATHS: Record<SupportedLocale, string> = {
   en: '',
   zh: 'zh',
-  'pt-BR': 'pt-br',
+  'pt-BR': 'pt-BR',
   ru: 'ru',
   ja: 'ja',
   tr: 'tr',

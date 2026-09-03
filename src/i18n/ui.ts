@@ -4,14 +4,6 @@
  * UI/UX Tone: Calm editorial Scandinavian fintech aesthetic based on DESIGN.md
  */
 
-const ptBrConfig = {
-  label: 'Português (Brasil)',
-  flag: '🇧🇷',
-  dir: 'ltr',
-  subpath: 'pt-br',
-  hreflang: 'pt-BR',
-} as const;
-
 export const languages = {
   en: {
     label: 'English',
@@ -27,8 +19,13 @@ export const languages = {
     subpath: 'zh',
     hreflang: 'zh',
   },
-  'pt-br': ptBrConfig,
-  'pt-BR': ptBrConfig,
+  'pt-BR': {
+    label: 'Português (Brasil)',
+    flag: '🇧🇷',
+    dir: 'ltr',
+    subpath: 'pt-BR',
+    hreflang: 'pt-BR',
+  },
   ru: {
     label: 'Русский',
     flag: '🇷🇺',
@@ -68,10 +65,12 @@ export const defaultUI = {
   'nav.generator': 'Generator Studio',
   'nav.templates': 'Templates',
   'nav.blog': 'Blog',
-  'nav.about': 'About',
+  'nav.faq': 'FAQ',
   'nav.create': 'Create Clipping',
   'nav.createNow': 'Create Clipping',
+  'nav.createClipping': 'Create Clipping',
   'nav.language': 'Language',
+  'nav.about': 'About',
 
   // Buttons & CTAs (strictly adhering to DESIGN.md 24px pill buttons)
   'btn.launch': 'Launch Studio Now',
@@ -219,16 +218,49 @@ export const defaultUI = {
   'gen.downloadPng': 'Download 4K PNG',
 };
 
+export const chineseUI: Partial<Record<keyof typeof defaultUI, string>> = {
+  'nav.home': '首页',
+  'nav.blog': '博客',
+  'nav.faq': '常见问题',
+  'nav.language': '语言',
+  'nav.create': '创建剪报',
+  'nav.createNow': '创建剪报',
+  'nav.createClipping': '创建剪报',
+  'nav.about': '关于',
+};
+
+export const portugueseUI: Partial<Record<keyof typeof defaultUI, string>> = {
+  'nav.home': 'Início',
+  'nav.blog': 'Blog',
+  'nav.faq': 'Perguntas Frequentes',
+  'nav.language': 'Idioma',
+  'nav.create': 'Criar Recorte',
+  'nav.createNow': 'Criar Recorte',
+  'nav.createClipping': 'Criar Recorte',
+  'nav.about': 'Sobre',
+};
+
+export const russianUI: Partial<Record<keyof typeof defaultUI, string>> = {
+  'nav.home': 'Главная',
+  'nav.blog': 'Блог',
+  'nav.faq': 'Частые вопросы',
+  'nav.language': 'Язык',
+  'nav.create': 'Создать вырезку',
+  'nav.createNow': 'Создать вырезку',
+  'nav.createClipping': 'Создать вырезку',
+  'nav.about': 'О проекте',
+};
+
 export const japaneseUI: Partial<Record<keyof typeof defaultUI, string>> = {
   // Navigation
   'nav.home': 'ホーム',
-  'nav.generator': 'ジェネレータースタジオ',
-  'nav.templates': 'テンプレート',
   'nav.blog': 'ブログ',
+  'nav.faq': 'よくある質問',
+  'nav.language': '言語',
   'nav.about': '当サイトについて',
   'nav.create': '切り抜きを作成',
   'nav.createNow': '切り抜きを作成',
-  'nav.language': '言語',
+  'nav.createClipping': '切り抜きを作成',
 
   // Buttons & CTAs
   'btn.launch': 'スタジオを起動',
@@ -304,15 +336,36 @@ export const japaneseUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'footer.allRights': '全著作権所有。',
 };
 
-export const ui: Record<string, Record<string, string>> = {
+export const turkishUI: Partial<Record<keyof typeof defaultUI, string>> = {
+  'nav.home': 'Ana Sayfa',
+  'nav.blog': 'Blog',
+  'nav.faq': 'SSS',
+  'nav.language': 'Dil',
+  'nav.create': 'Kupür Oluştur',
+  'nav.createNow': 'Kupür Oluştur',
+  'nav.createClipping': 'Kupür Oluştur',
+  'nav.about': 'Hakkında',
+};
+
+export const koreanUI: Partial<Record<keyof typeof defaultUI, string>> = {
+  'nav.home': '홈',
+  'nav.blog': '블로그',
+  'nav.faq': '자주 묻는 질문',
+  'nav.language': '언어',
+  'nav.create': '신문 스크랩 만들기',
+  'nav.createNow': '신문 스크랩 만들기',
+  'nav.createClipping': '신문 스크랩 만들기',
+  'nav.about': '소개',
+};
+
+export const ui: Record<SupportedLanguage, Record<string, string>> = {
   en: defaultUI,
-  zh: defaultUI,
-  'pt-br': defaultUI,
-  'pt-BR': defaultUI,
-  ru: defaultUI,
+  zh: { ...defaultUI, ...chineseUI },
+  'pt-BR': { ...defaultUI, ...portugueseUI },
+  ru: { ...defaultUI, ...russianUI },
   ja: { ...defaultUI, ...japaneseUI },
-  tr: defaultUI,
-  ko: defaultUI,
+  tr: { ...defaultUI, ...turkishUI },
+  ko: { ...defaultUI, ...koreanUI },
 };
 
 export type UIKey = keyof typeof defaultUI;
