@@ -52,8 +52,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   const isKoreaHerald = raw.includes('korea herald') || raw.includes('korea-herald') || raw.includes('kh');
   const isGlobalTimes = raw.includes('global times') || raw.includes('global-times');
 
+  let templateContent: React.ReactNode = null;
+
   if (isGuardian) {
-    return (
+    templateContent = (
       <GuardianTemplate
         headline={headline}
         story={story}
@@ -64,13 +66,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isLeMonde) {
-    return (
+  } else if (isLeMonde) {
+    templateContent = (
       <LeMondeTemplate
         headline={headline}
         story={story}
@@ -81,13 +80,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isNYT) {
-    return (
+  } else if (isNYT) {
+    templateContent = (
       <NewYorkTimesTemplate
         headline={headline}
         story={story}
@@ -97,13 +93,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         subheadline={subheadline}
         newspaperName={newspaperName}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isWaPo) {
-    return (
+  } else if (isWaPo) {
+    templateContent = (
       <WashingtonPostTemplate
         headline={headline}
         story={story}
@@ -114,13 +107,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isTOI) {
-    return (
+  } else if (isTOI) {
+    templateContent = (
       <TimesOfIndiaTemplate
         headline={headline}
         story={story}
@@ -131,13 +121,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isGulfNews) {
-    return (
+  } else if (isGulfNews) {
+    templateContent = (
       <GulfNewsTemplate
         headline={headline}
         story={story}
@@ -148,13 +135,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isJapanTimes) {
-    return (
+  } else if (isJapanTimes) {
+    templateContent = (
       <JapanTimesTemplate
         headline={headline}
         story={story}
@@ -165,13 +149,10 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
     );
-  }
-
-  if (isKoreaHerald) {
-    return (
+  } else if (isKoreaHerald) {
+    templateContent = (
       <KoreaHeraldTemplate
         headline={headline}
         story={story}
@@ -182,8 +163,19 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         newspaperName={newspaperName}
         tagline={tagline}
         photoCaption={photoCaption}
-        className={className}
       />
+    );
+  }
+
+  if (templateContent) {
+    return (
+      <div
+        className={`w-full relative transition-all duration-200 ${className}`}
+        id="previewPanelContainer"
+        data-selected-template={raw}
+      >
+        {templateContent}
+      </div>
     );
   }
 
