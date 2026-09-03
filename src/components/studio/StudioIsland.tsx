@@ -866,7 +866,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => handleExport('png')}
+                  onClick={() => { console.log("Button clicked!"); handleExport('png'); }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download high-resolution PNG"
                 >
@@ -875,7 +875,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => handleExport('jpg')}
+                  onClick={() => { console.log("Button clicked!"); handleExport('jpg'); }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download JPEG format"
                 >
@@ -884,7 +884,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => handleExport('pdf')}
+                  onClick={() => { console.log("Button clicked!"); handleExport('pdf'); }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Export Archival PDF"
                 >
