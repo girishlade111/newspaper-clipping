@@ -3,3 +3,9 @@ export type { NewYorkTimesProps } from './NewYorkTimesTemplate';
 
 export { default as WashingtonPostTemplate } from './WashingtonPostTemplate';
 export type { WashingtonPostProps } from './WashingtonPostTemplate';
+
+export { default as TimesOfIndiaTemplate } from './TimesOfIndiaTemplate';
+export type { TimesOfIndiaProps } from './TimesOfIndiaTemplate';
+
+export { default as GulfNewsTemplate } from './GulfNewsTemplate';
+export type { GulfNewsProps } from './GulfNewsTemplate';
