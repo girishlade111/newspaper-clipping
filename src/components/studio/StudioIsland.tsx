@@ -905,7 +905,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => handleExport('4k')}
+                  onClick={() => { console.log("Button clicked!"); handleExport('4k'); }}
                   className="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-active text-ink font-black text-xs transition-all shadow-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer ml-1"
                 >
                   <svg className="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
