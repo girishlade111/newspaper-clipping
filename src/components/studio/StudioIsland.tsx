@@ -866,29 +866,29 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => { console.log("Button clicked!"); handleExport('png'); }}
+                  onClick={() => { console.log("Button clicked!"); exportAsPNG(false); }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download high-resolution PNG"
                 >
-                  <span>{isExporting && exportFormat === 'PNG' ? 'Exporting...' : 'PNG'}</span>
+                  <span>{isExporting ? 'Exporting...' : 'PNG'}</span>
                 </button>
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => { console.log("Button clicked!"); handleExport('jpg'); }}
+                  onClick={() => { console.log("Button clicked!"); exportAsJPG(); }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download JPEG format"
                 >
-                  <span>{isExporting && exportFormat === 'JPG' ? 'Exporting...' : 'JPG'}</span>
+                  <span>{isExporting ? 'Exporting...' : 'JPG'}</span>
                 </button>
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={() => { console.log("Button clicked!"); handleExport('pdf'); }}
+                  onClick={() => { console.log("Button clicked!"); exportAsPDF(); }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Export Archival PDF"
                 >
-                  <span>{isExporting && exportFormat === 'PDF' ? 'Exporting...' : 'PDF'}</span>
+                  <span>{isExporting ? 'Exporting...' : 'PDF'}</span>
                 </button>
                 <button
                   type="button"
