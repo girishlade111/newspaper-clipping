@@ -144,6 +144,75 @@ export async function exportAsPDF(element: HTMLElement): Promise<void> {
     pdf.addImage(imgData, 'JPEG', offsetX, offsetY, renderWidth, renderHeight);
     pdf.save(`${BASE_FILENAME}.pdf`);
   } catch (err) {
+
+// =========================================================================
+// Public API: Print
+// =========================================================================
+
+/**
+ * Print the clipping by opening a new window containing only the element's
+ * HTML plus the current page's stylesheets, then invoking the print dialog.
+ */
+export function printClipping(element: HTMLElement): void {
+  assertBrowser();
+
+  const printWindow = window.open('', '_blank', 'width=900,height=1000');
+  if (!printWindow) {
+    alert('Popup blocked! Please allow popups for this site to print your clipping.');
+    return;
+  }
+
+  // Collect current page CSS: <link rel="stylesheet"> + inline <style> tags
+  const styles = Array.from(
+    document.querySelectorAll<HTMLLinkElement | HTMLStyleElement>(
+      'link[rel="stylesheet"], style'
+    )
+  )
+    .map((node) => node.outerHTML)
+    .join('\n');
+
+  printWindow.document.open();
+  printWindow.document.write(`<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Newspaper Clipping</title>
+    ${styles}
+    <style>
+      /* Print-specific reset: isolate the clipping and avoid page breaks */
+      html, body { margin: 0; padding: 0; background: #fff; }
+      @media print {
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        @page { margin: 0; }
+      }
+    </style>
+  </head>
+  <body>${element.innerHTML}</body>
+</html>`);
+  printWindow.document.close();
+
+  // Wait for styles/images inside the print window to load before printing
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+    // Give the browser a moment before closing (Safari quirk)
+    setTimeout(() => printWindow.close(), 500);
+  };
+
+  // Fallback if onload already fired (document.write timing differences)
+  setTimeout(() => {
+    if (!printWindow.closed) {
+      try {
+        printWindow.focus();
+        printWindow.print();
+        setTimeout(() => printWindow.close(), 500);
+      } catch {
+        /* window already closed by the onload handler */
+      }
+    }
+  }, 1000);
+}
+
     console.error('Failed to export PDF:', err);
     throw new Error('PDF export failed. Please try again.');
   }
