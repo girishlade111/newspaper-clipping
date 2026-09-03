@@ -150,6 +150,7 @@ export async function exportAsImage(
   try {
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    await new Promise(resolve => setTimeout(resolve, 500));
     const html2canvas = (await import('html2canvas')).default;
     const onclone = getOnClone();
     if (format === 'jpeg') {
