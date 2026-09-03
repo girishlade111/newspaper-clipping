@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PreviewPanel from '../editor/PreviewPanel';
 import {
-  downloadAsPNG,
-  downloadAsJPG,
-  downloadAsPDF,
   downloadAsSVG,
   saveToDrafts,
   captureThumbnail,
 } from '../../utils/exportAndStorage';
+import {
+  exportAsImage,
+  exportAsPDF,
+  printClipping,
+} from '../../utils/exportEngine';
 
 export interface TemplatePreset {
   id: string;
@@ -266,6 +268,10 @@ function StudioIslandInner({
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [exportFormat, setExportFormat] = useState<string>('');
+
+  // Ref attached to the outermost wrapper of the rendered Newspaper Template.
+  // This is the exact node captured by the export engine (PNG/JPG/4K/PDF/Print).
+  const clippingRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
@@ -410,41 +416,46 @@ function StudioIslandInner({
     }
   };
 
-  // Export Handlers
-  const handleExport = async (format: 'png' | 'jpg' | 'svg' | 'pdf') => {
-    const targetEl = document.getElementById('previewPanelContainer');
+  // Export Handlers — capture the live preview node via clippingRef
+  const handleExport = async (kind: 'png' | 'jpg' | 'svg' | 'pdf' | '4k') => {
+    const targetEl = clippingRef.current;
     if (!targetEl) return;
 
     setIsExporting(true);
-    setExportFormat(format.toUpperCase());
-    const filename = `${selectedTemplate}-clipping-${Date.now()}.${format}`;
+    setExportFormat(kind.toUpperCase());
 
     try {
-      switch (format) {
+      switch (kind) {
         case 'png':
-          await downloadAsPNG(targetEl, filename);
+          await exportAsImage(targetEl, 'png', false);
           break;
         case 'jpg':
-          await downloadAsJPG(targetEl, filename);
+          await exportAsImage(targetEl, 'jpeg', false);
           break;
-        case 'svg':
-          await downloadAsSVG(targetEl, filename);
+        case '4k':
+          // 4K export renders at 4x scale — may take a moment on large clippings
+          await exportAsImage(targetEl, 'png', true);
           break;
         case 'pdf':
-          await downloadAsPDF(targetEl, filename);
+          await exportAsPDF(targetEl);
+          break;
+        case 'svg':
+          await downloadAsSVG(targetEl, `${selectedTemplate}-clipping-${Date.now()}.svg`);
           break;
       }
     } catch (err) {
-      console.error(`Export failed for ${format}:`, err);
+      console.error(`Export failed for ${kind}:`, err);
     } finally {
       setIsExporting(false);
       setExportFormat('');
     }
   };
 
-  // Print Handler
+  // Print Handler — opens a print window containing only the clipping
   const handlePrint = () => {
-    window.print();
+    const targetEl = clippingRef.current;
+    if (!targetEl) return;
+    printClipping(targetEl);
   };
 
   // Copy Shareable URL
@@ -915,18 +926,21 @@ function StudioIslandInner({
 
             {/* The Live Newspaper Clipping Preview Panel */}
             <div className="w-full bg-[#edebe4] rounded-xl p-2 sm:p-4 border border-black/10 overflow-x-auto shadow-inner flex items-center justify-center min-h-[420px]">
-              <PreviewPanel
-                template={selectedTemplate}
-                headline={headline}
-                subheadline={subheadline}
-                story={story}
-                imageUrl={imageUrl}
-                newspaperName={newspaperName}
-                tagline={tagline}
-                date={date}
-                author={author}
-                photoCaption={photoCaption}
-              />
+              {/* Ref target: outermost wrapper of the rendered template — captured by the export engine */}
+              <div ref={clippingRef} className="w-full">
+                <PreviewPanel
+                  template={selectedTemplate}
+                  headline={headline}
+                  subheadline={subheadline}
+                  story={story}
+                  imageUrl={imageUrl}
+                  newspaperName={newspaperName}
+                  tagline={tagline}
+                  date={date}
+                  author={author}
+                  photoCaption={photoCaption}
+                />
+              </div>
             </div>
 
             {/* Preview Bottom Info Strip */}
