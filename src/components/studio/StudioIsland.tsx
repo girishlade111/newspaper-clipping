@@ -928,8 +928,8 @@ function StudioIslandInner({
 
             {/* The Live Newspaper Clipping Preview Panel */}
             <div className="w-full bg-[#edebe4] rounded-xl p-2 sm:p-4 border border-black/10 overflow-x-auto shadow-inner flex items-center justify-center min-h-[420px]">
-              {/* Ref target: outermost wrapper of the rendered template — captured by the export engine */}
-              <div ref={clippingRef} className="w-full">
+              {/* Ref target: outermost wrapper <div> of the newspaper template — captured by the export engine */}
+              <div ref={previewRef} className="w-full">
                 <PreviewPanel
                   template={selectedTemplate}
                   headline={headline}
