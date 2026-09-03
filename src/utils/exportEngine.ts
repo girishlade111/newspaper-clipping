@@ -26,7 +26,7 @@ async function getHtml2canvas(): Promise<typeof import('html2canvas')['default']
 // Public API: PNG Export (supports 4K via is4K flag)
 // =========================================================================
 
-export async function exportAsPNG(element?: HTMLElement, is4K: boolean = false): Promise<void> {
+export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean = false): Promise<void> {
   if (typeof window === 'undefined') return;
   // Handle overloaded call where first arg is boolean (is4K without element)
   if (typeof element === 'boolean') {
