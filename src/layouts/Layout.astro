@@ -98,7 +98,9 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     />
 
     <!-- Client-side Locale Detection & Auto-redirect for root visitors -->
-    <script src="../utils/langDetect.ts"></script>
+    <script>
+      import '../utils/langDetect.ts';
+    </script>
 
     <!-- Schema.org JSON-LD Structured Data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
