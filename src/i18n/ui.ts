@@ -434,6 +434,9 @@ export const chineseUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'studio.photo.filterNone': '原图（无滤镜）',
   'studio.photo.caption': '图片说明',
   'studio.photo.captionPlaceholder': '例如：昨日下午现场拍摄的照片',
+  'footer.tagline': '100%纯客户端运行，终身免费使用',
+  'footer.madeWith': '斯堪的纳维亚精密设计。',
+  'footer.rights': '无后端存储，无Cookie，无隐私追踪。保留所有权利。',
 };
 
 export const portugueseUI: Partial<Record<keyof typeof defaultUI, string>> = {
@@ -515,6 +518,9 @@ export const portugueseUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'studio.photo.filterNone': 'Original (Sem Filtro)',
   'studio.photo.caption': 'Legenda da Foto',
   'studio.photo.captionPlaceholder': 'ex: Cena fotografada ontem à tarde',
+  'footer.tagline': '100% no navegador e totalmente gratuito',
+  'footer.madeWith': 'Criado com precisão editorial nórdica.',
+  'footer.rights': 'Sem backend, sem cookies, sem rastreamento. Todos os direitos reservados.',
 };
 
 export const russianUI: Partial<Record<keyof typeof defaultUI, string>> = {
@@ -596,6 +602,9 @@ export const russianUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'studio.photo.filterNone': 'Оригинал (без фильтра)',
   'studio.photo.caption': 'Подпись к фотографии',
   'studio.photo.captionPlaceholder': 'например: Снимок сделан вчера во время раскопок',
+  'footer.tagline': '100% в браузере и навсегда бесплатно',
+  'footer.madeWith': 'Создано со скандинавской точностью.',
+  'footer.rights': 'Без сервера, без файлов cookie, без отслеживания. Все права защищены.',
 };
 
 export const japaneseUI: Partial<Record<keyof typeof defaultUI, string>> = {
@@ -832,6 +841,9 @@ export const turkishUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'studio.photo.filterNone': 'Orijinal (Filtresiz)',
   'studio.photo.caption': 'Fotoğraf Açıklaması',
   'studio.photo.captionPlaceholder': 'örnek: Dün öğleden sonra olay yerinde çekilmiştir',
+  'footer.tagline': '100% İstemci Taraflı ve Ömür Boyu Ücretsiz',
+  'footer.madeWith': 'İskandinav yayıncılık hassasiyetiyle tasarlandı.',
+  'footer.rights': 'Sunucusuz, çerezsiz ve izlemesiz. Tüm hakları saklıdır.',
 };
 
 export const koreanUI: Partial<Record<keyof typeof defaultUI, string>> = {
@@ -913,6 +925,9 @@ export const koreanUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'studio.photo.filterNone': '원본 (필터 없음)',
   'studio.photo.caption': '사진 설명 (캡션)',
   'studio.photo.captionPlaceholder': '예: 어제 오후 발굴 현장에서 촬영된 장면',
+  'footer.tagline': '100% 클라이언트 사이드 작동 및 평생 무료',
+  'footer.madeWith': '스칸디나비아 정밀 에디토리얼 디자인.',
+  'footer.rights': '서버 전송 없음, 쿠키 없음, 추적 없음. 모든 권리 보유.',
 };
 
 export const ui: Record<SupportedLanguage, Record<string, string>> = {

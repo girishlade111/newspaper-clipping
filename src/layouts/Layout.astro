@@ -1,6 +1,7 @@
 ---
 import type { SupportedLanguage } from '../i18n/ui';
 import { languages, defaultLang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
 import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 
@@ -23,6 +24,8 @@ const {
   hideHeader = false,
   hideFooter = false,
 } = Astro.props;
+
+const t = useTranslations(lang);
 
 const siteUrl = (Astro.site ? Astro.site.toString() : 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
 const currentPath = Astro.url.pathname;
@@ -140,10 +143,10 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
               VP
             </div>
             <span class="text-canvas-soft font-semibold font-display">The Vintage Press</span>
-            <span>• 100% Client-Side & Lifetime Free</span>
+            <span>• {t('footer.tagline')}</span>
           </div>
           <p class="text-xs text-mute">
-            Designed with Scandinavian fintech precision. No backend, no cookies, no tracking.
+            {t('footer.madeWith')} {t('footer.rights')}
           </p>
         </div>
       </footer>
