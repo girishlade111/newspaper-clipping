@@ -26,7 +26,7 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
 Legal scholars and constitutional historians gathered on television panels throughout the night, characterizing the newly released transcripts as the most significant documentary development in decades. Judicial observers anticipate preliminary rulings before Friday.`,
   date = 'Tuesday, June 17, 1972',
   image = null,
-  author = 'By SPECIAL INVESTIGATIVE CORRESPONDENT',
+  author = 'Bob Woodward and Carl Bernstein',
   subheadline = 'Senate Committee Unveils Confidential Archives Amid Solemn Silence Across Capitol Hill',
   newspaperName = 'The Washington Post',
   tagline = 'Democracy Dies in Darkness',
@@ -37,6 +37,7 @@ Legal scholars and constitutional historians gathered on television panels throu
   className = '',
 } = Astro.props;
 
+/* Content derivation — all copy is props-driven, nothing hardcoded */
 const paragraphs = (story || '')
   .split(/\n\n+/)
   .map((p) => p.trim())
@@ -44,6 +45,9 @@ const paragraphs = (story || '')
 
 const leadParagraph = paragraphs[0] || '';
 const remainingParagraphs = paragraphs.slice(1);
+const midColumns = remainingParagraphs.slice(0, 2);
+const sidebarParagraphs = remainingParagraphs.slice(2);
+const authorNames = (author || '').replace(/^By\s+/i, '');
 ---
 
 <div
@@ -58,9 +62,7 @@ const remainingParagraphs = paragraphs.slice(1);
 
   <!-- 1. Top Utility Strip -->
   <div class="relative z-10 border-b border-black/30 pb-1.5 mb-2 flex items-center justify-between text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-wider text-neutral-800">
-    <div class="flex items-center gap-2">
-      <span>{weather}</span>
-    </div>
+    <span>{weather}</span>
     <div class="flex items-center gap-3">
       <span class="font-semibold">{edition}</span>
       <span>•</span>
@@ -68,7 +70,7 @@ const remainingParagraphs = paragraphs.slice(1);
     </div>
   </div>
 
-  <!-- 2. Iconic Masthead & "Democracy Dies in Darkness" Tagline -->
+  <!-- 2. Iconic Masthead & Tagline -->
   <div class="relative z-10 text-center py-2 sm:py-3">
     <h1
       class="font-wapoTitle text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none drop-shadow-xs"
@@ -79,21 +81,24 @@ const remainingParagraphs = paragraphs.slice(1);
 
     <div class="flex items-center justify-center gap-3 mt-2">
       <span class="h-px w-12 sm:w-24 bg-black/40"></span>
-      <span class="font-wapoHeadline italic text-xs sm:text-sm font-semibold tracking-wide text-neutral-800">
+      <span
+        class="font-wapoHeadline italic text-xs sm:text-sm font-semibold tracking-wide text-neutral-800"
+        style="font-family: 'Bodoni Moda', 'Bodoni MT', Didot, serif;"
+      >
         {tagline}
       </span>
       <span class="h-px w-12 sm:w-24 bg-black/40"></span>
     </div>
   </div>
 
-  <!-- 3. Date & Circulation Registration Bars -->
+  <!-- 3. Date & Circulation Registration Bar -->
   <div class="relative z-10 border-t-2 border-b border-black py-1 my-2 flex items-center justify-between text-[10px] sm:text-xs font-sans font-bold uppercase text-black">
     <span>YEAR 95 • NO. 195</span>
-    <span class="font-serif tracking-widest text-center">{date}</span>
+    <span class="tracking-widest text-center">{date}</span>
     <span>WASHINGTON, D.C.</span>
   </div>
 
-  <!-- 4. Commanding Postoni / Bodoni Headline & Deck -->
+  <!-- 4. Commanding Bodoni Headline, Deck & Distinct Byline -->
   <div class="relative z-10 pt-2 pb-3 mb-4 border-b-2 border-black/85">
     <h2
       class="font-wapoHeadline font-black text-3xl sm:text-5xl md:text-6xl uppercase tracking-tight text-black leading-[1.04] text-center"
@@ -110,119 +115,101 @@ const remainingParagraphs = paragraphs.slice(1);
         {subheadline}
       </p>
     )}
-  </div>
 
-  <!-- 5. 3-to-4 Column Responsive Broadsheet Grid -->
-  <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs leading-[1.45] text-justify font-wapoBody">
-    
-    <!-- Column 1: Lead Story & Distinct Byline Styling -->
-    <div class="md:col-span-1 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 flex flex-col gap-3">
-      <div class="pb-2 border-b border-black/25">
-        <div class="font-sans font-extrabold uppercase text-[11px] tracking-wider text-black">
-          {author}
+    {authorNames && (
+      <div class="mt-4 pt-2 border-t border-black/30 text-center">
+        <div class="font-sans font-extrabold uppercase text-[11px] sm:text-xs tracking-widest text-black">
+          By {authorNames}
         </div>
-        <div class="font-serif italic text-[11px] text-neutral-700">
+        <div class="font-serif italic text-[11px] text-neutral-700 mt-0.5">
           The Washington Post
         </div>
       </div>
+    )}
+  </div>
 
+  <!-- 5. Photograph — spans 3 of 4 columns below the headline -->
+  {image && (
+    <figure class="relative z-10 md:w-3/4 md:mx-auto mb-5 border border-black/60 p-1 bg-white shadow-xs">
+      <div class="relative overflow-hidden bg-black/10 max-h-[340px]">
+        <img
+          src={image}
+          alt={photoCaption || 'The Washington Post Illustration'}
+          class="w-full h-auto max-h-[320px] object-cover filter grayscale contrast-125 brightness-95"
+        />
+      </div>
+      {photoCaption && (
+        <figcaption class="pt-1.5 px-0.5 border-t border-black/15 mt-1 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 text-[10px] text-neutral-700">
+          <p class="font-serif italic leading-tight">{photoCaption}</p>
+          <span class="font-sans font-bold text-[9px] uppercase tracking-wider text-neutral-500 sm:whitespace-nowrap">
+            The Washington Post
+          </span>
+        </figcaption>
+      )}
+    </figure>
+  )}
+
+  <!-- 6. 3-to-4 Column Responsive Broadsheet Body Grid -->
+  <div class="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-4 text-xs leading-[1.5] text-justify font-wapoBody">
+
+    <!-- Column 1: Lead paragraph with dateline & drop cap -->
+    <div class="md:col-span-1 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 flex flex-col gap-3">
       {leadParagraph && (
         <p class="text-black text-justify leading-relaxed">
-          <span class="font-sans font-black text-black tracking-wider uppercase">
-            WASHINGTON —{' '}
+          <span
+            class="float-left text-4xl font-black mr-1.5 leading-[0.85] text-black select-none"
+            style="font-family: 'Bodoni Moda', 'Bodoni MT', Didot, serif;"
+          >
+            {leadParagraph.charAt(0)}
           </span>
-          {leadParagraph}
+          <span class="font-sans font-black text-black tracking-wider uppercase text-[10px]">
+            WASHINGTON —
+          </span>
+          {leadParagraph.slice(1)}
         </p>
       )}
-
-      <div class="p-2 bg-black/[0.03] border-l-2 border-black my-1 text-[11px] leading-snug text-neutral-800 font-sans italic">
-        "The committee’s disclosure signals an unprecedented turn in this lengthy inquiry."
-      </div>
     </div>
 
-    <!-- Columns 2 & 3: High-Impact Photo & Continuation -->
-    <div class="md:col-span-2 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 flex flex-col gap-3">
-      {image && (
-        <div class="border border-black/60 p-1 bg-white shadow-xs">
-          <div class="relative overflow-hidden bg-black/10 max-h-[300px]">
-            <img
-              src={image}
-              alt="The Washington Post Illustration"
-              class="w-full h-auto max-h-[280px] object-cover filter grayscale contrast-125 brightness-95"
-            />
-          </div>
-          {photoCaption && (
-            <div class="pt-1.5 px-0.5 border-t border-black/15 mt-1 flex flex-col sm:flex-row sm:items-baseline justify-between text-[10px] text-neutral-700">
-              <p class="font-serif italic leading-tight">
-                {photoCaption}
-              </p>
-              <span class="font-sans font-bold text-[9px] uppercase tracking-wider text-neutral-500 whitespace-nowrap ml-2">
-                Photo by Frank Johnston / The Washington Post
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div class="border-t border-b border-black/25 py-1 text-center my-0.5">
-        <h3
-          class="font-wapoHeadline font-bold uppercase text-xs tracking-wider text-black"
-          style="font-family: 'Bodoni Moda', 'Bodoni MT', serif;"
-        >
-          WITNESSES SUBPOENAED FOR CAPITOL HEARINGS
-        </h3>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {remainingParagraphs.slice(0, 2).map((para) => (
-          <p class="text-black text-justify leading-relaxed indent-2">
-            {para}
-          </p>
-        ))}
-      </div>
+    <!-- Columns 2 & 3: Story continuation in a dense two-up split -->
+    <div class="md:col-span-2 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {midColumns.map((para) => (
+        <p class="text-black text-justify leading-relaxed indent-2">
+          {para}
+        </p>
+      ))}
     </div>
 
-    <!-- Column 4: Sidebar Analysis & Closing Dispatches -->
+    <!-- Column 4: Sidebar with closing copy & pull quote -->
     <div class="md:col-span-1 flex flex-col gap-2.5">
-      <div class="border-b border-black/25 pb-1">
-        <h4
-          class="font-wapoHeadline font-bold uppercase text-xs tracking-wider text-black text-center"
-          style="font-family: 'Bodoni Moda', 'Bodoni MT', serif;"
-        >
-          INSIDE THE HEARINGS
-        </h4>
-      </div>
-
-      {remainingParagraphs.slice(2).map((para) => (
+      {sidebarParagraphs.map((para) => (
         <p class="text-black text-justify leading-relaxed indent-2">
           {para}
         </p>
       ))}
 
-      <div class="my-2 p-2.5 border-t-2 border-b-2 border-black/70 text-center bg-black/[0.02]">
+      <div class="mt-auto my-2 p-2.5 border-t-2 border-b-2 border-black/70 text-center bg-black/[0.02]">
         <p
           class="font-wapoHeadline font-bold italic text-xs leading-snug text-black"
           style="font-family: 'Bodoni Moda', 'Bodoni MT', serif;"
         >
-          "We have reached a juncture that requires transparent accountability."
+          “We stand at a critical juncture in our constitutional traditions.”
         </p>
         <span class="text-[9px] font-sans font-bold uppercase tracking-wider text-neutral-600 block mt-1">
-          — Chief Counsel
+          — On Capitol Hill
         </span>
       </div>
 
-      <div class="mt-auto pt-2 border-t border-black/20 text-center">
+      <div class="pt-2 border-t border-black/20 text-center">
         <span class="text-[9px] font-sans font-bold uppercase tracking-widest text-neutral-600">
           See INQUIRY, A8, Col. 1
         </span>
       </div>
     </div>
-
   </div>
 
-  <!-- 6. Bottom Metropolitan Register Strip -->
-  <div class="relative z-10 mt-6 pt-2 border-t border-black/30 flex flex-wrap items-center justify-between text-[8px] font-sans font-bold uppercase tracking-wider text-neutral-600">
-    <span>The Washington Post • Washington, D.C. 20071</span>
+  <!-- 7. Bottom Metropolitan Register Strip -->
+  <div class="relative z-10 mt-6 pt-2 border-t border-black/30 flex flex-wrap items-center justify-between gap-2 text-[8px] font-sans font-bold uppercase tracking-wider text-neutral-600">
+    <span>{newspaperName} • Washington, D.C. 20071</span>
     <span>INDEX: Editorials A14 • Classified D1 • Comics B12 • Sports C1</span>
     <span>★ FINAL PRINT EDITION ★</span>
   </div>

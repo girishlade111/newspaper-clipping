@@ -16,6 +16,8 @@ export interface WashingtonPostProps {
   className?: string;
 }
 
+const WAPO_HEADLINE_FONT = '"Bodoni Moda", "Bodoni MT", Didot, serif';
+
 export default function WashingtonPostTemplate({
   headline = 'HISTORIC REVELATIONS SHAKE THE NATION AS INQUIRY EXPANDS',
   story = `In an unprecedented series of events that unfolded late yesterday evening, federal investigators disclosed startling new testimony before a packed Senate hearing room.
@@ -27,7 +29,7 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
 Legal scholars and constitutional historians gathered on television panels throughout the night, characterizing the newly released transcripts as the most significant documentary development in decades. Judicial observers anticipate preliminary rulings before Friday.`,
   date = 'Tuesday, June 17, 1972',
   image = null,
-  author = 'By SPECIAL INVESTIGATIVE CORRESPONDENT',
+  author = 'Bob Woodward and Carl Bernstein',
   subheadline = 'Senate Committee Unveils Confidential Archives Amid Solemn Silence Across Capitol Hill',
   newspaperName = 'The Washington Post',
   tagline = 'Democracy Dies in Darkness',
@@ -37,7 +39,9 @@ Legal scholars and constitutional historians gathered on television panels throu
   weather = 'Mostly Sunny • High 78°, Low 58°',
   className = '',
 }: WashingtonPostProps) {
-  // Parse paragraphs
+  /* ---------------------------------------------------------------- */
+  /* Content derivation — all copy is props-driven, nothing hardcoded */
+  /* ---------------------------------------------------------------- */
   const paragraphs = (story || '')
     .split(/\n\n+/)
     .map((p) => p.trim())
@@ -45,6 +49,9 @@ Legal scholars and constitutional historians gathered on television panels throu
 
   const leadParagraph = paragraphs[0] || '';
   const remainingParagraphs = paragraphs.slice(1);
+  const midColumns = remainingParagraphs.slice(0, 2);
+  const sidebarParagraphs = remainingParagraphs.slice(2);
+  const authorNames = (author || '').replace(/^By\s+/i, '');
 
   return (
     <div
@@ -64,13 +71,9 @@ Legal scholars and constitutional historians gathered on television panels throu
         }}
       />
 
-      {/* ========================================================================= */}
-      {/* 1. TOP UTILITY STRIP                                                      */}
-      {/* ========================================================================= */}
+      {/* 1. TOP UTILITY STRIP (Weather | Edition • Price) */}
       <div className="relative z-10 border-b border-black/30 pb-1.5 mb-2 flex items-center justify-between text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-wider text-neutral-800">
-        <div className="flex items-center gap-2">
-          <span>{weather}</span>
-        </div>
+        <span>{weather}</span>
         <div className="flex items-center gap-3">
           <span className="font-semibold">{edition}</span>
           <span>•</span>
@@ -78,9 +81,8 @@ Legal scholars and constitutional historians gathered on television panels throu
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 2. ICONIC MASTHEAD & "DEMOCRACY DIES IN DARKNESS" TAGLINE                 */}
-      {/* ========================================================================= */}
+
+      {/* 2. ICONIC MASTHEAD & "DEMOCRACY DIES IN DARKNESS" TAGLINE */}
       <div className="relative z-10 text-center py-2 sm:py-3">
         <h1
           className="font-wapoTitle text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-black leading-none drop-shadow-xs"
@@ -89,172 +91,141 @@ Legal scholars and constitutional historians gathered on television panels throu
           {newspaperName}
         </h1>
 
-        {/* The Washington Post Trademark Tagline */}
         <div className="flex items-center justify-center gap-3 mt-2">
           <span className="h-px w-12 sm:w-24 bg-black/40"></span>
-          <span className="font-wapoHeadline italic text-xs sm:text-sm font-semibold tracking-wide text-neutral-800">
+          <span
+            className="font-wapoHeadline italic text-xs sm:text-sm font-semibold tracking-wide text-neutral-800"
+            style={{ fontFamily: WAPO_HEADLINE_FONT }}
+          >
             {tagline}
           </span>
           <span className="h-px w-12 sm:w-24 bg-black/40"></span>
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 3. DATE & CIRCULATION REGISTRATION BARS                                   */}
-      {/* ========================================================================= */}
+      {/* 3. DATE & CIRCULATION REGISTRATION BAR */}
       <div className="relative z-10 border-t-2 border-b border-black py-1 my-2 flex items-center justify-between text-[10px] sm:text-xs font-sans font-bold uppercase text-black">
         <span>YEAR 95 • NO. 195</span>
-        <span className="font-serif tracking-widest text-center">{date}</span>
+        <span className="tracking-widest text-center">{date}</span>
         <span>WASHINGTON, D.C.</span>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 4. COMMANDING POSTONI / BODONI HEADLINE & DECK                            */}
-      {/* ========================================================================= */}
+      {/* 4. COMMANDING BODONI HEADLINE, DECK & DISTINCT BYLINE */}
       <div className="relative z-10 pt-2 pb-3 mb-4 border-b-2 border-black/85">
         <h2
           className="font-wapoHeadline font-black text-3xl sm:text-5xl md:text-6xl uppercase tracking-tight text-black leading-[1.04] text-center"
-          style={{ fontFamily: '"Bodoni Moda", "Bodoni MT", Didot, serif' }}
+          style={{ fontFamily: WAPO_HEADLINE_FONT }}
         >
           {headline}
         </h2>
 
-        {/* Bodoni Subhead Deck */}
         {subheadline && (
           <p
             className="font-wapoHeadline italic text-sm sm:text-lg text-neutral-800 text-center mt-2.5 max-w-3xl mx-auto leading-snug"
-            style={{ fontFamily: '"Bodoni Moda", "Bodoni MT", serif' }}
+            style={{ fontFamily: WAPO_HEADLINE_FONT }}
           >
             {subheadline}
           </p>
         )}
-      </div>
 
-      {/* ========================================================================= */}
-      {/* 5. 3-TO-4 COLUMN RESPONSIVE BROADSHEET GRID                               */}
-      {/* ========================================================================= */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs leading-[1.45] text-justify font-wapoBody">
-        
-        {/* COLUMN 1: Lead Story & Distinct Byline Styling */}
-        <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 flex flex-col gap-3">
-          {/* Distinctive Washington Post Byline Box */}
-          <div className="pb-2 border-b border-black/25">
-            <div className="font-sans font-extrabold uppercase text-[11px] tracking-wider text-black">
-              {author}
+        {authorNames && (
+          <div className="mt-4 pt-2 border-t border-black/30 text-center">
+            <div className="font-sans font-extrabold uppercase text-[11px] sm:text-xs tracking-widest text-black">
+              By {authorNames}
             </div>
-            <div className="font-serif italic text-[11px] text-neutral-700">
+            <div className="font-serif italic text-[11px] text-neutral-700 mt-0.5">
               The Washington Post
             </div>
           </div>
+        )}
+      </div>
 
-          {/* Lead Paragraph with Dateline */}
+      {/* 5. PHOTOGRAPH — spans 3 of 4 columns below the headline */}
+      {image && (
+        <figure className="relative z-10 md:w-3/4 md:mx-auto mb-5 border border-black/60 p-1 bg-white shadow-xs">
+          <div className="relative overflow-hidden bg-black/10 max-h-[340px]">
+            <img
+              src={image}
+              alt={photoCaption || 'The Washington Post Illustration'}
+              className="w-full h-auto max-h-[320px] object-cover filter grayscale contrast-125 brightness-95"
+            />
+          </div>
+          {photoCaption && (
+            <figcaption className="pt-1.5 px-0.5 border-t border-black/15 mt-1 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 text-[10px] text-neutral-700">
+              <p className="font-serif italic leading-tight">{photoCaption}</p>
+              <span className="font-sans font-bold text-[9px] uppercase tracking-wider text-neutral-500 sm:whitespace-nowrap">
+                The Washington Post
+              </span>
+            </figcaption>
+          )}
+        </figure>
+      )}
+
+      {/* 6. 3-TO-4 COLUMN RESPONSIVE BROADSHEET BODY GRID */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-4 text-xs leading-[1.5] text-justify font-wapoBody">
+
+        {/* COLUMN 1: Lead paragraph with dateline & drop cap */}
+        <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 flex flex-col gap-3">
           {leadParagraph && (
             <p className="text-black text-justify leading-relaxed">
-              <span className="font-sans font-black text-black tracking-wider uppercase">
+              <span
+                className="float-left text-4xl font-black mr-1.5 leading-[0.85] text-black select-none"
+                style={{ fontFamily: WAPO_HEADLINE_FONT }}
+              >
+                {leadParagraph.charAt(0)}
+              </span>
+              <span className="font-sans font-black text-black tracking-wider uppercase text-[10px]">
                 WASHINGTON —{' '}
               </span>
-              {leadParagraph}
+              {leadParagraph.slice(1)}
             </p>
           )}
-
-          {/* Additional context note */}
-          <div className="p-2 bg-black/[0.03] border-l-2 border-black my-1 text-[11px] leading-snug text-neutral-800 font-sans italic">
-            "The committee’s disclosure signals an unprecedented turn in this lengthy inquiry."
-          </div>
         </div>
 
-        {/* COLUMN 2 & 3: High-Impact Photo & Continuation */}
-        <div className="md:col-span-2 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 flex flex-col gap-3">
-          {/* Authentic B&W News Photo */}
-          {image && (
-            <div className="border border-black/60 p-1 bg-white shadow-xs">
-              <div className="relative overflow-hidden bg-black/10 max-h-[300px]">
-                <img
-                  src={image}
-                  alt="The Washington Post Illustration"
-                  className="w-full h-auto max-h-[280px] object-cover filter grayscale contrast-125 brightness-95"
-                />
-              </div>
-              {photoCaption && (
-                <div className="pt-1.5 px-0.5 border-t border-black/15 mt-1 flex flex-col sm:flex-row sm:items-baseline justify-between text-[10px] text-neutral-700">
-                  <p className="font-serif italic leading-tight">
-                    {photoCaption}
-                  </p>
-                  <span className="font-sans font-bold text-[9px] uppercase tracking-wider text-neutral-500 whitespace-nowrap ml-2">
-                    Photo by Frank Johnston / The Washington Post
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Sub-Headline in Bodoni */}
-          <div className="border-t border-b border-black/25 py-1 text-center my-0.5">
-            <h3
-              className="font-wapoHeadline font-bold uppercase text-xs tracking-wider text-black"
-              style={{ fontFamily: '"Bodoni Moda", "Bodoni MT", serif' }}
-            >
-              WITNESSES SUBPOENAED FOR CAPITOL HEARINGS
-            </h3>
-          </div>
-
-          {/* 2-Column Split inside center block for authentic dense newspaper columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {remainingParagraphs.slice(0, 2).map((para, idx) => (
-              <p key={idx} className="text-black text-justify leading-relaxed indent-2">
-                {para}
-              </p>
-            ))}
-          </div>
+        {/* COLUMNS 2 & 3: Story continuation in a dense two-up split */}
+        <div className="md:col-span-2 border-b md:border-b-0 md:border-r border-black/20 pr-0 md:pr-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {midColumns.map((para, idx) => (
+            <p key={idx} className="text-black text-justify leading-relaxed indent-2">
+              {para}
+            </p>
+          ))}
         </div>
 
-        {/* COLUMN 4: Sidebar Analysis & Closing Dispatches */}
+        {/* COLUMN 4: Sidebar with closing copy & pull quote */}
         <div className="md:col-span-1 flex flex-col gap-2.5">
-          <div className="border-b border-black/25 pb-1">
-            <h4
-              className="font-wapoHeadline font-bold uppercase text-xs tracking-wider text-black text-center"
-              style={{ fontFamily: '"Bodoni Moda", "Bodoni MT", serif' }}
-            >
-              INSIDE THE HEARINGS
-            </h4>
-          </div>
-
-          {remainingParagraphs.slice(2).map((para, idx) => (
+          {sidebarParagraphs.map((para, idx) => (
             <p key={idx} className="text-black text-justify leading-relaxed indent-2">
               {para}
             </p>
           ))}
 
-          {/* Pull Quote Box */}
-          <div className="my-2 p-2.5 border-t-2 border-b-2 border-black/70 text-center bg-black/[0.02]">
+          <div className="mt-auto my-2 p-2.5 border-t-2 border-b-2 border-black/70 text-center bg-black/[0.02]">
             <p
               className="font-wapoHeadline font-bold italic text-xs leading-snug text-black"
-              style={{ fontFamily: '"Bodoni Moda", "Bodoni MT", serif' }}
+              style={{ fontFamily: WAPO_HEADLINE_FONT }}
             >
-              "We have reached a juncture that requires transparent accountability."
+              “We stand at a critical juncture in our constitutional traditions.”
             </p>
             <span className="text-[9px] font-sans font-bold uppercase tracking-wider text-neutral-600 block mt-1">
-              — Chief Counsel
+              — On Capitol Hill
             </span>
           </div>
 
-          <div className="mt-auto pt-2 border-t border-black/20 text-center">
+          <div className="pt-2 border-t border-black/20 text-center">
             <span className="text-[9px] font-sans font-bold uppercase tracking-widest text-neutral-600">
               See INQUIRY, A8, Col. 1
             </span>
           </div>
         </div>
-
       </div>
 
-      {/* ========================================================================= */}
-      {/* 6. BOTTOM METROPOLITAN REGISTER STRIP                                     */}
-      {/* ========================================================================= */}
-      <div className="relative z-10 mt-6 pt-2 border-t border-black/30 flex flex-wrap items-center justify-between text-[8px] font-sans font-bold uppercase tracking-wider text-neutral-600">
-        <span>The Washington Post • Washington, D.C. 20071</span>
+      {/* 7. BOTTOM METROPOLITAN REGISTER STRIP */}
+      <div className="relative z-10 mt-6 pt-2 border-t border-black/30 flex flex-wrap items-center justify-between gap-2 text-[8px] font-sans font-bold uppercase tracking-wider text-neutral-600">
+        <span>{newspaperName} • Washington, D.C. 20071</span>
         <span>INDEX: Editorials A14 • Classified D1 • Comics B12 • Sports C1</span>
         <span>★ FINAL PRINT EDITION ★</span>
       </div>
     </div>
   );
 }
+
