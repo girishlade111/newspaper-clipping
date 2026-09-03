@@ -85,6 +85,7 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
   try {
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    await new Promise(resolve => setTimeout(resolve, 500));
     const html2canvas = (await import('html2canvas')).default;
     const onclone = getOnClone();
     const canvas = is4K
@@ -114,6 +115,7 @@ export async function exportAsJPG(element?: HTMLElement): Promise<void> {
   try {
     const element = document.getElementById('newspaper-export-target');
     if (!element) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    await new Promise(resolve => setTimeout(resolve, 500));
     const html2canvas = (await import('html2canvas')).default;
     const canvas = await html2canvas(element as HTMLElement, { useCORS: true, allowTaint: true, scale: 2, logging: true, backgroundColor: '#ffffff', onclone: getOnClone() });
     const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
