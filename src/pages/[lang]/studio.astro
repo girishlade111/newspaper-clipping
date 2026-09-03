@@ -1,6 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import GeneratorApp from '../../components/generator/GeneratorApp.astro';
+import Layout from '../../layouts/Layout.astro';
+import StudioApp from '../../components/studio/StudioApp.astro';
 import { useTranslations } from '../../i18n/utils';
 import { languages, type SupportedLanguage } from '../../i18n/ui';
 
@@ -17,38 +17,12 @@ const t = useTranslations(lang);
 const presetParam = Astro.url.searchParams.get('preset') || 'breaking-1920';
 ---
 
-<BaseLayout
-  title={`${t('home.hero.title')} — Studio | The Vintage Press`}
-  description={t('home.hero.description')}
+<Layout
+  title={`${t('studio.title')} — The Vintage Press`}
+  description={t('studio.subtitle')}
   lang={lang}
 >
-  <section class="band-sage studio-page-band">
-    <div class="container">
-      <div class="studio-header">
-        <div>
-          <span class="badge-pill badge-brand">Studio</span>
-          <h1 class="font-display-md" style="margin-top: 8px;">{t('home.hero.title')}</h1>
-          <p class="font-body-md" style="color: var(--color-body); margin-top: 4px;">
-            {t('home.hero.description')}
-          </p>
-        </div>
-      </div>
-
-      <div style="margin-top: var(--spacing-xl);">
-        <GeneratorApp lang={lang} initialPresetId={presetParam} />
-      </div>
-    </div>
-  </section>
-</BaseLayout>
-
-<style>
-  .studio-page-band {
-    padding-top: var(--spacing-2xl);
-    padding-bottom: var(--spacing-4xl);
-    min-height: calc(100vh - 120px);
-  }
-
-  .studio-header {
-    margin-bottom: var(--spacing-md);
-  }
-</style>
+  <main class="bg-canvas-soft min-h-[calc(100vh-80px)] py-4 sm:py-8">
+    <StudioApp lang={lang} initialPresetId={presetParam} />
+  </main>
+</Layout>
