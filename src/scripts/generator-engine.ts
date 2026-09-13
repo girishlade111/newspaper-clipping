@@ -32,7 +32,7 @@ export class NewspaperEngine {
   public async render(options: RenderOptions): Promise<void> {
     const scale = options.scale || 1.5; // High-res rendering factor
     const width = ENGINE_CONFIG.baseWidth * scale;
-    const height = this.baseHeight * scale;
+    const height = ENGINE_CONFIG.baseHeight * scale;
 
     this.canvas.width = width;
     this.canvas.height = height;
@@ -75,7 +75,7 @@ export class NewspaperEngine {
   private drawPaperBackground(options: RenderOptions) {
     const ctx = this.ctx;
     const w = ENGINE_CONFIG.baseWidth;
-    const h = this.baseHeight;
+    const h = ENGINE_CONFIG.baseHeight;
 
     let baseBg = '#f4ede1';
     let grainColor = 'rgba(70, 50, 20, 0.04)';
@@ -121,7 +121,7 @@ export class NewspaperEngine {
   private drawTornEdgesOverlay() {
     const ctx = this.ctx;
     const w = ENGINE_CONFIG.baseWidth;
-    const h = this.baseHeight;
+    const h = ENGINE_CONFIG.baseHeight;
 
     ctx.save();
     ctx.strokeStyle = 'rgba(100, 70, 30, 0.15)';
@@ -383,7 +383,7 @@ export class NewspaperEngine {
       ctx.strokeStyle = 'rgba(25, 20, 15, 0.25)';
       ctx.beginPath();
       ctx.moveTo(sepX, startY);
-      ctx.lineTo(sepX, this.baseHeight - margin - 20);
+      ctx.lineTo(sepX, ENGINE_CONFIG.baseHeight - margin - 20);
       ctx.stroke();
     }
 
@@ -423,7 +423,7 @@ export class NewspaperEngine {
       const lines = this.wrapText(textToRender, colW, ctx);
 
       for (const line of lines) {
-        if (colY + lineHeight > this.baseHeight - margin - 20) {
+        if (colY + lineHeight > ENGINE_CONFIG.baseHeight - margin - 20) {
           currentCol++;
           if (currentCol >= numCols) break;
           colX = margin + currentCol * (colW + colGap);
@@ -442,7 +442,7 @@ export class NewspaperEngine {
   private drawCreaseLines() {
     const ctx = this.ctx;
     const w = ENGINE_CONFIG.baseWidth;
-    const h = this.baseHeight;
+    const h = ENGINE_CONFIG.baseHeight;
 
     ctx.save();
     // Horizontal center fold crease
@@ -468,7 +468,7 @@ export class NewspaperEngine {
   private drawCoffeeStain() {
     const ctx = this.ctx;
     const w = ENGINE_CONFIG.baseWidth;
-    const h = this.baseHeight;
+    const h = ENGINE_CONFIG.baseHeight;
 
     ctx.save();
     const cx = w * 0.78;
