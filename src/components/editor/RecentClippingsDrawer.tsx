@@ -213,7 +213,7 @@ export default function RecentClippingsDrawer({
 
                   {/* Action Link */}
                   <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[11px] font-bold text-positive-deep group-hover:text-ink">
-                    <span>Click to Restore in Editor →</span>
+                    <span>Click to Restore in Studio →</span>
                     <span className="text-[10px] text-ink-mute font-normal font-sans">
                       {item.story.length} chars
                     </span>
