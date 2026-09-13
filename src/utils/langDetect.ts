@@ -62,6 +62,26 @@ export function matchSupportedLocale(rawTag: string): SupportedLocale | null {
     return 'ko';
   }
 
+  // German (de, de-DE, de-AT, de-CH) -> de
+  if (tag.startsWith('de')) {
+    return 'de';
+  }
+
+  // Spanish (es, es-ES, es-MX) -> es
+  if (tag.startsWith('es')) {
+    return 'es';
+  }
+
+  // French (fr, fr-FR, fr-CA) -> fr
+  if (tag.startsWith('fr')) {
+    return 'fr';
+  }
+
+  // Hindi (hi, hi-IN) -> hi
+  if (tag.startsWith('hi')) {
+    return 'hi';
+  }
+
   // English (en, en-US, en-GB) -> en
   if (tag.startsWith('en')) {
     return 'en';

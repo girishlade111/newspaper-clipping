@@ -32,7 +32,7 @@ const currentPath = Astro.url.pathname;
 
 // Strip any active language sub-path to obtain the canonical base path
 // Examples: '/pt-BR/templates' -> '/templates', '/zh/' -> '/', '/' -> '/'
-const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-br|pt-BR|ru|ja|tr|ko)(?:\/|$)/i, '/');
+const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-br|pt-BR|ru|ja|tr|ko|de|es|fr|hi)(?:\/|$)/i, '/');
 const cleanSubpath = pathWithoutLang === '/' ? '' : pathWithoutLang;
 
 // Construct dynamic alternate links for international technical SEO
