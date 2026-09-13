@@ -51,4 +51,19 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     },
   },
+  // /editor deprecated in favor of /studio (draft drawer merged there).
+  // /generator kept as-is (distinct canvas-based advanced mode).
+  redirects: {
+    '/editor': { status: 301, destination: '/studio' },
+    '/zh/editor': { status: 301, destination: '/zh/studio' },
+    '/pt-BR/editor': { status: 301, destination: '/pt-BR/studio' },
+    '/ru/editor': { status: 301, destination: '/ru/studio' },
+    '/ja/editor': { status: 301, destination: '/ja/studio' },
+    '/tr/editor': { status: 301, destination: '/tr/studio' },
+    '/ko/editor': { status: 301, destination: '/ko/studio' },
+    '/de/editor': { status: 301, destination: '/de/studio' },
+    '/es/editor': { status: 301, destination: '/es/studio' },
+    '/fr/editor': { status: 301, destination: '/fr/studio' },
+    '/hi/editor': { status: 301, destination: '/hi/studio' },
+  },
 });
