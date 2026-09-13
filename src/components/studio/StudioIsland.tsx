@@ -273,8 +273,6 @@ function StudioIslandInner({
   // Ref attached directly to the outermost wrapper <div> of the newspaper template.
   // This is the exact node captured by the export engine (PNG/JPG/4K/PDF/Print).
   const previewRef = useRef<HTMLDivElement>(null);
-  // Keep clippingRef as alias for backward-compat (same node)
-  const clippingRef = previewRef;
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
