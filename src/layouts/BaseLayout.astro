@@ -13,6 +13,9 @@ interface Props {
   lang?: SupportedLanguage;
   image?: string;
   article?: boolean;
+  author?: string;
+  datePublished?: string;
+  dateModified?: string;
 }
 
 const {
@@ -21,6 +24,9 @@ const {
   lang = 'en',
   image = '/og-image.png',
   article = false,
+  author,
+  datePublished,
+  dateModified,
 } = Astro.props;
 
 const langInfo = languages[lang] || languages['en'];
@@ -29,7 +35,9 @@ const langInfo = languages[lang] || languages['en'];
 <!doctype html>
 <html lang={lang} dir={langInfo.dir || 'ltr'}>
   <head>
-    <Seo title={title} description={description} image={image} article={article} lang={lang} />
+    <Seo title={title} description={description} image={image} article={article} lang={lang} author={author} datePublished={datePublished} dateModified={dateModified} />
+    <!-- Slot for page-specific head injections (e.g. BreadcrumbList JSON-LD) -->
+    <slot name="head" />
   </head>
   <body>
     <Navbar lang={lang} />
