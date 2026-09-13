@@ -1,5 +1,18 @@
 import type { NewspaperPreset } from './presets';
 
+/**
+ * Central render dimensions for the newspaper canvas (CSS pixels @ scale 1).
+ * Tune these to change output size/aspect — all draw routines read from here.
+ */
+export const ENGINE_CONFIG = {
+  /** Canvas width in px (800 → 1200px @ default 1.5x scale). */
+  baseWidth: 800,
+  /** Canvas height in px (1000 → 1500px @ default 1.5x scale). */
+  baseHeight: 1000,
+  /** Fixed photo block height in px (caption sits below it). */
+  photoH: 240,
+} as const;
+
 export interface RenderOptions extends NewspaperPreset {
   userImage?: HTMLImageElement | null;
   scale?: number;
