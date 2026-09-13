@@ -7,6 +7,7 @@ import sitemap from '@astrojs/sitemap';
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /** @type {Map<string, Date> | null} */
 let blogDateMap = null;
@@ -130,6 +131,35 @@ export default defineConfig({
         return item;
       },
     }),
+    {
+      name: 'sitemap-xml-alias',
+      hooks: {
+        'astro:server:setup': ({ server }) => {
+          server.middlewares.use((req, res, next) => {
+            const urlPath = req.url ? req.url.split('?')[0] : '';
+            if (urlPath === '/sitemap.xml' || urlPath === '/sitemap-index.xml' || urlPath === '/sitemap-0.xml') {
+              const fileName = urlPath === '/sitemap.xml' ? 'sitemap-index.xml' : urlPath.slice(1);
+              const filePath = path.resolve('dist', fileName);
+              if (fs.existsSync(filePath)) {
+                res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+            next();
+          });
+        },
+        'astro:build:done': async ({ dir, logger }) => {
+          const destDir = fileURLToPath(dir);
+          const indexFile = path.join(destDir, 'sitemap-index.xml');
+          const aliasFile = path.join(destDir, 'sitemap.xml');
+          if (fs.existsSync(indexFile)) {
+            fs.copyFileSync(indexFile, aliasFile);
+            logger.info('`sitemap.xml` alias created from `sitemap-index.xml`');
+          }
+        },
+      },
+    },
   ],
   i18n: {
     defaultLocale: 'en',
