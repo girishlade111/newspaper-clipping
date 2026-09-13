@@ -55,6 +55,34 @@ export const languages = {
     subpath: 'ko',
     hreflang: 'ko',
   },
+  de: {
+    label: 'Deutsch',
+    flag: '🇩🇪',
+    dir: 'ltr',
+    subpath: 'de',
+    hreflang: 'de',
+  },
+  es: {
+    label: 'Español',
+    flag: '🇪🇸',
+    dir: 'ltr',
+    subpath: 'es',
+    hreflang: 'es',
+  },
+  fr: {
+    label: 'Français',
+    flag: '🇫🇷',
+    dir: 'ltr',
+    subpath: 'fr',
+    hreflang: 'fr',
+  },
+  hi: {
+    label: 'हिन्दी',
+    flag: '🇮🇳',
+    dir: 'ltr',
+    subpath: 'hi',
+    hreflang: 'hi',
+  },
 } as const;
 
 export type SupportedLanguage = keyof typeof languages;
