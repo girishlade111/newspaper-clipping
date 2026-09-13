@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PreviewPanel from '../editor/PreviewPanel';
 import {
-  downloadAsSVG,
   saveToDrafts,
   captureThumbnail,
 } from '../../utils/exportAndStorage';
@@ -414,39 +413,6 @@ function StudioIslandInner({
     setImageUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
-    }
-  };
-
-  // Export Handlers — robust, uses previewRef and prevents spam-click freezing
-  const handleExport = async (kind: 'png' | 'jpg' | 'svg' | 'pdf' | '4k') => {
-    if (!previewRef.current) return;
-    const targetEl = previewRef.current;
-    setIsExporting(true);
-    setExportFormat(kind.toUpperCase());
-    try {
-      switch (kind) {
-        case 'png':
-          await exportAsPNG(targetEl, false);
-          break;
-        case 'jpg':
-          await exportAsJPG(targetEl);
-          break;
-        case '4k':
-          // 4K export renders at 4x scale — may take a moment on large clippings
-          await exportAsPNG(targetEl, true);
-          break;
-        case 'pdf':
-          await exportAsPDF(targetEl);
-          break;
-        case 'svg':
-          await downloadAsSVG(targetEl, `${selectedTemplate}-clipping-${Date.now()}.svg`);
-          break;
-      }
-    } catch (err) {
-      console.error(`Export failed for ${kind}:`, err);
-    } finally {
-      setIsExporting(false);
-      setExportFormat('');
     }
   };
 
