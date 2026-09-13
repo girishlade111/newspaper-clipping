@@ -323,4 +323,13 @@ const faqJsonLd = {
     </div>
   </section>
 
+  <style>
+    /* Hide the native disclosure triangle: Safari/iOS renders
+       summary::-webkit-details-marker even with Tailwind list-none,
+       producing a duplicate black marker next to the custom chevron. */
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+
 </Layout>
