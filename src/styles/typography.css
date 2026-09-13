@@ -1,5 +1,9 @@
-/* Google Fonts for Wise Display + Vintage Newspaper Types */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@700;900&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700;800;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@800;900&family=Special+Elite&family=UnifrakturMaguntia&display=swap');
+/* Google Fonts loading is handled in src/layouts/Layout.astro:
+   - Critical above-the-fold families (Inter, Playfair Display, Plus Jakarta Sans)
+     load as a render-blocking stylesheet with display=swap.
+   - The remaining 10 display families (vintage/template use) lazy-load via
+     media="print" swap so they never block first paint. Canvas export awaits
+     document.fonts.ready, so late fonts are still ready before PNG/PDF capture. */
 
 /* Typography Tokens & Classes strictly conforming to DESIGN.md */
 
