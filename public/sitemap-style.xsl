@@ -328,7 +328,7 @@
                 <xsl:when test="sitemap:sitemapindex">
                   <div class="stat-item">
                     <span class="stat-num" id="sitemapCount">
-                      <xsl:value-of test="count(sitemap:sitemapindex/sitemap:sitemap)"/>
+                      <xsl:value-of select="count(sitemap:sitemapindex/sitemap:sitemap)"/>
                     </span>
                     <span class="stat-label">Sub-Sitemaps</span>
                   </div>
@@ -336,7 +336,7 @@
                 <xsl:otherwise>
                   <div class="stat-item">
                     <span class="stat-num" id="totalCount">
-                      <xsl:value-of test="count(sitemap:urlset/sitemap:url)"/>
+                      <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/>
                     </span>
                     <span class="stat-label">Total URLs</span>
                   </div>
@@ -346,7 +346,7 @@
                   </div>
                   <div class="stat-item">
                     <span class="stat-num" id="visibleCount">
-                      <xsl:value-of test="count(sitemap:urlset/sitemap:url)"/>
+                      <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/>
                     </span>
                     <span class="stat-label">Showing</span>
                   </div>
@@ -395,14 +395,14 @@
                   <tbody>
                     <xsl:for-each select="sitemap:sitemapindex/sitemap:sitemap">
                       <tr>
-                        <td class="col-num"><xsl:value-of test="position()"/></td>
+                        <td class="col-num"><xsl:value-of select="position()"/></td>
                         <td class="col-url">
                           <a href="{sitemap:loc}">
-                            <xsl:value-of test="sitemap:loc"/>
+                            <xsl:value-of select="sitemap:loc"/>
                           </a>
                         </td>
                         <td class="col-date">
-                          <xsl:value-of test="sitemap:lastmod"/>
+                          <xsl:value-of select="sitemap:lastmod"/>
                         </td>
                       </tr>
                     </xsl:for-each>
@@ -445,15 +445,15 @@
                       </xsl:variable>
 
                       <tr data-locale="{$locale}" data-url="{$loc}">
-                        <td class="col-num"><xsl:value-of test="position()"/></td>
+                        <td class="col-num"><xsl:value-of select="position()"/></td>
                         <td class="col-url">
                           <a href="{$loc}" target="_blank">
-                            <xsl:value-of test="$loc"/>
+                            <xsl:value-of select="$loc"/>
                           </a>
                         </td>
                         <td>
                           <span class="badge-locale loc-{$locale}">
-                            <xsl:value-of test="$locale"/>
+                            <xsl:value-of select="$locale"/>
                           </span>
                         </td>
                         <td>
@@ -461,7 +461,7 @@
                           <xsl:choose>
                             <xsl:when test="$altCount &gt; 0">
                               <span class="alternates-pill" title="Includes {$altCount} localized hreflang links">
-                                &#127760; <xsl:value-of test="$altCount"/> locales
+                                &#127760; <xsl:value-of select="$altCount"/> locales
                               </span>
                             </xsl:when>
                             <xsl:otherwise>
@@ -472,7 +472,7 @@
                         <td class="col-date">
                           <xsl:choose>
                             <xsl:when test="sitemap:lastmod">
-                              <xsl:value-of test="sitemap:lastmod"/>
+                              <xsl:value-of select="sitemap:lastmod"/>
                             </xsl:when>
                             <xsl:otherwise>
                               <span style="color: #94a3b8;">—</span>
@@ -482,7 +482,7 @@
                         <td style="color: #64748b; font-size: 12px;">
                           <xsl:choose>
                             <xsl:when test="sitemap:changefreq">
-                              <xsl:value-of test="sitemap:changefreq"/>
+                              <xsl:value-of select="sitemap:changefreq"/>
                             </xsl:when>
                             <xsl:otherwise>
                               <span style="color: #94a3b8;">—</span>
@@ -492,7 +492,7 @@
                         <td style="color: #64748b; font-size: 12px; font-weight: 600;">
                           <xsl:choose>
                             <xsl:when test="sitemap:priority">
-                              <xsl:value-of test="sitemap:priority"/>
+                              <xsl:value-of select="sitemap:priority"/>
                             </xsl:when>
                             <xsl:otherwise>
                               <span style="color: #94a3b8;">—</span>
