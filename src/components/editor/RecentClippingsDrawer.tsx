@@ -191,7 +191,7 @@ export default function RecentClippingsDrawer({
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-canvas border border-black/10 shrink-0">
                         <img
                           src={item.base64Image}
-                          alt="Thumbnail"
+                          alt={`Saved clipping: ${item.headline || item.template}`}
                           className="w-full h-full object-cover filter contrast-125"
                         />
                       </div>

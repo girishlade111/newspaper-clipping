@@ -542,7 +542,7 @@ export default function EditorIsland({ lang = 'en' }: EditorIslandProps) {
                   <div className="relative max-w-[220px] max-h-[140px] rounded-lg overflow-hidden shadow-md border border-black/20">
                     <img
                       src={imageUrl}
-                      alt="Uploaded preview"
+                      alt={photoCaption ? `Uploaded clipping photo: ${photoCaption}` : 'Uploaded vintage newspaper clipping photo'}
                       className="w-full h-full object-cover filter grayscale contrast-125"
                     />
                   </div>
