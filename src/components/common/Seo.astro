@@ -65,7 +65,7 @@ const effectiveImage = new URL(image || '/og-image.png', siteBase).toString();
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={formattedTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, canonicalURL)} />
+<meta property="og:image" content={effectiveImage} />
 <meta property="og:locale" content={lang} />
 
 <!-- Twitter -->
@@ -73,7 +73,7 @@ const effectiveImage = new URL(image || '/og-image.png', siteBase).toString();
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={formattedTitle} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, canonicalURL)} />
+<meta property="twitter:image" content={effectiveImage} />
 
 <!-- Schema.org JSON-LD -->
 {article ? (
