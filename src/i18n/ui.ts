@@ -1,6 +1,7 @@
 /**
  * i18n Dictionary and UI Localization Configuration
- * Supported languages: en (default), zh, pt-BR (slug: pt-br), ru, ja, tr, ko
+ * Supported languages: en (default), zh, pt-BR (slug: pt-br), ru, ja, tr, ko,
+ * de, es, fr, hi
  * UI/UX Tone: Calm editorial Scandinavian fintech aesthetic based on DESIGN.md
  */
 
