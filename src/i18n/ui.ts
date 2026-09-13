@@ -665,6 +665,8 @@ export const japaneseUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'nav.generator': 'ジェネレーター',
   'home.hero.title': '本格的なヴィンテージ新聞の切り抜きを数秒で作成。',
   'home.hero.description': 'あなたの物語や発表、記念日を本物のレトロ新聞スタイルに。見出し、網点写真、紙の破れ効果を自由にカスタマイズ可能。',
+  'blog.title': 'ヴィンテージ印刷クロニクル',
+  'blog.subtitle': 'タイポグラフィ、新聞の歴史、ヴィンテージデザイン技法を探る記事。',
   'nav.create': '切り抜きを作成',
   'nav.createNow': '切り抜きを作成',
   'nav.createClipping': '切り抜きを作成',
