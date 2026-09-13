@@ -198,7 +198,7 @@ export const defaultUI = {
   'faq.q5': 'How does the authentic vintage aging and halftone filter work?',
   'faq.a5': 'Our engine uses custom mathematical convolution shaders to convert modern color photographs into vintage black-and-white Linotype halftone screen dots with authentic paper fiber bleed.',
   'faq.q6': 'Which languages are supported?',
-  'faq.a6': 'We currently support 7 languages: English, Chinese (中文), Brazilian Portuguese (Português), Russian (Русский), Japanese (日本語), Turkish (Türkçe), and Korean (한국어).',
+  'faq.a6': 'We currently support 11 languages: English, Chinese (中文), Brazilian Portuguese (Português), Russian (Русский), Japanese (日本語), Turkish (Türkçe), Korean (한국어), German (Deutsch), Spanish (Español), French (Français), and Hindi (हिन्दी).',
 
   'home.faq.badge': 'Got Questions?',
   'home.faq.title': 'Frequently Asked Questions',
@@ -214,7 +214,7 @@ export const defaultUI = {
   'home.faq.q5': 'How does the authentic vintage aging and halftone filter work?',
   'home.faq.a5': 'Our engine uses custom mathematical convolution shaders to convert modern color photographs into vintage black-and-white Linotype halftone screen dots with authentic paper fiber bleed.',
   'home.faq.q6': 'Which languages are supported?',
-  'home.faq.a6': 'We currently support 7 languages: English, Chinese (中文), Brazilian Portuguese (Português), Russian (Русский), Japanese (日本語), Turkish (Türkçe), and Korean (한국어).',
+  'home.faq.a6': 'We currently support 11 languages: English, Chinese (中文), Brazilian Portuguese (Português), Russian (Русский), Japanese (日本語), Turkish (Türkçe), Korean (한국어), German (Deutsch), Spanish (Español), French (Français), and Hindi (हिन्दी).',
 
   // Feature Highlights (Sage & white contrast bands)
   'features.title': 'Fintech Precision Meets Vintage Linotype Typography',
