@@ -10,6 +10,8 @@ interface Props {
   dateModified?: string;
 }
 
+import { languages, defaultLang } from '../../i18n/ui';
+
 const {
   title,
   description,
@@ -21,8 +23,18 @@ const {
   dateModified,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://newspaper-clipping-generator.example.com');
+const siteBase = (Astro.site?.toString() ?? 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
+const currentPath: string = Astro.url.pathname;
+// Strip leading locale prefix so alternates can be rebuilt per locale
+const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-BR|ru|ja|tr|ko|de|es|fr|hi)(?:\/|$)/i, '/');
+const cleanSubpath = pathWithoutLang === '/' ? '' : pathWithoutLang;
+const canonicalURL = new URL(currentPath, siteBase).toString();
 const formattedTitle = title.includes('The Vintage Press') ? title : `${title} | The Vintage Press`;
+// Effective dates: Article schema requires datePublished; fall back to build time so fields are never empty
+const buildNow = new Date().toISOString();
+const effectivePublished = datePublished || buildNow;
+const effectiveModified = dateModified || effectivePublished;
+const effectiveImage = new URL(image || '/og-image.png', siteBase).toString();
 ---
 
 <!-- Global Metadata -->
@@ -31,8 +43,17 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Canonical URL -->
+<!-- Canonical URL (self-referencing per locale variant) -->
 <link rel="canonical" href={canonicalURL} />
+
+<!-- Hreflang alternates: bidirectional + x-default, mirrors Layout.astro -->
+{Object.entries(languages).map(([key, config]) => {
+  const localizedPath = (config as any).subpath
+    ? `/${(config as any).subpath}${cleanSubpath ? cleanSubpath : '/'}`
+    : `${cleanSubpath || '/'}`;
+  return <link rel="alternate" hreflang={(config as any).hreflang} href={`${siteBase}${localizedPath}`} />;
+})}
+<link rel="alternate" hreflang="x-default" href={`${siteBase}${cleanSubpath || '/'}`} />
 
 <!-- Primary Meta Tags -->
 <title>{formattedTitle}</title>
@@ -62,10 +83,10 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     "headline": formattedTitle,
     "description": description,
     "url": canonicalURL.toString(),
-    "image": new URL(image, canonicalURL).toString(),
+    "image": effectiveImage,
     "author": { "@type": "Person", "name": author || "The Press Editorial Team" },
-    ...(datePublished ? { "datePublished": datePublished } : {}),
-    ...(dateModified ? { "dateModified": dateModified } : {}),
+    "datePublished": effectivePublished,
+    "dateModified": effectiveModified,
     "publisher": {
       "@type": "Organization",
       "name": "The Vintage Press",
