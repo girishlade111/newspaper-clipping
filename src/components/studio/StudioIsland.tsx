@@ -436,6 +436,38 @@ function StudioIslandInner({
     setTimeout(() => setIsCopied(false), 2500);
   };
 
+  // Draft-history count (IndexedDB via Dexie.js)
+  const refreshDraftCount = async () => {
+    try {
+      const items = await getRecentClippings(50);
+      setDraftCount(items.length);
+    } catch {
+      // safe fallback (e.g. private mode without IndexedDB)
+    }
+  };
+
+  // Load draft count on mount
+  useEffect(() => {
+    refreshDraftCount();
+  }, []);
+
+  // Restore a saved clipping session (merged from /editor)
+  const handleRestoreSession = (record: ClippingRecord) => {
+    const preset = TEMPLATES.find((t) => t.id === record.template);
+    setSelectedTemplate(record.template);
+    setNewspaperName(record.newspaperName);
+    setTagline(record.tagline || preset?.tagline || '');
+    setDate(record.date);
+    setHeadline(record.headline);
+    // Drafts predate subheadline/author fields — fall back to preset defaults
+    setSubheadline(preset?.subheadline || '');
+    setAuthor(preset?.author || '');
+    setStory(record.story);
+    setPhotoCaption(record.photoCaption || preset?.photoCaption || '');
+    setImageUrl(record.base64Image || null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   // Save to Local Drafts
   const handleSaveDraft = async () => {
     try {
@@ -456,6 +488,7 @@ function StudioIslandInner({
         photoCaption,
       });
       setIsSaved(true);
+      refreshDraftCount();
       setTimeout(() => setIsSaved(false), 2500);
     } catch (e) {
       console.error('Draft save failed:', e);
