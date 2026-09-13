@@ -1,18 +1,13 @@
 import { getCollection } from 'astro:content';
-import { languages, type SupportedLanguage } from '../i18n/ui';
 
 export async function GET(context: any) {
-  const locale = (context.params as any)?.lang as SupportedLanguage | undefined;
   const siteBase = (context.site?.toString() ?? 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
-  // Per-locale feed when served under /[lang]/rss.xml; default feed stays English
-  const lang: SupportedLanguage = locale && locale in languages ? locale : 'en';
-  const prefix = lang === 'en' ? '' : `/${(languages as any)[lang].subpath || lang}`;
-  const posts = await getCollection('blog', ({ data }) => !data.draft && (data.language === lang || (lang === 'en' && data.language === 'en')));
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.language === 'en');
   const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
   const items = sorted.map(post => {
-    const slug = post.slug.replace(new RegExp(`^${post.data.language}/`), '');
-    const url = `${siteBase}${prefix}/blog/${slug}`;
+    const slug = post.slug.replace(/^en\//, '');
+    const url = `${siteBase}/blog/${slug}`;
     return `
     <item>
       <title><![CDATA[${post.data.title}]]></title>
@@ -28,10 +23,10 @@ export async function GET(context: any) {
   const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>The Vintage Press — Newspaper Clipping Blog (${lang})</title>
+    <title>The Vintage Press — Newspaper Clipping Blog</title>
     <description>Guides, history, typography secrets, and creative ideas for vintage newspaper clippings.</description>
-    <link>${siteBase}${prefix}/blog</link>
-    <language>${(languages as any)[lang]?.hreflang || lang}</language>
+    <link>${siteBase}/blog</link>
+    <language>en</language>
     ${items}
   </channel>
 </rss>`;
