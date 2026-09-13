@@ -1,12 +1,12 @@
 /**
  * Client-Side Language Detection and Sub-Path Auto-Redirection
  *
- * Supported locales: en, zh, pt-BR, ru, ja, tr, ko
+ * Supported locales: en, zh, pt-BR, ru, ja, tr, ko, de, es, fr, hi
  * Default locale: en (served at root /)
  * Other locales: served at /<locale>/ (e.g., /pt-br/, /ja/, /zh/)
  */
 
-export const SUPPORTED_LOCALES = ['en', 'zh', 'pt-BR', 'ru', 'ja', 'tr', 'ko'] as const;
+export const SUPPORTED_LOCALES = ['en', 'zh', 'pt-BR', 'ru', 'ja', 'tr', 'ko', 'de', 'es', 'fr', 'hi'] as const;
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
 
 export const DEFAULT_LOCALE: SupportedLocale = 'en';
