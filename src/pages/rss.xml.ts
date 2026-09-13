@@ -2,12 +2,14 @@ import { getCollection } from 'astro:content';
 
 export async function GET(context: any) {
   const siteBase = (context.site?.toString() ?? 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
-  const posts = await getCollection('blog', ({ data }) => !data.draft && data.language === 'en');
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
   const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
   const items = sorted.map(post => {
-    const slug = post.slug.replace(/^en\//, '');
-    const url = `${siteBase}/blog/${slug}`;
+    const lang = post.data.language;
+    const cleanSlug = post.slug.replace(new RegExp(`^(${lang}|en)/`), '');
+    const prefix = lang === 'en' ? '' : `/${lang}`;
+    const url = `${siteBase}${prefix}/blog/${cleanSlug}`;
     return `
     <item>
       <title><![CDATA[${post.data.title}]]></title>
