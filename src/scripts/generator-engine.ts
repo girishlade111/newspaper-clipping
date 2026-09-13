@@ -274,7 +274,7 @@ export class NewspaperEngine {
     const w = ENGINE_CONFIG.baseWidth;
     const margin = 40;
     const photoW = w - margin * 2;
-    const photoH = 240;
+    const photoH = ENGINE_CONFIG.photoH;
 
     // Draw frame
     ctx.strokeStyle = '#1a1614';
