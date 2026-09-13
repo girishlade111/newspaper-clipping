@@ -65,7 +65,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <!-- Technical SEO: Canonical URL -->
     <link rel="canonical" href={canonicalUrl} />
 
-    <!-- Technical SEO: Dynamic Hreflang Tags for all 7 Supported Locales -->
+    <!-- Technical SEO: Dynamic Hreflang Tags for all 11 Supported Locales -->
     {alternateLinks.map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />
     ))}
@@ -106,7 +106,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
       href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@700;900&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&family=UnifrakturMaguntia&display=swap"
       rel="stylesheet"
       media="print"
-      onload="this.media='all'"
+      onload="this.onload=null;this.setAttribute('media','all')"
     />
     <noscript>
       <link

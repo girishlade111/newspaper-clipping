@@ -5,6 +5,9 @@ interface Props {
   image?: string;
   article?: boolean;
   lang?: string;
+  author?: string;
+  datePublished?: string;
+  dateModified?: string;
 }
 
 const {
@@ -12,7 +15,10 @@ const {
   description,
   image = '/og-image.png',
   article = false,
-  lang = 'en'
+  lang = 'en',
+  author,
+  datePublished,
+  dateModified,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://newspaper-clipping-generator.example.com');
@@ -49,9 +55,28 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
 <meta property="twitter:image" content={new URL(image, canonicalURL)} />
 
 <!-- Schema.org JSON-LD -->
+{article ? (
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": formattedTitle,
+    "description": description,
+    "url": canonicalURL.toString(),
+    "image": new URL(image, canonicalURL).toString(),
+    "author": { "@type": "Person", "name": author || "The Press Editorial Team" },
+    ...(datePublished ? { "datePublished": datePublished } : {}),
+    ...(dateModified ? { "dateModified": dateModified } : {}),
+    "publisher": {
+      "@type": "Organization",
+      "name": "The Vintage Press",
+      "url": (Astro.site || 'https://newspaper-clipping-generator.example.com').toString(),
+    },
+    "inLanguage": lang,
+  })} />
+) : (
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
-  "@type": article ? "Article" : "WebApplication",
+  "@type": "WebApplication",
   "name": formattedTitle,
   "description": description,
   "url": canonicalURL.toString(),
@@ -63,3 +88,4 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     "priceCurrency": "USD"
   }
 })} />
+)}

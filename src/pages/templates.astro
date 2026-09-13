@@ -4,6 +4,16 @@ import { PRESETS } from '../scripts/presets';
 import { getRelativeLocaleUrl } from '../i18n/utils';
 
 const lang = 'en';
+
+const siteBase = (Astro.site?.toString() ?? 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteBase}/` },
+    { '@type': 'ListItem', position: 2, name: 'Templates', item: `${siteBase}/templates` },
+  ],
+};
 ---
 
 <BaseLayout
@@ -11,6 +21,9 @@ const lang = 'en';
   description="Explore our complete collection of historical broadsheet, wanted poster, wedding announcement, and tabloid newspaper clipping presets."
   lang={lang}
 >
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
   <section class="band-sage" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-4xl);">
     <div class="container">
       <div class="text-center" style="margin-bottom: var(--spacing-3xl);">

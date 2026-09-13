@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://newspaper-clipping-generator.example.com/sitemap-index.xml
