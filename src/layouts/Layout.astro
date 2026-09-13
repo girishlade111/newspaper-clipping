@@ -3,6 +3,7 @@ import type { SupportedLanguage } from '../i18n/ui';
 import { languages, defaultLang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import Navbar from '../components/Navbar.astro';
+import Toast from '../components/common/Toast.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -171,6 +172,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
         </div>
       </footer>
     )}
+    <Toast />
   </body>
 </html>
 

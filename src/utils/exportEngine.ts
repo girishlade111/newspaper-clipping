@@ -7,6 +7,12 @@
 
 export type ImageFormat = 'png' | 'jpeg';
 
+declare global {
+  interface Window {
+    showToast: (message: string, duration?: number) => void;
+  }
+}
+
 const BASE_FILENAME = 'vintage-newspaper-clipping';
 
 // Shared onclone handler to fix html2canvas rendering bugs:
@@ -125,7 +131,7 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
   let container: HTMLDivElement | null = null;
   try {
     const source = document.getElementById('newspaper-export-target') as HTMLElement | null;
-    if (!source) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    if (!source) { window.showToast('Export failed: Could not find the newspaper element in the DOM.'); return; }
 
     // 1. Clone the Target deeply
     const clone = source.cloneNode(true) as HTMLElement;
@@ -160,7 +166,7 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
     document.body.removeChild(link);
   } catch (error: any) {
     console.error('Failed to export PNG:', error);
-    alert('Error generating image: ' + error.message);
+    window.showToast('Error generating image: ' + error.message);
   } finally {
     // 5. Cleanup strictly
     if (container) container.remove();
@@ -177,7 +183,7 @@ export async function exportAsJPG(element?: HTMLElement): Promise<void> {
   let container: HTMLDivElement | null = null;
   try {
     const source = document.getElementById('newspaper-export-target') as HTMLElement | null;
-    if (!source) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    if (!source) { window.showToast('Export failed: Could not find the newspaper element in the DOM.'); return; }
 
     const clone = source.cloneNode(true) as HTMLElement;
     container = createOffscreenContainer();
@@ -199,7 +205,7 @@ export async function exportAsJPG(element?: HTMLElement): Promise<void> {
     document.body.removeChild(link);
   } catch (error: any) {
     console.error('Failed to export JPG:', error);
-    alert('Error generating image: ' + error.message);
+    window.showToast('Error generating image: ' + error.message);
   } finally {
     if (container) container.remove();
   }
@@ -224,7 +230,7 @@ export async function exportAsImage(
   let container: HTMLDivElement | null = null;
   try {
     const source = document.getElementById('newspaper-export-target') as HTMLElement | null;
-    if (!source) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    if (!source) { window.showToast('Export failed: Could not find the newspaper element in the DOM.'); return; }
 
     if (format === 'jpeg') {
       // Delegate to JPG path with pristine clone (scale 2 for non-4K)
@@ -296,7 +302,7 @@ export async function exportAsImage(
     document.body.removeChild(link);
   } catch (error: any) {
     console.error(`Failed to export image as ${format}:`, error);
-    alert('Error generating image: ' + error.message);
+    window.showToast('Error generating image: ' + error.message);
   } finally {
     if (container) container.remove();
   }
@@ -312,7 +318,7 @@ export async function exportAsPDF(element?: HTMLElement): Promise<void> {
   let container: HTMLDivElement | null = null;
   try {
     const source = document.getElementById('newspaper-export-target') as HTMLElement | null;
-    if (!source) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    if (!source) { window.showToast('Export failed: Could not find the newspaper element in the DOM.'); return; }
 
     const clone = source.cloneNode(true) as HTMLElement;
     container = createOffscreenContainer();
@@ -376,7 +382,7 @@ export async function exportAsPDF(element?: HTMLElement): Promise<void> {
     pdf.save(`${BASE_FILENAME}.pdf`);
   } catch (error: any) {
     console.error('Failed to export PDF:', error);
-    alert('Error generating image: ' + error.message);
+    window.showToast('Error generating image: ' + error.message);
   } finally {
     if (container) container.remove();
   }
@@ -390,10 +396,10 @@ export function printClipping(element?: HTMLElement): void {
   if (typeof window === 'undefined') return;
   try {
     const target = (element as HTMLElement) ?? document.getElementById('newspaper-export-target') as HTMLElement | null;
-    if (!target) { alert('Export failed: Could not find the newspaper element in the DOM.'); return; }
+    if (!target) { window.showToast('Export failed: Could not find the newspaper element in the DOM.'); return; }
     const printWindow = window.open('', '_blank', 'width=900,height=1000');
     if (!printWindow) {
-      alert('Popup blocked! Please allow popups for this site to print your clipping.');
+      window.showToast('Popup blocked! Please allow popups for this site to print your clipping.');
       return;
     }
     const styles = Array.from(
@@ -438,6 +444,6 @@ export function printClipping(element?: HTMLElement): void {
     }, 1000);
   } catch (error: any) {
     console.error('Failed to print clipping:', error);
-    alert('Error generating image: ' + error.message);
+    window.showToast('Error generating image: ' + error.message);
   }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   getRecentClippings,
   deleteClipping,
@@ -50,14 +50,32 @@ export default function RecentClippingsDrawer({
     }
   };
 
+  const [confirmClear, setConfirmClear] = useState<boolean>(false);
+  const confirmTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
+    };
+  }, []);
+
   const handleClearAll = async () => {
-    if (window.confirm('Are you sure you want to clear all saved clippings?')) {
-      try {
-        await clearAllClippings();
-        setClippings([]);
-      } catch (err) {
-        console.error('Failed to clear clippings', err);
-      }
+    if (!confirmClear) {
+      setConfirmClear(true);
+      if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
+      confirmTimeoutRef.current = setTimeout(() => {
+        setConfirmClear(false);
+      }, 4000);
+      return;
+    }
+
+    if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
+    setConfirmClear(false);
+    try {
+      await clearAllClippings();
+      setClippings([]);
+    } catch (err) {
+      console.error('Failed to clear clippings', err);
     }
   };
 
@@ -117,13 +135,35 @@ export default function RecentClippingsDrawer({
           {clippings.length > 0 && (
             <div className="px-6 py-3 bg-canvas-soft/80 border-b border-black/5 flex items-center justify-between text-xs">
               <span className="text-ink-mute font-semibold">Click any item to restore session</span>
-              <button
-                type="button"
-                onClick={handleClearAll}
-                className="text-negative-deep hover:text-negative-darkest font-bold transition-colors"
-              >
-                Clear All History
-              </button>
+              {confirmClear ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleClearAll}
+                    className="bg-negative-deep hover:bg-negative-darkest text-white px-2 py-0.5 rounded text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Confirm delete?
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
+                      setConfirmClear(false);
+                    }}
+                    className="text-ink-mute hover:text-ink text-xs underline transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="text-negative-deep hover:text-negative-darkest font-bold transition-colors"
+                >
+                  Clear All History
+                </button>
+              )}
             </div>
           )}
 
