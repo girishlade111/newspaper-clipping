@@ -828,6 +828,8 @@ export const turkishUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'nav.generator': 'Oluşturucu',
   'home.hero.title': 'Saniyeler içinde otantik vintage gazete kupürleri oluşturun.',
   'home.hero.description': 'Hikayeleri, duyuruları ve tarihi olayları gerçekçi eskitilmiş gazete kağıdına dönüştürün. Linotip manşetleri, vintage tramlı fotoğrafları ve gerçekçi yırtık kenarları özelleştirin.',
+  'blog.title': 'Vintage Baskı Günlükleri',
+  'blog.subtitle': 'Tipografi, gazete tarihi ve vintage tasarım teknikleri üzerine yazılar.',
   'studio.badge': 'İnteraktif Stüdyo',
   'studio.title': 'Tarihi Gazete Kupürü Oluşturucu',
   'studio.subtitle': 'Manşet, haber metni, gazete eskitmesi ve fotoğraf filtrelerini anında özelleştirin.',
