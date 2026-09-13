@@ -19,10 +19,14 @@ export const LOCALE_SUBPATHS: Record<SupportedLocale, string> = {
   ja: 'ja',
   tr: 'tr',
   ko: 'ko',
+  de: 'de',
+  es: 'es',
+  fr: 'fr',
+  hi: 'hi',
 };
 
 /**
- * Normalizes a raw BCP 47 language tag to one of the 7 supported locales.
+ * Normalizes a raw BCP 47 language tag to one of the 11 supported locales.
  */
 export function matchSupportedLocale(rawTag: string): SupportedLocale | null {
   if (!rawTag) return null;
