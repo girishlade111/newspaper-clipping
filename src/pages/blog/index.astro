@@ -15,6 +15,9 @@ const allCategories = ['All', ...new Set(allPosts.map(p => p.data.category))];
   description="Explore articles on vintage newspaper design, historical printing techniques, creative gifts, escape room props, and typography guides."
   lang={lang}
 >
+   <Fragment slot="head">
+     <script is:inline type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://newspaper-clipping-generator.example.com/' }, { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://newspaper-clipping-generator.example.com/blog' } ] })} />
+   </Fragment>
   <section class="band-sage" style="padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-3xl);">
     <div class="container">
       <div class="text-center" style="max-width: 680px; margin: 0 auto var(--spacing-2xl);">
