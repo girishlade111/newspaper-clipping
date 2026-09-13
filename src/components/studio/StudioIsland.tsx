@@ -8,7 +8,6 @@ import {
 import {
   exportAsPNG,
   exportAsJPG,
-  exportAsImage,
   exportAsPDF,
   printClipping,
 } from '../../utils/exportEngine';
@@ -866,7 +865,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('PNG'); try { await exportAsPNG(false); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
+                  onClick={async () => { if (isExporting) return; setIsExporting(true); setExportFormat('PNG'); try { await exportAsPNG(false); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download high-resolution PNG"
                 >
@@ -875,7 +874,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('JPG'); try { await exportAsJPG(); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
+                  onClick={async () => { if (isExporting) return; setIsExporting(true); setExportFormat('JPG'); try { await exportAsJPG(); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Download JPEG format"
                 >
@@ -884,7 +883,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('PDF'); try { await exportAsPDF(); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
+                  onClick={async () => { if (isExporting) return; setIsExporting(true); setExportFormat('PDF'); try { await exportAsPDF(); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-3 py-1.5 rounded-xl bg-canvas-soft hover:bg-[#dbe0d8] text-ink font-bold text-xs border border-black/10 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Export Archival PDF"
                 >
@@ -905,7 +904,7 @@ function StudioIslandInner({
                 <button
                   type="button"
                   disabled={isExporting}
-                  onClick={async () => { console.log("Button clicked!"); if (isExporting) return; setIsExporting(true); setExportFormat('4K'); try { await exportAsPNG(true); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
+                  onClick={async () => { if (isExporting) return; setIsExporting(true); setExportFormat('4K'); try { await exportAsPNG(true); } catch(e){ console.error(e); } finally { setIsExporting(false); setExportFormat(''); } }}
                   className="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-active text-ink font-black text-xs transition-all shadow-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer ml-1"
                 >
                   <svg className="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
