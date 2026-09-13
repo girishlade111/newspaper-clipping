@@ -552,6 +552,24 @@ function StudioIslandInner({
             <span>{isSaved ? 'Saved to Drafts!' : 'Save Draft'}</span>
           </button>
 
+          {/* My Recent Clippings Drawer (merged from /editor) */}
+          <button
+            type="button"
+            onClick={() => setIsDrawerOpen(true)}
+            className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl bg-white hover:bg-canvas-soft text-ink font-semibold text-xs border border-black/15 shadow-2xs transition-colors cursor-pointer relative"
+            title="Open saved drafts history"
+          >
+            <svg className="w-4 h-4 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>My Recent Clippings</span>
+            {draftCount > 0 && (
+              <span className="px-1.5 py-0.5 rounded-full bg-primary text-ink text-[10px] font-black">
+                {draftCount}
+              </span>
+            )}
+          </button>
+
           {/* Share Link */}
           <button
             type="button"
