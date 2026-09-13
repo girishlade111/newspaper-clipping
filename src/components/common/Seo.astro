@@ -8,6 +8,7 @@ interface Props {
   author?: string;
   datePublished?: string;
   dateModified?: string;
+  noindex?: boolean;
 }
 
 import { languages } from '../../i18n/ui';
@@ -21,6 +22,7 @@ const {
   author,
   datePublished,
   dateModified,
+  noindex = false,
 } = Astro.props;
 
 const siteBase = (Astro.site?.toString() ?? 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
@@ -42,6 +44,7 @@ const effectiveImage = new URL(image || '/og-image.png', siteBase).toString();
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 <!-- Fonts: same strategy as Layout.astro — preload critical stylesheet, lazy-load vintage families -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

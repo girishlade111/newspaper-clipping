@@ -5,6 +5,98 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
+import fs from 'node:fs';
+import path from 'node:path';
+
+/** @type {Map<string, Date> | null} */
+let blogDateMap = null;
+
+function getBlogDateMap() {
+  if (blogDateMap) return blogDateMap;
+  blogDateMap = new Map();
+  const blogDir = path.resolve('src/content/blog');
+  if (fs.existsSync(blogDir)) {
+    const langs = fs.readdirSync(blogDir);
+    for (const lang of langs) {
+      const langPath = path.join(blogDir, lang);
+      if (!fs.statSync(langPath).isDirectory()) continue;
+      const files = fs.readdirSync(langPath);
+      for (const file of files) {
+        if (!file.endsWith('.md') && !file.endsWith('.mdx')) continue;
+        const fullPath = path.join(langPath, file);
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const slug = file.replace(/\.(md|mdx)$/, '');
+        const mtime = fs.statSync(fullPath).mtime;
+        const pubMatch = content.match(/pubDate:\s*([^\r\n]+)/);
+        const updatedMatch = content.match(/updatedDate:\s*([^\r\n]+)/);
+        const dateStr = updatedMatch ? updatedMatch[1].trim() : (pubMatch ? pubMatch[1].trim() : null);
+        const date = dateStr ? new Date(dateStr) : mtime;
+        blogDateMap.set(`${lang}:${slug}`, date);
+      }
+    }
+  }
+  return blogDateMap;
+}
+
+/**
+ * @param {string} urlStr
+ * @returns {Date | undefined}
+ */
+function resolveLastmod(urlStr) {
+  try {
+    const url = new URL(urlStr);
+    const pathname = url.pathname.replace(/\/$/, '') || '/';
+    const blogDates = getBlogDateMap();
+
+    // Blog URLs: /blog/<slug> (en) or /<lang>/blog/<slug>
+    const blogEnMatch = pathname.match(/^\/blog\/([^/]+)$/);
+    if (blogEnMatch) {
+      const date = blogDates.get(`en:${blogEnMatch[1]}`);
+      if (date) return date;
+    }
+
+    const blogLangMatch = pathname.match(/^\/([a-zA-Z-]+)\/blog\/([^/]+)$/);
+    if (blogLangMatch) {
+      const date = blogDates.get(`${blogLangMatch[1]}:${blogLangMatch[2]}`);
+      if (date) return date;
+    }
+
+    // Static pages
+    let candidateFiles = [];
+    if (pathname === '/') {
+      candidateFiles = ['src/pages/index.astro'];
+    } else {
+      const parts = pathname.slice(1).split('/');
+      if (parts.length === 1) {
+        const p = parts[0];
+        if (['zh', 'pt-BR', 'ru', 'ja', 'tr', 'ko', 'de', 'es', 'fr', 'hi'].includes(p)) {
+          candidateFiles = ['src/pages/[lang]/index.astro', 'src/pages/index.astro'];
+        } else {
+          candidateFiles = [`src/pages/${p}.astro`, `src/pages/${p}/index.astro`];
+        }
+      } else if (parts.length === 2) {
+        const [lang, page] = parts;
+        candidateFiles = [
+          `src/pages/[lang]/${page}.astro`,
+          `src/pages/[lang]/${page}/index.astro`,
+          `src/pages/${page}.astro`,
+          `src/pages/${page}/index.astro`,
+        ];
+      }
+    }
+
+    for (const candidate of candidateFiles) {
+      const full = path.resolve(candidate);
+      if (fs.existsSync(full)) {
+        return fs.statSync(full).mtime;
+      }
+    }
+  } catch {
+    // fallback
+  }
+  return undefined;
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://newspaper-clipping-generator.example.com',
@@ -13,6 +105,7 @@ export default defineConfig({
     tailwind(),
     mdx(),
     sitemap({
+      filter: (page) => !page.includes('/404') && !page.includes('/editor'),
       i18n: {
         defaultLocale: 'en',
         locales: {
@@ -28,6 +121,13 @@ export default defineConfig({
           fr: 'fr-FR',
           hi: 'hi-IN',
         },
+      },
+      serialize(item) {
+        const lastmod = resolveLastmod(item.url);
+        if (lastmod) {
+          item.lastmod = lastmod.toISOString();
+        }
+        return item;
       },
     }),
   ],

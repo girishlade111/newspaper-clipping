@@ -16,6 +16,7 @@ interface Props {
   author?: string;
   datePublished?: string;
   dateModified?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   author,
   datePublished,
   dateModified,
+  noindex = false,
 } = Astro.props;
 
 const langInfo = languages[lang] || languages['en'];
@@ -35,7 +37,7 @@ const langInfo = languages[lang] || languages['en'];
 <!doctype html>
 <html lang={lang} dir={langInfo.dir || 'ltr'}>
   <head>
-    <Seo title={title} description={description} image={image} article={article} lang={lang} author={author} datePublished={datePublished} dateModified={dateModified} />
+    <Seo title={title} description={description} image={image} article={article} lang={lang} author={author} datePublished={datePublished} dateModified={dateModified} noindex={noindex} />
     <!-- Slot for page-specific head injections (e.g. BreadcrumbList JSON-LD) -->
     <slot name="head" />
   </head>
