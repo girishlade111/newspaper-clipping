@@ -1,26 +1,37 @@
 import { getCollection } from 'astro:content';
+import { languages, type SupportedLanguage } from '../i18n/ui';
 
 export async function GET(context: any) {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const locale = (context.params as any)?.lang as SupportedLanguage | undefined;
+  const siteBase = (context.site?.toString() ?? 'https://newspaper-clipping-generator.example.com').replace(/\/$/, '');
+  // Per-locale feed when served under /[lang]/rss.xml; default feed stays English
+  const lang: SupportedLanguage = locale && locale in languages ? locale : 'en';
+  const prefix = lang === 'en' ? '' : `/${(languages as any)[lang].subpath || lang}`;
+  const posts = await getCollection('blog', ({ data }) => !data.draft && (data.language === lang || (lang === 'en' && data.language === 'en')));
   const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-  const items = sorted.map(post => `
+  const items = sorted.map(post => {
+    const slug = post.slug.replace(new RegExp(`^${post.data.language}/`), '');
+    const url = `${siteBase}${prefix}/blog/${slug}`;
+    return `
     <item>
       <title><![CDATA[${post.data.title}]]></title>
       <description><![CDATA[${post.data.description}]]></description>
-      <link>${context.site || 'https://newspaper-clipping-generator.example.com'}/blog/${post.slug.replace(/^en\//, '')}</link>
+      <link>${url}</link>
       <pubDate>${post.data.pubDate.toUTCString()}</pubDate>
-      <guid>${context.site || 'https://newspaper-clipping-generator.example.com'}/blog/${post.slug.replace(/^en\//, '')}</guid>
+      <author><![CDATA[${post.data.author || 'The Press Editorial Team'}]]></author>
+      <category><![CDATA[${post.data.category || 'Design'}]]></category>
+      <guid>${url}</guid>
     </item>
-  `).join('');
+  `;}).join('');
 
   const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>The Vintage Press — Newspaper Clipping Blog</title>
+    <title>The Vintage Press — Newspaper Clipping Blog (${lang})</title>
     <description>Guides, history, typography secrets, and creative ideas for vintage newspaper clippings.</description>
-    <link>${context.site || 'https://newspaper-clipping-generator.example.com'}</link>
-    <language>en</language>
+    <link>${siteBase}${prefix}/blog</link>
+    <language>${(languages as any)[lang]?.hreflang || lang}</language>
     ${items}
   </channel>
 </rss>`;

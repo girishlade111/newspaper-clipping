@@ -196,10 +196,21 @@ Upload an image above to see real vintage halftone reproduction and instant clip
   },
 ];
 
+// Maps GeneratorApp preset IDs (src/scripts/presets.ts) to StudioIsland TEMPLATES so
+// /templates?template=<preset-id> deep-links resolve to the closest studio template.
+const GENERATOR_TO_STUDIO_TEMPLATE: Record<string, string> = {
+  'breaking-1920': 'vintage-custom',
+  'wanted-wild-west': 'times-of-india',
+  'moon-landing-1969': 'new-york-times',
+  'wedding-extra': 'vintage-custom',
+  'tabloid-ufo': 'washington-post',
+};
+
 interface StudioIslandProps {
   lang?: string;
   initialTemplate?: string;
 }
+
 
 // Error Boundary to catch and DISPLAY the actual crash error
 class StudioErrorBoundary extends React.Component<
@@ -243,12 +254,14 @@ function StudioIslandInner({
 }: StudioIslandProps) {
   // Resolve initial preset purely from props (NO window access during render)
   // This prevents React hydration mismatches between SSR and client.
+  // GeneratorApp preset IDs (e.g. breaking-1920 from /templates links) map via alias table.
   const resolvePresetFromProp = (propId: string): TemplatePreset => {
+    const aliased = GENERATOR_TO_STUDIO_TEMPLATE[propId] || propId;
     const matched = TEMPLATES.find(
       (t) =>
-        t.id === propId ||
-        t.name.toLowerCase() === propId.toLowerCase() ||
-        t.id.replace(/-/g, '') === propId.toLowerCase().replace(/-/g, '')
+        t.id === aliased ||
+        t.name.toLowerCase() === aliased.toLowerCase() ||
+        t.id.replace(/-/g, '') === aliased.toLowerCase().replace(/-/g, '')
     );
     return matched || TEMPLATES[0];
   };
@@ -295,11 +308,12 @@ function StudioIslandInner({
       const taglineParam = params.get('tagline');
 
       if (tmplParam) {
+        const aliased = GENERATOR_TO_STUDIO_TEMPLATE[tmplParam] || tmplParam;
         const found = TEMPLATES.find(
           (t) =>
-            t.id === tmplParam ||
-            t.name.toLowerCase() === tmplParam.toLowerCase() ||
-            t.id.replace(/-/g, '') === tmplParam.toLowerCase().replace(/-/g, '')
+            t.id === aliased ||
+            t.name.toLowerCase() === aliased.toLowerCase() ||
+            t.id.replace(/-/g, '') === aliased.toLowerCase().replace(/-/g, '')
         );
         if (found) {
           setSelectedTemplate(found.id);

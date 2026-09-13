@@ -295,18 +295,18 @@ const faqJsonLd = {
         </p>
       </div>
 
-      <!-- FAQ Accordions with <details> -->
-      <div class="space-y-4">
+      <!-- FAQ Accordions with <details> — kept in sync with FAQPage JSON-LD in <head> -->
+      <div class="space-y-4" itemscope itemtype="https://schema.org/FAQPage">
         {faqList.map((item) => (
-          <details class="group bg-canvas-soft/60 hover:bg-canvas-soft rounded-2xl border border-black/10 transition-colors overflow-hidden">
+          <details class="group bg-canvas-soft/60 hover:bg-canvas-soft rounded-2xl border border-black/10 transition-colors overflow-hidden" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <summary class="flex items-center justify-between cursor-pointer p-5 sm:p-6 font-semibold text-ink select-none list-none font-display text-base sm:text-lg">
-              <span class="pr-4">{item.q}</span>
+              <span class="pr-4" itemprop="name">{item.q}</span>
               <svg class="w-5 h-5 text-ink/70 transition-transform duration-200 group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </summary>
-            <div class="px-5 pb-5 sm:px-6 sm:pb-6 text-ink-body text-sm sm:text-base leading-relaxed border-t border-black/5 pt-3">
-              {item.a}
+            <div class="px-5 pb-5 sm:px-6 sm:pb-6 text-ink-body text-sm sm:text-base leading-relaxed border-t border-black/5 pt-3" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+              <span itemprop="text">{item.a}</span>
             </div>
           </details>
         ))}

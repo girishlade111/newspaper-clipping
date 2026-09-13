@@ -587,9 +587,9 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
 
             {/* Central Masthead */}
             <div className="text-center py-2">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-none text-stone-950 font-serif">
+              <div className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-none text-stone-950 font-serif" aria-hidden="true">
                 {resolvedMasthead}
-              </h1>
+              </div>
               {resolvedTagline && (
                 <p className="text-[11px] sm:text-xs italic font-sans text-stone-800 mt-1">
                   {resolvedTagline}

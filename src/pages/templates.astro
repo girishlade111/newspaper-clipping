@@ -57,9 +57,9 @@ const breadcrumbLd = {
             </div>
 
             <div style="margin-top: var(--spacing-lg);">
-              <a 
-                href={getRelativeLocaleUrl(lang, `generator?preset=${preset.id}`)} 
-                class="btn btn-primary" 
+              <a
+                href={`${getRelativeLocaleUrl(lang, 'studio')}?template=${preset.id}&headline=${encodeURIComponent(preset.headline)}&story=${encodeURIComponent(preset.body)}&name=${encodeURIComponent(preset.newspaperName)}&tagline=${encodeURIComponent(preset.tagline)}&date=${encodeURIComponent(preset.date)}`}
+                class="btn btn-primary"
                 style="width: 100%;"
               >
                 <span>Customize in Studio →</span>
