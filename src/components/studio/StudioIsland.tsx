@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PreviewPanel from '../editor/PreviewPanel';
+import RecentClippingsDrawer from '../editor/RecentClippingsDrawer';
 import {
   saveToDrafts,
   captureThumbnail,
+  getRecentClippings,
+  type ClippingRecord,
 } from '../../utils/exportAndStorage';
 import {
   exportAsPNG,
@@ -274,6 +277,8 @@ function StudioIslandInner({
   const previewRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [draftCount, setDraftCount] = useState<number>(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
