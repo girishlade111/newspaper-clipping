@@ -150,7 +150,7 @@ export default function RecentClippingsDrawer({
                   onClick={onClose}
                   className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-active text-ink font-bold text-xs shadow-sm transition-all"
                 >
-                  Back to Editor
+                  Back to Studio
                 </button>
               </div>
             ) : (
@@ -212,7 +212,7 @@ export default function RecentClippingsDrawer({
                   </div>
 
                   {/* Action Link */}
-                  <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[11px] font-bold text-primary-deep group-hover:text-ink">
+                  <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[11px] font-bold text-positive-deep group-hover:text-ink">
                     <span>Click to Restore in Editor →</span>
                     <span className="text-[10px] text-ink-mute font-normal font-sans">
                       {item.story.length} chars
