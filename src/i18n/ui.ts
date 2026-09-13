@@ -1489,6 +1489,8 @@ export const hindiUI: Partial<Record<keyof typeof defaultUI, string>> = {
   'nav.generator': 'जनरेटर',
   'home.hero.title': 'सेकंडों में असली विंटेज अख़बार की कतरनें बनाएँ।',
   'home.hero.description': 'कहानियों, घोषणाओं और ऐतिहासिक घटनाओं को वास्तविक पुराने अख़बारी कागज़ में बदलें। लिनोटाइप सुर्खियाँ, विंटेज हाफ़टोन फ़ोटो और असली फटे किनारे सजाएँ।',
+  'blog.title': 'विंटेज प्रिंटिंग इतिहास',
+  'blog.subtitle': 'टाइपोग्राफी, अख़बार के इतिहास और विंटेज डिज़ाइन तकनीकों पर लेख।',
   'nav.create': 'कतरन बनाएँ',
   'nav.createNow': 'कतरन बनाएँ',
   'nav.createClipping': 'कतरन बनाएँ',
