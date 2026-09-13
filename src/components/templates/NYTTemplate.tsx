@@ -27,16 +27,13 @@ export interface NYTTemplateProps {
   className?: string;
 }
 
-// Inject Google Fonts once (idempotent across hot reloads / multiple mounts).
+// Inject Google Fonts once (idempotent). Non-blocking preload pattern so template
+// fonts (already covered by Layout lazy-load bundle) never block first paint.
 const FONT_LINK_ID = 'nyt-template-google-fonts';
 function ensureFonts() {
   if (typeof document !== 'undefined' && !document.getElementById(FONT_LINK_ID)) {
-    const link = document.createElement('link');
-    link.id = FONT_LINK_ID;
-    link.rel = 'stylesheet';
-    link.href =
-      'https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap';
-    document.head.appendChild(link);
+    // Families already in Layout's lazy-load bundle — skip duplicate fetch.
+    return;
   }
 }
 

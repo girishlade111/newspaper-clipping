@@ -22,10 +22,15 @@ function ensureFonts() {
   if (typeof document !== 'undefined' && !document.getElementById(FONT_LINK_ID)) {
     const link = document.createElement('link');
     link.id = FONT_LINK_ID;
-    link.rel = 'stylesheet';
+    link.rel = 'preload';
+    (link as HTMLLinkElement).as = 'style';
     link.href =
       'https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap';
+    link.onload = () => { link.rel = 'stylesheet'; };
     document.head.appendChild(link);
+    const fallback = document.createElement('noscript');
+    // noscript fallback handled by Layout-level fonts; kept minimal here
+    void fallback;
   }
 }
 
