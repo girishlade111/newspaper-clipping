@@ -106,6 +106,7 @@ export default defineConfig({
     tailwind(),
     mdx(),
     sitemap({
+      xslURL: '/sitemap-style.xsl',
       filter: (page) => !page.includes('/404') && !page.includes('/editor'),
       i18n: {
         defaultLocale: 'en',
@@ -142,7 +143,9 @@ export default defineConfig({
               const filePath = path.resolve('dist', fileName);
               if (fs.existsSync(filePath)) {
                 res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-                fs.createReadStream(filePath).pipe(res);
+                let content = fs.readFileSync(filePath, 'utf8');
+                content = content.replaceAll(/href="https?:\/\/[^/]+\/sitemap-style\.xsl"/g, 'href="/sitemap-style.xsl"');
+                res.end(content);
                 return;
               }
             }
@@ -152,10 +155,21 @@ export default defineConfig({
         'astro:build:done': async ({ dir, logger }) => {
           const destDir = fileURLToPath(dir);
           const indexFile = path.join(destDir, 'sitemap-index.xml');
+          const chunkFile = path.join(destDir, 'sitemap-0.xml');
           const aliasFile = path.join(destDir, 'sitemap.xml');
+
+          // Ensure root-relative stylesheet reference so browsers render correctly on localhost/preview and production
+          for (const file of [indexFile, chunkFile]) {
+            if (fs.existsSync(file)) {
+              let content = fs.readFileSync(file, 'utf8');
+              content = content.replaceAll(/href="https?:\/\/[^/]+\/sitemap-style\.xsl"/g, 'href="/sitemap-style.xsl"');
+              fs.writeFileSync(file, content, 'utf8');
+            }
+          }
+
           if (fs.existsSync(indexFile)) {
             fs.copyFileSync(indexFile, aliasFile);
-            logger.info('`sitemap.xml` alias created from `sitemap-index.xml`');
+            logger.info('`sitemap.xml` alias created from `sitemap-index.xml` with XSL stylesheet');
           }
         },
       },
