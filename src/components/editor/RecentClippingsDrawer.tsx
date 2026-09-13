@@ -96,7 +96,7 @@ export default function RecentClippingsDrawer({
                   My Recent Clippings
                 </h2>
               </div>
-              <p className="text-xs text-mute mt-1">
+              <p className="text-xs text-ink-mute mt-1">
                 {clippings.length} {clippings.length === 1 ? 'clipping' : 'clippings'} saved locally in IndexedDB
               </p>
             </div>
@@ -116,7 +116,7 @@ export default function RecentClippingsDrawer({
           {/* Action Bar */}
           {clippings.length > 0 && (
             <div className="px-6 py-3 bg-canvas-soft/80 border-b border-black/5 flex items-center justify-between text-xs">
-              <span className="text-mute font-semibold">Click any item to restore session</span>
+              <span className="text-ink-mute font-semibold">Click any item to restore session</span>
               <button
                 type="button"
                 onClick={handleClearAll}
@@ -130,7 +130,7 @@ export default function RecentClippingsDrawer({
           {/* List of Saved Clippings */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-16 text-mute text-sm">
+              <div className="flex flex-col items-center justify-center py-16 text-ink-mute text-sm">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
                 <span>Reading local storage...</span>
               </div>
@@ -142,7 +142,7 @@ export default function RecentClippingsDrawer({
                 <h3 className="font-display font-bold text-ink text-base mb-1">
                   No Saved Clippings Yet
                 </h3>
-                <p className="text-xs text-mute max-w-xs leading-relaxed mb-6">
+                <p className="text-xs text-ink-mute max-w-xs leading-relaxed mb-6">
                   Click the <strong className="text-ink font-bold">"Save to Drafts"</strong> button in the editor to store your designs locally in your browser.
                 </p>
                 <button
@@ -168,7 +168,7 @@ export default function RecentClippingsDrawer({
                       <span className="px-2 py-0.5 rounded-pill bg-canvas-soft text-[10px] font-bold text-ink uppercase tracking-wider">
                         {item.template.replace('-', ' ')}
                       </span>
-                      <span className="text-[11px] text-mute font-medium">
+                      <span className="text-[11px] text-ink-mute font-medium">
                         {formatTimestamp(item.timestamp)}
                       </span>
                     </div>
@@ -176,7 +176,7 @@ export default function RecentClippingsDrawer({
                     <button
                       type="button"
                       onClick={(e) => handleDelete(e, item.id)}
-                      className="text-mute hover:text-negative-deep p-1 rounded-md transition-colors"
+                      className="text-ink-mute hover:text-negative-deep p-1 rounded-md transition-colors"
                       title="Delete this clipping"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,7 +196,7 @@ export default function RecentClippingsDrawer({
                         />
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-lg bg-canvas border border-black/10 shrink-0 flex items-center justify-center text-xl text-mute">
+                      <div className="w-16 h-16 rounded-lg bg-canvas border border-black/10 shrink-0 flex items-center justify-center text-xl text-ink-mute">
                         📄
                       </div>
                     )}
@@ -205,7 +205,7 @@ export default function RecentClippingsDrawer({
                       <h4 className="font-serif font-black text-sm text-ink leading-snug line-clamp-2 uppercase group-hover:text-positive-deep transition-colors">
                         {item.headline || 'UNTITLED HEADLINE'}
                       </h4>
-                      <p className="text-[11px] text-mute mt-1 line-clamp-1">
+                      <p className="text-[11px] text-ink-mute mt-1 line-clamp-1">
                         {item.newspaperName} • {item.date}
                       </p>
                     </div>
@@ -214,7 +214,7 @@ export default function RecentClippingsDrawer({
                   {/* Action Link */}
                   <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[11px] font-bold text-primary-deep group-hover:text-ink">
                     <span>Click to Restore in Editor →</span>
-                    <span className="text-[10px] text-mute font-normal font-sans">
+                    <span className="text-[10px] text-ink-mute font-normal font-sans">
                       {item.story.length} chars
                     </span>
                   </div>
@@ -224,7 +224,7 @@ export default function RecentClippingsDrawer({
           </div>
 
           {/* Footer Note */}
-          <div className="p-4 bg-white border-t border-black/10 text-center text-xs text-mute font-medium">
+          <div className="p-4 bg-white border-t border-black/10 text-center text-xs text-ink-mute font-medium">
             100% Client-Side Storage in Dexie.js (IndexedDB). Zero Server Calls.
           </div>
         </div>

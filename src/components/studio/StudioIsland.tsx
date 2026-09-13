@@ -979,6 +979,13 @@ function StudioIslandInner({
         </div>
 
       </div>
+
+      {/* Draft-history drawer (IndexedDB, merged from /editor) */}
+      <RecentClippingsDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onSelectClipping={handleRestoreSession}
+      />
     </div>
   );
 }
