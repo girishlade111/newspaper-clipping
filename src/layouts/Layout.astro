@@ -14,6 +14,7 @@ interface Props {
   article?: boolean;
   hideHeader?: boolean;
   hideFooter?: boolean;
+  noindex?: boolean;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
   article = false,
   hideHeader = false,
   hideFooter = false,
+  noindex = false,
 } = Astro.props;
 
 const t = useTranslations(lang);
@@ -62,6 +64,7 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Technical SEO: Canonical URL -->
     <link rel="canonical" href={canonicalUrl} />
