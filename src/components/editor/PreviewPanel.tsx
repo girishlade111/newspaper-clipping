@@ -293,7 +293,7 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
                       <div className="relative overflow-hidden bg-stone-950/10 max-h-[300px]">
                         <img
                           src={imageUrl}
-                          alt="Newspaper Clipping Scene"
+                          alt={photoCaption ? `Clipping photo: ${photoCaption}` : `Clipping photo for headline: ${headline}`}
                           className="w-full h-full max-h-[280px] object-cover filter grayscale contrast-150 brightness-95"
                         />
                       </div>
