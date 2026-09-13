@@ -21,8 +21,6 @@ export interface RenderOptions extends NewspaperPreset {
 export class NewspaperEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private baseWidth: number = 800;
-  private baseHeight: number = 1000;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -33,7 +31,7 @@ export class NewspaperEngine {
 
   public async render(options: RenderOptions): Promise<void> {
     const scale = options.scale || 1.5; // High-res rendering factor
-    const width = this.baseWidth * scale;
+    const width = ENGINE_CONFIG.baseWidth * scale;
     const height = this.baseHeight * scale;
 
     this.canvas.width = width;
@@ -76,7 +74,7 @@ export class NewspaperEngine {
 
   private drawPaperBackground(options: RenderOptions) {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const h = this.baseHeight;
 
     let baseBg = '#f4ede1';
@@ -122,7 +120,7 @@ export class NewspaperEngine {
 
   private drawTornEdgesOverlay() {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const h = this.baseHeight;
 
     ctx.save();
@@ -136,7 +134,7 @@ export class NewspaperEngine {
 
   private drawMasthead(options: RenderOptions): number {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const margin = 40;
 
     // Top Earpiece Header Band
@@ -211,7 +209,7 @@ export class NewspaperEngine {
 
   private drawHeadlines(options: RenderOptions, startY: number): number {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const margin = 40;
     const usableWidth = w - margin * 2;
 
@@ -273,7 +271,7 @@ export class NewspaperEngine {
     if (!options.userImage) return 0;
 
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const margin = 40;
     const photoW = w - margin * 2;
     const photoH = 240;
@@ -361,7 +359,7 @@ export class NewspaperEngine {
 
   private drawBodyText(options: RenderOptions, startY: number) {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const margin = 40;
     const numCols = options.columns || 2;
     const colGap = 24;
@@ -443,7 +441,7 @@ export class NewspaperEngine {
 
   private drawCreaseLines() {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const h = this.baseHeight;
 
     ctx.save();
@@ -469,7 +467,7 @@ export class NewspaperEngine {
 
   private drawCoffeeStain() {
     const ctx = this.ctx;
-    const w = this.baseWidth;
+    const w = ENGINE_CONFIG.baseWidth;
     const h = this.baseHeight;
 
     ctx.save();
