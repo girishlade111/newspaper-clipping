@@ -100,7 +100,7 @@ function resolveLastmod(urlStr) {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://newspaper-clipping-generator.example.com',
+  site: 'https://newspaper-clipping.pages.dev',
   integrations: [
     react(),
     tailwind(),
