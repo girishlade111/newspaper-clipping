@@ -113,3 +113,7 @@ newspaper-clipping/
 ## 📜 License
 
 Free for personal, educational, and commercial use.
+
+---
+
+Built by [Girish Lade](https://ladestack.in) — part of the [LadeStack](https://ladestack.in) free-tools collection.
