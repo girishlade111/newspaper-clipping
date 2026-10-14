@@ -389,6 +389,10 @@ export class NewspaperEngine {
 
     // Render paragraphs
     let isFirstParagraph = true;
+    // Bug C-03: once the LAST column is full we must stop rendering paragraphs
+    // entirely, otherwise colY stays out of bounds and every remaining paragraph
+    // is painted on top of itself past the page bottom.
+    let overflowed = false;
 
     for (const para of paragraphs) {
       let textToRender = para.trim();
@@ -424,8 +428,12 @@ export class NewspaperEngine {
 
       for (const line of lines) {
         if (colY + lineHeight > ENGINE_CONFIG.baseHeight - margin - 20) {
+          if (currentCol + 1 >= numCols) {
+            // No columns left — stop instead of drawing outside the page.
+            overflowed = true;
+            break;
+          }
           currentCol++;
-          if (currentCol >= numCols) break;
           colX = margin + currentCol * (colW + colGap);
           colY = startY;
         }
@@ -433,6 +441,8 @@ export class NewspaperEngine {
         ctx.fillText(line, colX, colY);
         colY += lineHeight;
       }
+
+      if (overflowed) break;
 
       colY += 10;
       isFirstParagraph = false;

@@ -443,11 +443,15 @@ function StudioIslandInner({
   };
 
   // Copy Shareable URL
-  const handleShareLink = () => {
+  const handleShareLink = async () => {
     if (typeof window === 'undefined') return;
-    navigator.clipboard.writeText(window.location.href);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2500);
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch {
+      window.showToast?.('Failed to copy link to clipboard', 'error');
+    }
   };
 
   // Draft-history count (IndexedDB via Dexie.js)
@@ -473,9 +477,10 @@ function StudioIslandInner({
     setTagline(record.tagline || preset?.tagline || '');
     setDate(record.date);
     setHeadline(record.headline);
-    // Drafts predate subheadline/author fields — fall back to preset defaults
-    setSubheadline(preset?.subheadline || '');
-    setAuthor(preset?.author || '');
+    // Bug C-02: restore the saved byline/deck; only fall back to template defaults
+    // for drafts that were written before these fields existed.
+    setSubheadline(record.subheadline ?? preset?.subheadline ?? '');
+    setAuthor(record.author ?? preset?.author ?? '');
     setStory(record.story);
     setPhotoCaption(record.photoCaption || preset?.photoCaption || '');
     setImageUrl(record.base64Image || null);
@@ -496,6 +501,8 @@ function StudioIslandInner({
         tagline,
         date,
         headline,
+        subheadline,
+        author,
         story,
         base64Image: imageUrl,
         thumbnail,

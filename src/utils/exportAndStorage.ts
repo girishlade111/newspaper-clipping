@@ -11,8 +11,15 @@ export interface ClippingRecord {
   tagline?: string;
   date: string;
   headline: string;
+  /** Deck / kicker under the headline (Bug C-02 — was silently dropped). */
+  subheadline?: string;
+  /** Byline (Bug C-02 — was silently dropped). */
+  author?: string;
   story: string;
+  /** The user's actual uploaded photo, as a data URL (Bug C-01). */
   base64Image?: string | null;
+  /** Low-res screenshot of the whole preview page, used only by the history drawer. */
+  thumbnail?: string | null;
   photoCaption?: string;
   timestamp: number;
 }
@@ -27,7 +34,11 @@ async function getDatabase(): Promise<any> {
     const DexieModule = await import('dexie');
     const Dexie = (DexieModule as any).default || DexieModule;
     const db = new Dexie('NewspaperAppDB');
+    // v1 is kept registered so existing databases upgrade cleanly instead of being reset.
     db.version(1).stores({
+      clippingHistory: '++id, template, headline, timestamp',
+    });
+    db.version(2).stores({
       clippingHistory: '++id, template, headline, timestamp',
     });
     dbInstance = db;
@@ -42,7 +53,7 @@ async function getDatabase(): Promise<any> {
  * Save current editor state to Dexie.js
  */
 export async function saveToDrafts(
-  data: Omit<ClippingRecord, 'id' | 'timestamp'> & { thumbnail?: string | null }
+  data: Omit<ClippingRecord, 'id' | 'timestamp'>
 ): Promise<number> {
   const db = await getDatabase();
   if (!db) return Date.now();
@@ -54,8 +65,12 @@ export async function saveToDrafts(
       tagline: data.tagline,
       date: data.date,
       headline: data.headline,
+      subheadline: data.subheadline || '',
+      author: data.author || '',
       story: data.story,
-      base64Image: data.thumbnail || data.base64Image || null,
+      // Bug C-01: the real photo must survive. The preview screenshot is stored separately.
+      base64Image: data.base64Image || null,
+      thumbnail: data.thumbnail || null,
       photoCaption: data.photoCaption,
       timestamp: Date.now(),
     });
@@ -153,8 +168,9 @@ async function renderElementCanvas(element: HTMLElement, scale = 2): Promise<HTM
   return await html2canvas(element, {
     scale,
     useCORS: true,
-    allowTaint: true,
-    backgroundColor: null,
+    allowTaint: false,
+    // Bug M-16: a transparent background becomes black gutters once encoded to JPEG.
+    backgroundColor: '#ffffff',
     logging: false,
     windowWidth: element.scrollWidth,
     windowHeight: element.scrollHeight,

@@ -41,7 +41,7 @@ export default function RecentClippingsDrawer({
 
   const handleDelete = async (e: React.MouseEvent, id?: number) => {
     e.stopPropagation();
-    if (!id) return;
+    if (id === undefined || id === null) return;
     try {
       await deleteClipping(id);
       setClippings((prev) => prev.filter((item) => item.id !== id));
@@ -227,10 +227,10 @@ export default function RecentClippingsDrawer({
 
                   {/* Thumbnail / Headline Preview */}
                   <div className="flex items-start gap-3">
-                    {item.base64Image ? (
+                    {item.thumbnail || item.base64Image ? (
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-canvas border border-black/10 shrink-0">
                         <img
-                          src={item.base64Image}
+                          src={item.thumbnail || item.base64Image || ''}
                           alt={`Saved clipping: ${item.headline || item.template}`}
                           className="w-full h-full object-cover filter contrast-125"
                         />
@@ -255,7 +255,7 @@ export default function RecentClippingsDrawer({
                   <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[11px] font-bold text-positive-deep group-hover:text-ink">
                     <span>Click to Restore in Studio →</span>
                     <span className="text-[10px] text-ink-mute font-normal font-sans">
-                      {item.story.length} chars
+                      {(item.story?.length ?? 0)} chars
                     </span>
                   </div>
                 </div>

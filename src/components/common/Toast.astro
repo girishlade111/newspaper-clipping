@@ -56,10 +56,15 @@
 <script>
   let toastTimer: any = null;
 
-  (window as any).showToast = function(message: string, duration = 3000) {
+  // Second argument accepts either an explicit duration (ms) or a variant hint
+  // ('info' | 'error' | 'success'). A variant keeps the default duration so a
+  // string is never forwarded to setTimeout (which would coerce it to NaN/0ms).
+  (window as any).showToast = function (message: string, durationOrType: number | string = 3000) {
     const container = document.getElementById('toastNotification');
     const msgEl = document.getElementById('toastMessage');
     if (!container || !msgEl) return;
+
+    const duration = typeof durationOrType === 'number' ? durationOrType : 3000;
 
     msgEl.textContent = message;
     container.classList.add('show');

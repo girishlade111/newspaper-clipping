@@ -355,9 +355,22 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
     const engine = new NewspaperEngine(canvas);
     let userUploadedImage: HTMLImageElement | null = null;
 
-    // State
+    // Resolve the ACTIVE preset (Bug C-04).
+    // `initialPresetId` is baked in at build time and cannot see the query string,
+    // so the server-rendered markup records it via the `.active` preset card and
+    // the ?preset= deep link is read here, client-side.
+    const activePresetCardId = document
+      .querySelector('.preset-card-item.active')
+      ?.getAttribute('data-preset-id') || null;
+    const urlPresetId = new URLSearchParams(window.location.search).get('preset');
+    const initialPreset: NewspaperPreset =
+      PRESETS.find(p => p.id === urlPresetId) ||
+      PRESETS.find(p => p.id === activePresetCardId) ||
+      PRESETS[0];
+
+    // State — seeded from the resolved preset, NOT hardcoded PRESETS[0].
     let currentOptions: NewspaperPreset & { userImage?: HTMLImageElement | null } = {
-      ...PRESETS[0],
+      ...initialPreset,
       userImage: null
     };
 
@@ -388,6 +401,48 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
     const checkCreaseLines = document.getElementById('checkCreaseLines') as HTMLInputElement;
     const checkCoffeeStain = document.getElementById('checkCoffeeStain') as HTMLInputElement;
     const inputPhotoCaption = document.getElementById('inputPhotoCaption') as HTMLInputElement;
+
+    // Pill selector helpers (Font / Paper / Filter)
+    function setActivePill(selectorId: string, attribute: string, value: string) {
+      const group = document.getElementById(selectorId);
+      if (!group) return;
+      group.querySelectorAll('.pill-option').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute(attribute) === value);
+      });
+    }
+
+    // Push a preset into every form control so the DOM, the state object and the
+    // canvas can never disagree (Bug C-04).
+    function applyPresetToUI(preset: NewspaperPreset) {
+      if (inputNewspaperName) inputNewspaperName.value = preset.newspaperName;
+      if (inputTagline) inputTagline.value = preset.tagline;
+      if (inputDate) inputDate.value = preset.date;
+      if (inputIssue) inputIssue.value = preset.issue;
+      if (inputPrice) inputPrice.value = preset.price;
+      if (inputWeatherRight) inputWeatherRight.value = preset.weatherRight;
+      if (inputHeadline) inputHeadline.value = preset.headline;
+      if (inputSubheadline) inputSubheadline.value = preset.subheadline;
+      if (inputAuthor) inputAuthor.value = preset.author;
+      if (selectColumns) selectColumns.value = String(preset.columns);
+      if (inputBody) inputBody.value = preset.body;
+      if (checkDropCap) checkDropCap.checked = preset.dropCap;
+      if (inputAging) {
+        inputAging.value = String(preset.agingLevel);
+        if (agingValueLabel) agingValueLabel.textContent = `${preset.agingLevel}%`;
+      }
+      if (checkTornEdges) checkTornEdges.checked = preset.tornEdges;
+      if (checkCreaseLines) checkCreaseLines.checked = preset.creaseLines;
+      if (checkCoffeeStain) checkCoffeeStain.checked = preset.coffeeStain;
+      if (inputPhotoCaption) inputPhotoCaption.value = preset.photoCaption;
+
+      setActivePill('fontPillSelector', 'data-font', preset.fontStyle);
+      setActivePill('paperStyleSelector', 'data-paper', preset.paperStyle);
+      setActivePill('photoFilterSelector', 'data-filter', preset.filter);
+
+      document.querySelectorAll('.preset-card-item').forEach((card) => {
+        card.classList.toggle('active', card.getAttribute('data-preset-id') === preset.id);
+      });
+    }
 
     // Live update handlers
     const updateFromUI = () => {
@@ -477,32 +532,9 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
         const preset = PRESETS.find(p => p.id === presetId);
         if (!preset) return;
 
-        document.querySelectorAll('.preset-card-item').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-
-        // Apply preset to state
+        // Apply preset to state + every input, checkbox, slider and pill
         currentOptions = { ...preset, userImage: userUploadedImage };
-
-        // Sync inputs
-        if (inputNewspaperName) inputNewspaperName.value = preset.newspaperName;
-        if (inputTagline) inputTagline.value = preset.tagline;
-        if (inputDate) inputDate.value = preset.date;
-        if (inputIssue) inputIssue.value = preset.issue;
-        if (inputPrice) inputPrice.value = preset.price;
-        if (inputWeatherRight) inputWeatherRight.value = preset.weatherRight;
-        if (inputHeadline) inputHeadline.value = preset.headline;
-        if (inputSubheadline) inputSubheadline.value = preset.subheadline;
-        if (inputAuthor) inputAuthor.value = preset.author;
-        if (selectColumns) selectColumns.value = String(preset.columns);
-        if (inputBody) inputBody.value = preset.body;
-        if (checkDropCap) checkDropCap.checked = preset.dropCap;
-        if (inputAging) {
-          inputAging.value = String(preset.agingLevel);
-          if (agingValueLabel) agingValueLabel.textContent = `${preset.agingLevel}%`;
-        }
-        if (checkTornEdges) checkTornEdges.checked = preset.tornEdges;
-        if (checkCreaseLines) checkCreaseLines.checked = preset.creaseLines;
-        if (checkCoffeeStain) checkCoffeeStain.checked = preset.coffeeStain;
+        applyPresetToUI(preset);
 
         // Switch to content tab
         const firstTab = document.querySelector('.tab-btn[data-tab="content"]') as HTMLButtonElement;
@@ -554,6 +586,29 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
       });
     }
 
+    // Reset button (Bug H-11 — the markup shipped with zero listeners)
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        // Fall back to the initially resolved preset when no card is active.
+        const basePreset: NewspaperPreset =
+          PRESETS.find(p => p.id === currentOptions.id) || initialPreset;
+
+        currentOptions = { ...basePreset, userImage: null };
+
+        // Clear any uploaded photo
+        userUploadedImage = null;
+        if (photoFileInput) photoFileInput.value = '';
+        if (dropzoneContent) dropzoneContent.style.display = 'block';
+        if (dropzonePreview) dropzonePreview.style.display = 'none';
+
+        // Restore every control to the preset defaults
+        applyPresetToUI(basePreset);
+
+        triggerRender();
+      });
+    }
+
     // Actions: Download, Copy, Print
     const downloadPngBtn = document.getElementById('downloadPngBtn');
     if (downloadPngBtn) {
@@ -569,9 +624,7 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
           origin: { y: 0.8 }
         });
 
-        if ((window as any).showToast) {
-          (window as any).showToast('Clipping downloaded successfully!');
-        }
+        window.showToast?.('Clipping downloaded successfully!');
       });
     }
 
@@ -579,8 +632,11 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
     if (copyClipboardBtn) {
       copyClipboardBtn.addEventListener('click', async () => {
         const success = await engine.copyToClipboard();
-        if (success && (window as any).showToast) {
-          (window as any).showToast('Copied high-res clipping to clipboard!');
+        if (success) {
+          window.showToast?.('Copied high-res clipping to clipboard!');
+        } else {
+          // Bug H-10: Safari / Firefox / insecure contexts fail silently otherwise.
+          window.showToast?.('Clipboard copy is not supported in this browser', 'error');
         }
       });
     }
@@ -604,7 +660,8 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
       });
     }
 
-    // Initial render
+    // Initial sync + render (Bug C-04): form controls must match the active preset
+    applyPresetToUI(initialPreset);
     triggerRender();
   }
 
