@@ -16,7 +16,8 @@ import { languages } from '../../i18n/ui';
 const {
   title,
   description,
-  image = '/og-image.png',
+  // Bug H-07: /og-image.png never existed in public/ — every social share 404'd.
+  image = '/images/hero-image.jpg',
   article = false,
   lang = 'en',
   author,
@@ -31,12 +32,12 @@ const currentPath: string = Astro.url.pathname;
 const pathWithoutLang = currentPath.replace(/^\/(?:zh|pt-BR|ru|ja|tr|ko|de|es|fr|hi)(?:\/|$)/i, '/');
 const cleanSubpath = pathWithoutLang === '/' ? '' : pathWithoutLang;
 const canonicalURL = new URL(currentPath, siteBase).toString();
-const formattedTitle = title.includes('The Vintage Press') ? title : `${title} | The Vintage Press`;
+const formattedTitle = /\bthe vintage press\b/i.test(title) ? title : `${title} | The Vintage Press`;
 // Effective dates: Article schema requires datePublished; fall back to build time so fields are never empty
 const buildNow = new Date().toISOString();
 const effectivePublished = datePublished || buildNow;
 const effectiveModified = dateModified || effectivePublished;
-const effectiveImage = new URL(image || '/og-image.png', siteBase).toString();
+const effectiveImage = new URL(image || '/images/hero-image.jpg', siteBase).toString();
 ---
 
 <!-- Global Metadata -->
@@ -89,12 +90,12 @@ const effectiveImage = new URL(image || '/og-image.png', siteBase).toString();
 <meta property="og:image" content={effectiveImage} />
 <meta property="og:locale" content={lang} />
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={canonicalURL} />
-<meta property="twitter:title" content={formattedTitle} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={effectiveImage} />
+<!-- Twitter (Bug L-05: name=, not property=) -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalURL} />
+<meta name="twitter:title" content={formattedTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={effectiveImage} />
 
 <!-- Schema.org JSON-LD -->
 {article ? (

@@ -23,6 +23,40 @@ export interface PreviewPanelProps {
   className?: string;
 }
 
+/**
+ * Bug M-13: the old detection used raw substring tests (`raw.includes('gn')`,
+ * `'jt'`, `'kh'`, …) which matched any id that happened to contain those letters
+ * and silently fell through to the wrong template. Normalise the incoming id to
+ * a kebab-case slug and look it up in an explicit alias table instead.
+ */
+const TEMPLATE_KIND_BY_ID: Record<string, string> = {
+  'new-york-times': 'nyt',
+  'the-new-york-times': 'nyt',
+  nyt: 'nyt',
+  'washington-post': 'wapo',
+  'the-washington-post': 'wapo',
+  wapo: 'wapo',
+  'times-of-india': 'toi',
+  'the-times-of-india': 'toi',
+  toi: 'toi',
+  'the-guardian': 'guardian',
+  guardian: 'guardian',
+  'le-monde': 'lemonde',
+  lemonde: 'lemonde',
+  'gulf-news': 'gulfnews',
+  gn: 'gulfnews',
+  'japan-times': 'japantimes',
+  'the-japan-times': 'japantimes',
+  jt: 'japantimes',
+  'korea-herald': 'koreaherald',
+  'the-korea-herald': 'koreaherald',
+  kh: 'koreaherald',
+  'global-times': 'globaltimes',
+};
+
+const normalizeTemplateId = (value: string): string =>
+  (value || '').toLowerCase().trim().replace(/[\s_]+/g, '-');
+
 export default function PreviewPanel({
   template = 'washington-post',
   date = 'Friday, October 24, 1929',
@@ -41,16 +75,18 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
   className = '',
 }: PreviewPanelProps) {
   // Normalize template name
-  const raw = (template || '').toLowerCase().trim();
-  const isNYT = raw.includes('new york times') || raw.includes('new-york-times') || raw.includes('nyt');
-  const isWaPo = raw.includes('washington post') || raw.includes('washington-post') || raw.includes('wapo');
-  const isGuardian = raw.includes('guardian') || raw.includes('the-guardian');
-  const isLeMonde = raw.includes('le monde') || raw.includes('le-monde') || raw.includes('lemonde');
-  const isTOI = raw.includes('times of india') || raw.includes('times-of-india') || raw.includes('toi');
-  const isGulfNews = raw.includes('gulf news') || raw.includes('gulf-news') || raw.includes('gn');
-  const isJapanTimes = raw.includes('japan times') || raw.includes('japan-times') || raw.includes('jt');
-  const isKoreaHerald = raw.includes('korea herald') || raw.includes('korea-herald') || raw.includes('kh');
-  const isGlobalTimes = raw.includes('global times') || raw.includes('global-times');
+  const raw = normalizeTemplateId(template);
+  const kind = TEMPLATE_KIND_BY_ID[raw] || '';
+
+  const isNYT = kind === 'nyt';
+  const isWaPo = kind === 'wapo';
+  const isGuardian = kind === 'guardian';
+  const isLeMonde = kind === 'lemonde';
+  const isTOI = kind === 'toi';
+  const isGulfNews = kind === 'gulfnews';
+  const isJapanTimes = kind === 'japantimes';
+  const isKoreaHerald = kind === 'koreaherald';
+  const isGlobalTimes = kind === 'globaltimes';
 
   let templateContent: React.ReactNode = null;
 
@@ -92,6 +128,7 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         author={author}
         subheadline={subheadline}
         newspaperName={newspaperName}
+        tagline={tagline}
         photoCaption={photoCaption}
       />
     );
@@ -230,255 +267,7 @@ Key witnesses detailed confidential archives documenting behind-the-scenes negot
         }}
       >
         {/* ========================================================================= */}
-        {/* TEMPLATE 1: THE TIMES OF INDIA (Dense 3-Column Layout, Classic Serif)     */}
-        {/* ========================================================================= */}
-        {isTOI && (
-          <div className="font-serif">
-            {/* Top Ear-Pieces & Registration Bar */}
-            <div className="border-t border-b border-stone-900/70 py-1 mb-2 flex items-center justify-between text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-wider text-stone-900">
-              <span className="w-1/3 text-left">Weather: Foggy & Cool</span>
-              <span className="w-1/3 text-center tracking-widest font-black">VOL. CLXXXVIII NO. 294</span>
-              <span className="w-1/3 text-right">PRICE: TWO RUPEES</span>
-            </div>
-
-            {/* Central Ornate Crest & Masthead */}
-            <div className="text-center py-2 relative">
-              <div className="flex items-center justify-center gap-3 mb-1">
-                <span className="h-[1px] w-12 sm:w-20 bg-stone-900/60"></span>
-                <span className="text-xs sm:text-sm font-black tracking-widest uppercase text-stone-800">
-                  ★ LET TRUTH PREVAIL ★
-                </span>
-                <span className="h-[1px] w-12 sm:w-20 bg-stone-900/60"></span>
-              </div>
-
-              <h1
-                className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-none text-stone-950 font-serif"
-                style={{
-                  fontFamily: '"Times New Roman", Times, "Merriweather", serif',
-                  letterSpacing: '0.01em',
-                }}
-              >
-                {resolvedMasthead}
-              </h1>
-
-              <p className="text-[9px] sm:text-[10px] uppercase font-sans font-bold tracking-widest text-stone-800/80 mt-1">
-                {resolvedTagline}
-              </p>
-            </div>
-
-            {/* Dense Double Border Rule with City and Date */}
-            <div className="border-t-[3px] border-b-[1px] border-stone-950 my-2 py-1 flex items-center justify-between text-[10px] sm:text-xs font-sans font-bold uppercase">
-              <span>DELHI • BOMBAY • CALCUTTA • MADRAS</span>
-              <span className="font-black text-stone-950">{date}</span>
-              <span>SPECIAL MORNING EDITION</span>
-            </div>
-
-            {/* Main Headline */}
-            <div className="text-center my-3 border-b-2 border-stone-950/80 pb-2.5">
-              <h2
-                className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight leading-tight text-stone-950 font-serif"
-                style={{ fontFamily: '"Playfair Display", "Times New Roman", serif' }}
-              >
-                {headline}
-              </h2>
-            </div>
-
-            {/* Dynamic Layout: 3-Column Dense Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[12px] leading-[1.42] text-justify">
-              {/* If Image exists: span across 2 columns, story in column 3, text continues below */}
-              {imageUrl ? (
-                <>
-                  <div className="md:col-span-2 flex flex-col gap-2">
-                    <div className="border border-stone-900 p-1 bg-stone-900/5 shadow-inner">
-                      <div className="relative overflow-hidden bg-stone-950/10 max-h-[300px]">
-                        <img
-                          src={imageUrl}
-                          alt={photoCaption ? `Clipping photo: ${photoCaption}` : `Clipping photo for headline: ${headline}`}
-                          className="w-full h-full max-h-[280px] object-cover filter grayscale contrast-150 brightness-95"
-                        />
-                      </div>
-                      {photoCaption && (
-                        <p className="text-[10px] font-sans italic text-center mt-1 text-stone-800">
-                          [PHOTO DISPATCH]: {photoCaption}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* First paragraph with Drop Cap below image */}
-                    {paragraphs[0] && (
-                      <p className="text-stone-900">
-                        <span className="float-left text-3xl font-black mr-2 leading-none font-serif text-stone-950">
-                          {paragraphs[0].charAt(0)}
-                        </span>
-                        {paragraphs[0].slice(1)}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Column 3: Continuing Story */}
-                  <div className="border-l border-stone-900/30 pl-3 flex flex-col gap-2">
-                    {paragraphs.slice(1).map((p, idx) => (
-                      <p key={idx} className="text-stone-900">
-                        {p}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                /* No Image: Dense 3 Columns flowing naturally */
-                <>
-                  <div className="flex flex-col gap-2">
-                    {paragraphs[0] && (
-                      <p className="text-stone-900">
-                        <span className="float-left text-3xl font-black mr-2 leading-none font-serif text-stone-950">
-                          {paragraphs[0].charAt(0)}
-                        </span>
-                        {paragraphs[0].slice(1)}
-                      </p>
-                    )}
-                    {paragraphs.slice(1, Math.ceil(paragraphs.length / 3)).map((p, idx) => (
-                      <p key={idx} className="text-stone-900">
-                        {p}
-                      </p>
-                    ))}
-                  </div>
-
-                  <div className="border-l border-stone-900/30 pl-3 flex flex-col gap-2">
-                    {paragraphs
-                      .slice(Math.ceil(paragraphs.length / 3), Math.ceil((paragraphs.length / 3) * 2))
-                      .map((p, idx) => (
-                        <p key={idx} className="text-stone-900">
-                          {p}
-                        </p>
-                      ))}
-                  </div>
-
-                  <div className="border-l border-stone-900/30 pl-3 flex flex-col gap-2">
-                    {paragraphs.slice(Math.ceil((paragraphs.length / 3) * 2)).map((p, idx) => (
-                      <p key={idx} className="text-stone-900">
-                        {p}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Bottom Footer Rule */}
-            <div className="border-t border-stone-900/40 mt-5 pt-1.5 flex items-center justify-between text-[9px] font-sans font-bold uppercase text-stone-700">
-              <span>TIMES OF INDIA ARCHIVAL PRESS</span>
-              <span>CONTINUED ON PAGE 3, COL. 2</span>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TEMPLATE 2: THE WASHINGTON POST (Standard Elegant Typography, Huge Head)   */}
-        {/* ========================================================================= */}
-        {isWaPo && (
-          <div className="font-serif">
-            {/* Top Date & Price Line */}
-            <div className="flex items-center justify-between text-[10px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-neutral-800 border-b border-neutral-900/30 pb-1 mb-1.5">
-              <span>WASHINGTON, D.C.</span>
-              <span className="font-black tracking-widest">{date}</span>
-              <span>PRICE: 35 CENTS</span>
-            </div>
-
-            {/* Gothic / Blackletter Iconic Masthead */}
-            <div className="text-center py-2">
-              <h1
-                className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-none text-neutral-950"
-                style={{
-                  fontFamily: '"UnifrakturMaguntia", "Playfair Display", serif',
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                {resolvedMasthead}
-              </h1>
-              {resolvedTagline && (
-                <p className="text-xs sm:text-sm italic font-serif text-neutral-800 mt-1 font-medium">
-                  {resolvedTagline}
-                </p>
-              )}
-            </div>
-
-            {/* Thick Double Header Divider */}
-            <div className="border-t-[3px] border-b-[1px] border-neutral-950 my-2 py-0.5 flex items-center justify-between text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-widest">
-              <span>WEATHER: 68° FAIR AND SUNNY</span>
-              <span>★ 145TH YEAR • NO. 210 ★</span>
-              <span>CAPITAL FINAL EDITION</span>
-            </div>
-
-            {/* Grand Headline */}
-            <div className="text-center my-4 border-b-2 border-neutral-950 pb-3">
-              <h2
-                className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight text-neutral-950 font-serif"
-                style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
-              >
-                {headline}
-              </h2>
-            </div>
-
-            {/* Dynamic Layout: If image uploaded, span across full or lead column */}
-            <div className="flex flex-col gap-4">
-              {imageUrl && (
-                <div className="w-full border-t border-b border-neutral-900/60 py-2 my-1">
-                  <div className="relative overflow-hidden max-h-[360px] bg-neutral-950/10 border border-neutral-950">
-                    <img
-                      src={imageUrl}
-                      alt="News Article Graphic"
-                      className="w-full h-full max-h-[340px] object-cover filter grayscale contrast-125 brightness-95"
-                    />
-                  </div>
-                  {photoCaption && (
-                    <p className="text-[11px] font-sans italic text-neutral-800 mt-1.5 pl-1 leading-snug">
-                      <strong className="font-bold font-sans not-italic uppercase text-[10px] mr-1">
-                        PHOTO BY SPECIAL CORRESPONDENT —
-                      </strong>
-                      {photoCaption}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* 2-Column Balanced Story Columns */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[13px] sm:text-[14px] leading-relaxed text-justify">
-                <div className="flex flex-col gap-2.5">
-                  {paragraphs[0] && (
-                    <p className="text-neutral-900">
-                      <span className="float-left text-4xl sm:text-5xl font-black mr-2 leading-none font-serif text-neutral-950">
-                        {paragraphs[0].charAt(0)}
-                      </span>
-                      {paragraphs[0].slice(1)}
-                    </p>
-                  )}
-                  {paragraphs.slice(1, Math.ceil(paragraphs.length / 2)).map((p, idx) => (
-                    <p key={idx} className="text-neutral-900">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-
-                <div className="border-t md:border-t-0 md:border-l border-neutral-900/30 md:pl-6 flex flex-col gap-2.5">
-                  {paragraphs.slice(Math.ceil(paragraphs.length / 2)).map((p, idx) => (
-                    <p key={idx} className="text-neutral-900">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Footer Rule */}
-            <div className="border-t border-neutral-950/40 mt-6 pt-2 flex items-center justify-between text-[10px] font-sans font-bold uppercase text-neutral-700">
-              <span>The Washington Post Press Archive</span>
-              <span>Section A • Page 1</span>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TEMPLATE 3: GLOBAL TIMES (Bold, Structured, Modern Broadsheet Layout)     */}
+        {/* GLOBAL TIMES (Bold, Structured, Modern Broadsheet Layout)                */}
         {/* ========================================================================= */}
         {isGlobalTimes && (
           <div className="font-sans">

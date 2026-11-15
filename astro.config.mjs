@@ -9,13 +9,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Bug M-02: bare path.resolve() is CWD-dependent. Resolve against this file's
+// own location so the sitemap lastmod resolver works from any working directory.
+const PROJECT_ROOT = fileURLToPath(new URL('.', import.meta.url));
+const SRC_ROOT = path.join(PROJECT_ROOT, 'src');
+const DIST_DIR = path.join(PROJECT_ROOT, 'dist');
+
 /** @type {Map<string, Date> | null} */
 let blogDateMap = null;
 
 function getBlogDateMap() {
   if (blogDateMap) return blogDateMap;
   blogDateMap = new Map();
-  const blogDir = path.resolve('src/content/blog');
+  const blogDir = path.join(SRC_ROOT, 'content', 'blog');
   if (fs.existsSync(blogDir)) {
     const langs = fs.readdirSync(blogDir);
     for (const lang of langs) {
@@ -63,6 +69,7 @@ function resolveLastmod(urlStr) {
     }
 
     // Static pages
+    /** @type {string[]} */
     let candidateFiles = [];
     if (pathname === '/') {
       candidateFiles = ['src/pages/index.astro'];
@@ -87,7 +94,7 @@ function resolveLastmod(urlStr) {
     }
 
     for (const candidate of candidateFiles) {
-      const full = path.resolve(candidate);
+      const full = path.resolve(SRC_ROOT, candidate.replace(/^src\//, ''));
       if (fs.existsSync(full)) {
         return fs.statSync(full).mtime;
       }
@@ -140,7 +147,7 @@ export default defineConfig({
             const urlPath = req.url ? req.url.split('?')[0] : '';
             if (urlPath === '/sitemap.xml' || urlPath === '/sitemap-index.xml' || urlPath === '/sitemap-0.xml') {
               const fileName = urlPath === '/sitemap.xml' ? 'sitemap-index.xml' : urlPath.slice(1);
-              const filePath = path.resolve('dist', fileName);
+              const filePath = path.join(DIST_DIR, fileName);
               if (fs.existsSync(filePath)) {
                 res.setHeader('Content-Type', 'application/xml; charset=utf-8');
                 let content = fs.readFileSync(filePath, 'utf8');

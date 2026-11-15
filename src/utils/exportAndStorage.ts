@@ -56,7 +56,8 @@ export async function saveToDrafts(
   data: Omit<ClippingRecord, 'id' | 'timestamp'>
 ): Promise<number> {
   const db = await getDatabase();
-  if (!db) return Date.now();
+  // Bug M-19: never fake success. The caller surfaces an error toast.
+  if (!db) throw new Error('IndexedDB storage is unavailable');
 
   try {
     const id = await db.clippingHistory.add({
@@ -77,7 +78,7 @@ export async function saveToDrafts(
     return id;
   } catch (err) {
     console.error('Failed to save draft:', err);
-    return Date.now();
+    throw err instanceof Error ? err : new Error(String(err));
   }
 }
 
@@ -172,7 +173,10 @@ async function renderElementCanvas(element: HTMLElement, scale = 2): Promise<HTM
     // Bug M-16: a transparent background becomes black gutters once encoded to JPEG.
     backgroundColor: '#ffffff',
     logging: false,
-    windowWidth: element.scrollWidth,
+    // Bug H-03: lock the render viewport to a desktop broadsheet width so
+    // Tailwind `sm:`/`md:`/`lg:` breakpoints evaluate identically on every device
+    // (otherwise a 375px phone produces a 1-column thumbnail, a desktop 3-column).
+    windowWidth: 1200,
     windowHeight: element.scrollHeight,
   });
 }

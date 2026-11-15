@@ -261,6 +261,8 @@ export const defaultUI = {
   'gen.issuePlaceholder': 'e.g. Vol. XLII No. 18',
   'gen.price': 'Price',
   'gen.pricePlaceholder': 'e.g. THREE CENTS',
+  'gen.weatherLeft': 'Header Left Text',
+  'gen.weatherLeftPlaceholder': 'e.g. WEATHER: HEAVY FOG & DRIZZLE',
   'gen.weatherRight': 'Header Right Text',
   'gen.weatherRightPlaceholder': 'e.g. FAIR AND WARM',
   'gen.headline': 'Main Headline',

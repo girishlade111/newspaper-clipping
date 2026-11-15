@@ -14,7 +14,11 @@ const formattedDate = new Date(post.data.pubDate).toLocaleDateString(lang, {
   day: 'numeric'
 });
 const cleanSlug = post.slug.replace(new RegExp(`^(${post.data.language}|en)/`), '');
-const postUrl = getRelativeLocaleUrl(lang, `blog/${cleanSlug}`);
+// Bug H-06: a locale with no translated posts falls back to English entries.
+// Linking those with the *current* locale prefix produced 404s for every card
+// (e.g. /zh/blog/<en-slug>). Build the URL from the post's real language.
+const postLang = (post.data.language || 'en') as SupportedLanguage;
+const postUrl = getRelativeLocaleUrl(postLang, `blog/${cleanSlug}`);
 ---
 
 <article class="card-content card-hover blog-card">

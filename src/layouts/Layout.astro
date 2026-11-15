@@ -21,7 +21,8 @@ const {
   title = 'The Vintage Press — Free Vintage Newspaper Clipping Generator',
   description = 'Create authentic 1920s vintage newspaper clippings in seconds. Halftone photos, aged paper textures, torn edges, Linotype layouts, and high-res 4K export with zero server tracking.',
   lang = 'en',
-  image = '/og-image.png',
+  // Bug H-07: /og-image.png never existed in public/ — every social share 404'd.
+  image = '/images/hero-image.jpg',
   article = false,
   hideHeader = false,
   hideFooter = false,
@@ -53,7 +54,9 @@ const alternateLinks = Object.entries(languages).map(([key, config]) => {
 const defaultUrl = `${siteUrl}${cleanSubpath || '/'}`;
 const canonicalUrl = new URL(currentPath, siteUrl).toString();
 const currentLangConfig = languages[lang] || languages[defaultLang];
-const formattedTitle = title.includes('The Vintage Press') ? title : `${title} | The Vintage Press`;
+// Bug L-06/L-15: never append the brand suffix twice.
+const hasBrand = /\bthe vintage press\b/i.test(title);
+const formattedTitle = hasBrand ? title : `${title} | The Vintage Press`;
 ---
 
 <!doctype html>
@@ -90,12 +93,12 @@ const formattedTitle = title.includes('The Vintage Press') ? title : `${title} |
     <meta property="og:image" content={new URL(image, siteUrl).toString()} />
     <meta property="og:locale" content={lang} />
 
-    <!-- Twitter Card -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalUrl} />
-    <meta property="twitter:title" content={formattedTitle} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, siteUrl).toString()} />
+    <!-- Twitter Card (Bug L-05: these must be name=, not property=) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={formattedTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, siteUrl).toString()} />
 
     <!-- Typography: critical above-the-fold families render-blocking (display=swap);
          remaining 10 vintage display families lazy-load via print-swap so they

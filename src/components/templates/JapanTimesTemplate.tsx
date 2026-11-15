@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export interface JapanTimesProps {
   headline?: string;
@@ -26,7 +26,9 @@ function ensureFonts() {
     (link as HTMLLinkElement).as = 'style';
     link.href =
       'https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap';
-    link.onload = function (this: HTMLLinkElement) { this.rel = 'stylesheet'; };
+    link.onload = () => {
+      link.rel = 'stylesheet';
+    };
     document.head.appendChild(link);
   }
 }
@@ -52,8 +54,11 @@ Industrial federations across Tokyo, Osaka, and Nagoya signaled strong instituti
   weather = 'TOKYO: 19°C / 12°C • CLOUDY WITH SCATTERED SHOWERS',
   className = '',
 }: JapanTimesProps) {
-  // Ensure Noto Serif is loaded for the Live Preview canvas
-  ensureFonts();
+  // Bug L-20: injecting a <link> during render is a side effect in the render
+  // phase. Move it into an effect so the tree stays pure.
+  useEffect(() => {
+    ensureFonts();
+  }, []);
 
   // Parse paragraphs
   const paragraphs = (story || '')

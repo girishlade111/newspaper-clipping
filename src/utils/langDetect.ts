@@ -148,7 +148,9 @@ export function autoRedirectRoot(): void {
 
   const subPath = LOCALE_SUBPATHS[detectedLocale];
   if (subPath) {
-    const targetUrl = `/${subPath}/${window.location.search}${window.location.hash}`;
+    // Bug L-15: location.search already carries its own leading '?' (and the
+    // hash its own '#'), so prefixing another '/' produced '//' in the path.
+    const targetUrl = `/${subPath}${window.location.search}${window.location.hash}`;
     // Use location.replace to avoid cluttering the browser history stack
     window.location.replace(targetUrl);
   }

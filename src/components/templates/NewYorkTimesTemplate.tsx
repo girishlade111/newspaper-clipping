@@ -8,6 +8,8 @@ export interface NewYorkTimesProps {
   author?: string;
   subheadline?: string;
   newspaperName?: string;
+  /** Bug M-23: the NYT layout previously ignored the Studio's tagline entirely. */
+  tagline?: string;
   photoCaption?: string;
   issueNumber?: string;
   price?: string;
@@ -29,6 +31,7 @@ Telegrams received from overseas universities confirm that duplicate experiments
   author = 'By SPECIAL CORRESPONDENT TO THE TIMES',
   subheadline = 'Scholars Across the Nation Marvel as Long-Standing Theories Are Overturned in Midnight Demonstration',
   newspaperName = 'The New York Times',
+  tagline = 'All the News That\'s Fit to Print • Established 1851',
   photoCaption = 'Scene outside the laboratory as delegates gathered to inspect the calibrated instruments yesterday afternoon.',
   issueNumber = 'VOL. LXXVIII....No. 25,844.',
   price = 'TWO CENTS IN GREATER NEW YORK',
@@ -84,6 +87,11 @@ Telegrams received from overseas universities confirm that duplicate experiments
           >
             {newspaperName}
           </h1>
+          {tagline && (
+            <p className="font-nytHeadline italic text-[9px] sm:text-[11px] uppercase tracking-widest text-black/75 leading-tight">
+              {tagline}
+            </p>
+          )}
         </div>
 
         {/* Right Ear: Weather Forecast */}

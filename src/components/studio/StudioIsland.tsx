@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useDeferredValue } from 'react';
 import PreviewPanel from '../editor/PreviewPanel';
 import RecentClippingsDrawer from '../editor/RecentClippingsDrawer';
 import {
@@ -211,6 +211,10 @@ interface StudioIslandProps {
   initialTemplate?: string;
 }
 
+// Bug H-05: the preview subtree is large (multi-column grids with hundreds of
+// nodes). Memoised so an unrelated state change (e.g. only the date) does not
+// re-render it, and fed with deferred values so fast typing stays responsive.
+const MemoizedPreviewPanel = React.memo(PreviewPanel);
 
 // Error Boundary to catch and DISPLAY the actual crash error
 class StudioErrorBoundary extends React.Component<
@@ -295,6 +299,23 @@ function StudioIslandInner({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Bug M-17/H-05: URL write-back is deferred until deep-linked params have been
+  // applied, then debounced so typing never thrashes history.replaceState.
+  const urlSyncReadyRef = useRef(false);
+  const urlSyncTimerRef = useRef<number | null>(null);
+
+  const scheduleUrlSyncReady = () => {
+    if (typeof window === 'undefined') return;
+    window.setTimeout(() => {
+      urlSyncReadyRef.current = true;
+    }, 0);
+  };
+
+  // Bug H-05: keep heavy text state out of the immediate render path.
+  const deferredStory = useDeferredValue(story);
+  const deferredHeadline = useDeferredValue(headline);
+  const deferredSubheadline = useDeferredValue(subheadline);
+
   // Sync initial state from URL params on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -306,6 +327,8 @@ function StudioIslandInner({
       const nameParam = params.get('name') || params.get('newspaperName');
       const dateParam = params.get('date');
       const taglineParam = params.get('tagline');
+      const subheadlineParam = params.get('subheadline');
+      const authorParam = params.get('author');
 
       if (tmplParam) {
         const aliased = GENERATOR_TO_STUDIO_TEMPLATE[tmplParam] || tmplParam;
@@ -321,10 +344,12 @@ function StudioIslandInner({
           setTagline(taglineParam ?? found.tagline);
           setDate(dateParam ?? found.date);
           setHeadline(headlineParam ?? found.headline);
-          setSubheadline(found.subheadline);
-          setAuthor(found.author);
+          // Explicit ?subheadline=/?author= must win over the preset default.
+          setSubheadline(subheadlineParam ?? found.subheadline);
+          setAuthor(authorParam ?? found.author);
           setStory(storyParam ?? found.story);
           setPhotoCaption(found.photoCaption);
+          scheduleUrlSyncReady();
           return;
         }
       }
@@ -334,28 +359,46 @@ function StudioIslandInner({
       if (nameParam) setNewspaperName(nameParam);
       if (dateParam) setDate(dateParam);
       if (taglineParam) setTagline(taglineParam);
+      if (subheadlineParam) setSubheadline(subheadlineParam);
+      if (authorParam) setAuthor(authorParam);
     } catch (e) {
       console.warn('Could not parse URL query parameters', e);
     }
+    scheduleUrlSyncReady();
   }, []);
 
-  // Update URL search parameters without page reload
+  // Update URL search parameters without page reload (debounced, Bug M-17/H-05).
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    try {
-      const params = new URLSearchParams();
-      if (selectedTemplate) params.set('template', selectedTemplate);
-      if (headline) params.set('headline', headline);
-      if (newspaperName) params.set('name', newspaperName);
-      if (date) params.set('date', date);
+    // Bug M-17: on the very first commit the mount effect above has not applied
+    // the deep-linked params yet — writing now would clobber them.
+    if (!urlSyncReadyRef.current) return;
 
-      const qs = params.toString();
-      const newUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
-      window.history.replaceState(null, '', newUrl);
-    } catch {
-      // Safe fallback
-    }
-  }, [selectedTemplate, headline, newspaperName, date]);
+    if (urlSyncTimerRef.current !== null) window.clearTimeout(urlSyncTimerRef.current);
+    urlSyncTimerRef.current = window.setTimeout(() => {
+      try {
+        const params = new URLSearchParams();
+        if (selectedTemplate) params.set('template', selectedTemplate);
+        if (headline) params.set('headline', headline);
+        if (newspaperName) params.set('name', newspaperName);
+        if (date) params.set('date', date);
+        // Bug M-18: byline/deck/motto were not shareable before.
+        if (tagline) params.set('tagline', tagline);
+        if (subheadline) params.set('subheadline', subheadline);
+        if (author) params.set('author', author);
+
+        const qs = params.toString();
+        const newUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+        window.history.replaceState(null, '', newUrl);
+      } catch {
+        // Safe fallback
+      }
+    }, 350);
+
+    return () => {
+      if (urlSyncTimerRef.current !== null) window.clearTimeout(urlSyncTimerRef.current);
+    };
+  }, [selectedTemplate, headline, newspaperName, date, tagline, subheadline, author]);
 
   // Handle "Select Newspaper Style" Dropdown Change
   const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -513,6 +556,9 @@ function StudioIslandInner({
       setTimeout(() => setIsSaved(false), 2500);
     } catch (e) {
       console.error('Draft save failed:', e);
+      // Bug M-19: IndexedDB can be unavailable (private mode, quota, blocked).
+      // Never fake success — tell the user the draft was not persisted.
+      window.showToast?.('Could not save draft (storage unavailable)', 'error');
     }
   };
 
@@ -970,11 +1016,11 @@ function StudioIslandInner({
             <div className="w-full bg-[#edebe4] rounded-xl p-2 sm:p-4 border border-black/10 overflow-x-auto shadow-inner flex items-center justify-center min-h-[420px]">
               {/* Foolproof export target: hardcoded ID with solid white background — uses document.getElementById instead of useRef to survive Astro hydration */}
               <div id="newspaper-export-target" ref={previewRef} className="bg-white p-4 w-full h-full relative z-10">
-                <PreviewPanel
+                <MemoizedPreviewPanel
                   template={selectedTemplate}
-                  headline={headline}
-                  subheadline={subheadline}
-                  story={story}
+                  headline={deferredHeadline}
+                  subheadline={deferredSubheadline}
+                  story={deferredStory}
                   imageUrl={imageUrl}
                   newspaperName={newspaperName}
                   tagline={tagline}

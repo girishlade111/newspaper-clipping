@@ -98,7 +98,7 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
         </div>
 
         <!-- Price & Weather / Earpieces -->
-        <div class="form-row">
+        <div class="form-row-3">
           <div class="form-group">
             <label class="label-text" for="inputPrice">{t('gen.price')}</label>
             <input 
@@ -107,6 +107,16 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
               class="text-input" 
               value={defaultPreset.price} 
               placeholder={t('gen.pricePlaceholder')}
+            />
+          </div>
+          <div class="form-group">
+            <label class="label-text" for="inputWeatherLeft">{t('gen.weatherLeft')}</label>
+            <input 
+              type="text" 
+              id="inputWeatherLeft" 
+              class="text-input" 
+              value={defaultPreset.weatherLeft} 
+              placeholder={t('gen.weatherLeftPlaceholder')}
             />
           </div>
           <div class="form-group">
@@ -352,6 +362,12 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
     const canvas = document.getElementById('newspaperCanvas') as HTMLCanvasElement;
     if (!canvas) return;
 
+    // Bug H-04: `astro:page-load` re-runs this module; without a guard every
+    // listener below would be bound a second time and each keystroke would
+    // trigger N renders.
+    if (canvas.dataset.bound === 'true') return;
+    canvas.dataset.bound = 'true';
+
     const engine = new NewspaperEngine(canvas);
     let userUploadedImage: HTMLImageElement | null = null;
 
@@ -388,6 +404,7 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
     const inputDate = document.getElementById('inputDate') as HTMLInputElement;
     const inputIssue = document.getElementById('inputIssue') as HTMLInputElement;
     const inputPrice = document.getElementById('inputPrice') as HTMLInputElement;
+    const inputWeatherLeft = document.getElementById('inputWeatherLeft') as HTMLInputElement;
     const inputWeatherRight = document.getElementById('inputWeatherRight') as HTMLInputElement;
     const inputHeadline = document.getElementById('inputHeadline') as HTMLInputElement;
     const inputSubheadline = document.getElementById('inputSubheadline') as HTMLInputElement;
@@ -419,6 +436,7 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
       if (inputDate) inputDate.value = preset.date;
       if (inputIssue) inputIssue.value = preset.issue;
       if (inputPrice) inputPrice.value = preset.price;
+      if (inputWeatherLeft) inputWeatherLeft.value = preset.weatherLeft;
       if (inputWeatherRight) inputWeatherRight.value = preset.weatherRight;
       if (inputHeadline) inputHeadline.value = preset.headline;
       if (inputSubheadline) inputSubheadline.value = preset.subheadline;
@@ -451,6 +469,7 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
       if (inputDate) currentOptions.date = inputDate.value;
       if (inputIssue) currentOptions.issue = inputIssue.value;
       if (inputPrice) currentOptions.price = inputPrice.value;
+      if (inputWeatherLeft) currentOptions.weatherLeft = inputWeatherLeft.value;
       if (inputWeatherRight) currentOptions.weatherRight = inputWeatherRight.value;
       if (inputHeadline) currentOptions.headline = inputHeadline.value;
       if (inputSubheadline) currentOptions.subheadline = inputSubheadline.value;
@@ -470,17 +489,48 @@ const defaultPreset = PRESETS.find(p => p.id === initialPresetId) || PRESETS[0];
       triggerRender();
     };
 
+    // Bug H-04 / M-15: a full 1200×1500 repaint (plus a per-pixel photo filter) used to
+    // fire on EVERY keystroke, and every control was bound to BOTH `input` and
+    // `change` so a <select> rendered twice. Now: text is debounced 150ms, the
+    // aging slider is rAF-throttled, and `change` is bound only where it commits.
+    let updateTimer: number | null = null;
+    let updateFrame: number | null = null;
+
+    const scheduleUpdate = () => {
+      if (updateTimer !== null) window.clearTimeout(updateTimer);
+      updateTimer = window.setTimeout(() => {
+        updateTimer = null;
+        updateFromUI();
+      }, 150);
+    };
+
+    const scheduleUpdateOnFrame = () => {
+      if (updateFrame !== null) return;
+      updateFrame = window.requestAnimationFrame(() => {
+        updateFrame = null;
+        updateFromUI();
+      });
+    };
+
+    // Free-text controls: `input`, debounced.
     [
       inputNewspaperName, inputTagline, inputDate, inputIssue, inputPrice,
-      inputWeatherRight, inputHeadline, inputSubheadline, inputAuthor,
-      selectColumns, inputBody, checkDropCap, inputAging, checkTornEdges,
-      checkCreaseLines, checkCoffeeStain, inputPhotoCaption
+      inputWeatherLeft, inputWeatherRight, inputHeadline, inputSubheadline,
+      inputAuthor, inputBody, inputPhotoCaption
     ].forEach(el => {
-      if (el) {
-        el.addEventListener('input', updateFromUI);
-        el.addEventListener('change', updateFromUI);
-      }
+      if (el) el.addEventListener('input', scheduleUpdate);
     });
+
+    // Selects + checkboxes commit on `change` only (avoids duplicate renders).
+    [
+      selectColumns, checkDropCap, checkTornEdges,
+      checkCreaseLines, checkCoffeeStain
+    ].forEach(el => {
+      if (el) el.addEventListener('change', updateFromUI);
+    });
+
+    // Range slider: rAF-throttled so dragging stays smooth.
+    if (inputAging) inputAging.addEventListener('input', scheduleUpdateOnFrame);
 
     // Tab Navigation
     const tabBtns = document.querySelectorAll('.tab-btn');

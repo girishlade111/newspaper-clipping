@@ -21,6 +21,29 @@ const BASE_FILENAME = 'vintage-newspaper-clipping';
 // yield a blank canvas or crash the tab (Bug H-09).
 const MAX_CANVAS_AREA = 16_000_000;
 
+// Bug H-03: the export render viewport is pinned to a desktop broadsheet width so
+// Tailwind `sm:`/`md:`/`lg:` breakpoints always resolve the same way, whether the
+// user exports from a 375px phone or a 1920px desktop. Without this the download
+// shows a different (1-column) newspaper than the preview.
+const EXPORT_VIEWPORT_WIDTH = 1200;
+
+// Bug M-21: build a download name from the clipping's own masthead/headline
+// instead of a single hardcoded string for every export.
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48);
+}
+
+function resolveFilename(clone: HTMLElement, ext: string, suffix = ''): string {
+  const headlineEl = clone.querySelector('h1, h2');
+  const raw = (headlineEl?.textContent || '').trim();
+  const slug = slugify(raw);
+  return slug ? `${slug}${suffix}.${ext}` : `${BASE_FILENAME}${suffix}.${ext}`;
+}
+
 // Two animation frames instead of a hardcoded 300ms + 500ms stall (Bug M-07):
 // long enough for layout/paint of the freshly appended clone, without dead time.
 function nextPaint(): Promise<void> {
@@ -193,6 +216,7 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
       logging: false,
       scale,
       backgroundColor: '#ffffff',
+      windowWidth: EXPORT_VIEWPORT_WIDTH,
       onclone: getOnClone(),
     });
 
@@ -200,7 +224,7 @@ export async function exportAsPNG(element?: HTMLElement | boolean, is4K: boolean
     const suffix = is4K ? '-4k' : '';
     const link = document.createElement('a');
     link.href = dataUrl;
-    link.download = `${BASE_FILENAME}${suffix}.png`;
+    link.download = resolveFilename(clone, 'png', suffix);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -243,12 +267,13 @@ export async function exportAsJPG(element?: HTMLElement): Promise<void> {
       logging: false,
       scale: 2,
       backgroundColor: '#ffffff',
+      windowWidth: EXPORT_VIEWPORT_WIDTH,
       onclone: getOnClone(),
     });
     const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
     const link = document.createElement('a');
     link.href = dataUrl;
-    link.download = `${BASE_FILENAME}.jpg`;
+    link.download = resolveFilename(clone, 'jpg');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -290,6 +315,7 @@ export async function exportAsPDF(element?: HTMLElement): Promise<void> {
       logging: false,
       scale: 2,
       backgroundColor: '#ffffff',
+      windowWidth: EXPORT_VIEWPORT_WIDTH,
       onclone: getOnClone(),
     });
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
@@ -316,7 +342,7 @@ export async function exportAsPDF(element?: HTMLElement): Promise<void> {
     const yOffset = (pageHeight - finalHeight) / 2;
 
     pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight);
-    pdf.save(`${BASE_FILENAME}.pdf`);
+    pdf.save(resolveFilename(clone, 'pdf'));
   } catch (error: any) {
     console.error('Failed to export PDF:', error);
     window.showToast?.('Error generating image: ' + error.message, 'error');
